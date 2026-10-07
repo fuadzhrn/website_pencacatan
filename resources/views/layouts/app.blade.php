@@ -11,6 +11,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Poppins:wght@400;500;600&amp;display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+        @stack('styles')
 
         <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
         <script type="module" src="{{ asset('assets/js/app.js') }}"></script>
