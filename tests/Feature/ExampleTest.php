@@ -7,13 +7,20 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_home_redirects_to_the_login_page(): void
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertRedirectToRoute('login');
+    }
+
+    public function test_login_page_can_be_displayed(): void
+    {
+        $response = $this->get('/login');
+
+        $response
+            ->assertOk()
+            ->assertSee('Masuk ke Sistem')
+            ->assertSee('Sistem Informasi Preventive Maintenance X-Ray');
     }
 }

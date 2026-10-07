@@ -1,6 +1,6 @@
 <aside class="sidebar" aria-label="Navigasi utama">
     <div class="sidebar__header">
-        <a class="brand" href="#" aria-label="SIPM X-Ray">
+        <a class="brand" href="{{ route('dashboard') }}" aria-label="SIPM X-Ray">
             <span class="brand__mark" aria-hidden="true">
                 <i data-lucide="scan-line"></i>
             </span>
@@ -15,7 +15,7 @@
         <section class="sidebar-menu" aria-labelledby="menu-utama">
             <h2 class="sidebar-menu__label" id="menu-utama">Utama</h2>
             <div class="sidebar-menu__items">
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'dashboard']) @if ($activeMenu === 'dashboard') aria-current="page" @endif>
+                <a href="{{ route('dashboard') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'dashboard']) @if ($activeMenu === 'dashboard') aria-current="page" @endif>
                     <i data-lucide="layout-dashboard" aria-hidden="true"></i>
                     <span>Dashboard</span>
                 </a>
@@ -89,9 +89,12 @@
                 <strong>{{ $userName }}</strong>
                 <small>{{ $userRole }}</small>
             </span>
-            <button class="icon-button icon-button--dark" type="button" aria-label="Buka menu pengguna">
-                <i data-lucide="ellipsis" aria-hidden="true"></i>
-            </button>
+            <form class="sidebar-user__logout" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="icon-button icon-button--dark" type="submit" aria-label="Keluar dari sistem" title="Logout">
+                    <i data-lucide="log-out" aria-hidden="true"></i>
+                </button>
+            </form>
         </div>
     </div>
 </aside>
