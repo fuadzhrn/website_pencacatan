@@ -1,0 +1,932 @@
+.monthly-report-page {
+    min-width: 1080px;
+    color: #111827;
+}
+
+.monthly-report-header,
+.monthly-report-header__identity,
+.monthly-report-header__actions,
+.report-section-heading,
+.report-filter__actions,
+.report-document-heading,
+.report-information__title,
+.report-table-section__heading,
+.report-legend,
+.monthly-summary__heading,
+.monthly-summary__grid article,
+.report-toast {
+    display: flex;
+    align-items: center;
+}
+
+.monthly-report-header {
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.monthly-report-header__identity {
+    gap: 13px;
+}
+
+.monthly-report-header__icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    place-items: center;
+    border: 1px solid #a7f3d0;
+    border-radius: 9px;
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.monthly-report-header__icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.monthly-report-header__eyebrow {
+    margin: 0 0 5px;
+    color: #047857;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.monthly-report-header h2,
+.report-section-heading h3,
+.report-document-heading h3,
+.report-information h4,
+.report-table-section h4,
+.monthly-summary h4 {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+.monthly-report-header h2 {
+    font-size: 1.6rem;
+    line-height: 1.25;
+}
+
+.monthly-report-header__identity p:last-child,
+.report-section-heading p,
+.report-table-section__heading p,
+.monthly-summary__heading p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 0.76rem;
+}
+
+.monthly-report-header__actions,
+.report-filter__actions {
+    gap: 8px;
+}
+
+.report-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 9px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font: 600 0.75rem "Poppins", sans-serif;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.report-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+.report-button:hover {
+    transform: translateY(-1px);
+}
+
+.report-button--primary {
+    background: #047857;
+    color: #fff;
+}
+
+.report-button--primary:hover {
+    background: #06684e;
+}
+
+.report-button--secondary {
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.report-button--secondary:hover {
+    border-color: #6ee7b7;
+    background: #d1fae5;
+}
+
+.report-filter-panel,
+.monthly-report-document {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(31, 41, 51, 0.035);
+}
+
+.report-filter-panel {
+    margin-bottom: 20px;
+    padding: 19px 20px;
+}
+
+.report-section-heading {
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.report-section-heading__icon,
+.report-information__title > span {
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #d1fae5;
+    color: #047857;
+}
+
+.report-section-heading__icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+}
+
+.report-section-heading__icon svg,
+.report-information__title svg {
+    width: 18px;
+    height: 18px;
+}
+
+.report-section-heading h3 {
+    font-size: 0.92rem;
+}
+
+.report-filter {
+    display: grid;
+    grid-template-columns: minmax(310px, 2fr) minmax(150px, 0.75fr) minmax(130px, 0.65fr) auto;
+    gap: 13px;
+    align-items: end;
+}
+
+.report-field {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.report-field > span {
+    color: #374151;
+    font-size: 0.69rem;
+    font-weight: 600;
+}
+
+.report-field select {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    background: #fff;
+    color: #111827;
+    font: 400 0.74rem "Poppins", sans-serif;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.report-field select:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1);
+}
+
+.monthly-report-document {
+    overflow: hidden;
+}
+
+.report-document-heading {
+    gap: 13px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fcfdfc;
+}
+
+.report-document-heading__mark {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    place-items: center;
+    border-radius: 8px;
+    background: #1f2933;
+    color: #d1fae5;
+}
+
+.report-document-heading__mark svg {
+    width: 23px;
+    height: 23px;
+}
+
+.report-document-heading > div:nth-child(2) {
+    flex: 1;
+}
+
+.report-document-heading p {
+    margin: 0 0 3px;
+    color: #047857;
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.report-document-heading h3 {
+    font-size: 1rem;
+}
+
+.report-document-heading > div:nth-child(2) > span {
+    display: block;
+    margin-top: 3px;
+    color: #9ca3af;
+    font-size: 0.66rem;
+}
+
+.report-document-heading__period {
+    min-width: 175px;
+    padding: 10px 13px;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    background: #f0fdf4;
+    text-align: right;
+}
+
+.report-document-heading__period small,
+.report-document-heading__period strong {
+    display: block;
+}
+
+.report-document-heading__period small {
+    color: #6b7280;
+    font-size: 0.62rem;
+}
+
+.report-document-heading__period strong {
+    margin-top: 2px;
+    color: #047857;
+    font: 700 0.78rem "Montserrat", sans-serif;
+}
+
+.report-information {
+    padding: 18px 22px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.report-information__title {
+    gap: 8px;
+    margin-bottom: 13px;
+}
+
+.report-information__title > span {
+    width: 30px;
+    height: 30px;
+}
+
+.report-information h4,
+.report-table-section h4,
+.monthly-summary h4 {
+    font-size: 0.86rem;
+}
+
+.report-information__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #e5e7eb;
+}
+
+.report-information__grid > div {
+    min-height: 62px;
+    padding: 11px 12px;
+    background: #fff;
+}
+
+.report-information__grid > div:nth-child(1),
+.report-information__grid > div:nth-child(2) {
+    grid-column: span 2;
+}
+
+.report-information dt {
+    margin-bottom: 5px;
+    color: #9ca3af;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.report-information dd {
+    margin: 0;
+    color: #374151;
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+.report-table-section {
+    padding: 19px 0 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.report-table-section__heading {
+    justify-content: space-between;
+    gap: 18px;
+    padding: 0 22px 15px;
+}
+
+.report-legend {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px 12px;
+}
+
+.report-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #6b7280;
+    font-size: 0.6rem;
+    white-space: nowrap;
+}
+
+.monthly-report-table-scroll {
+    max-height: 630px;
+    overflow: auto;
+    border-top: 1px solid #e5e7eb;
+}
+
+.monthly-report-table {
+    width: 100%;
+    min-width: 1815px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.monthly-report-table th,
+.monthly-report-table td {
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fff;
+    vertical-align: middle;
+}
+
+.monthly-report-table th {
+    height: 41px;
+    padding: 8px 7px;
+    background: #f1f5f3;
+    color: #4b5563;
+    font-size: 0.59rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    text-align: center;
+    text-transform: uppercase;
+    top: 0;
+    position: sticky;
+    z-index: 4;
+}
+
+.monthly-report-table td {
+    height: 46px;
+    padding: 7px;
+    color: #4b5563;
+    font-size: 0.62rem;
+    line-height: 1.5;
+}
+
+.monthly-report-table tbody tr:hover td {
+    background: #fbfdfc;
+}
+
+.monthly-report-table th:nth-child(1),
+.monthly-report-table td:nth-child(1) {
+    width: 48px;
+    left: 0;
+    position: sticky;
+    z-index: 3;
+}
+
+.monthly-report-table th:nth-child(2),
+.monthly-report-table td:nth-child(2) {
+    width: 190px;
+    left: 48px;
+    position: sticky;
+    z-index: 3;
+}
+
+.monthly-report-table th:nth-child(3),
+.monthly-report-table td:nth-child(3) {
+    width: 280px;
+    left: 238px;
+    position: sticky;
+    z-index: 3;
+    box-shadow: 3px 0 5px rgba(31, 41, 51, 0.035);
+}
+
+.monthly-report-table th:nth-child(1),
+.monthly-report-table th:nth-child(2),
+.monthly-report-table th:nth-child(3) {
+    z-index: 6;
+}
+
+.monthly-report-table th:nth-child(n+4):nth-child(-n+34),
+.monthly-report-table td:nth-child(n+4):nth-child(-n+34) {
+    width: 34px;
+}
+
+.monthly-report-table th:last-child,
+.monthly-report-table td:last-child {
+    width: 205px;
+}
+
+.monthly-report-table__number,
+.monthly-report-table__status {
+    text-align: center;
+}
+
+.monthly-report-table__number {
+    color: #9ca3af !important;
+    font-weight: 600;
+}
+
+.monthly-report-table__activity strong {
+    color: #1f2937;
+    font-size: 0.67rem;
+    font-weight: 600;
+}
+
+.monthly-report-table__criteria,
+.monthly-report-table__note {
+    color: #6b7280 !important;
+}
+
+.report-symbol {
+    display: inline-grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    border-radius: 5px;
+    font: 700 0.72rem "Poppins", sans-serif;
+    font-style: normal;
+    line-height: 1;
+}
+
+.report-symbol--completed {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.report-symbol--issue {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.report-symbol--not-scheduled {
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+.report-symbol--pending {
+    background: transparent;
+    color: #9ca3af;
+    font-size: 1rem;
+}
+
+.report-legend .report-symbol {
+    width: 18px;
+    height: 18px;
+}
+
+.report-legend .report-symbol--pending {
+    margin: 0;
+}
+
+.monthly-summary {
+    padding: 19px 22px 21px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fcfdfc;
+}
+
+.monthly-summary__heading {
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.monthly-summary__heading > span {
+    padding: 6px 9px;
+    border: 1px solid #d1fae5;
+    border-radius: 6px;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 0.63rem;
+    font-weight: 600;
+}
+
+.monthly-summary__grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.monthly-summary__grid article {
+    min-height: 75px;
+    gap: 9px;
+    padding: 11px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.monthly-summary__icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    place-items: center;
+    border-radius: 7px;
+}
+
+.monthly-summary__icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.monthly-summary__icon--neutral,
+.monthly-summary__icon--muted {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.monthly-summary__icon--completed {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.monthly-summary__icon--issue {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.monthly-summary__grid small,
+.monthly-summary__grid strong {
+    display: block;
+}
+
+.monthly-summary__grid small {
+    color: #6b7280;
+    font-size: 0.57rem;
+    line-height: 1.35;
+}
+
+.monthly-summary__grid strong {
+    margin-top: 2px;
+    color: #111827;
+    font: 700 1.02rem "Montserrat", sans-serif;
+}
+
+.monthly-summary__progress {
+    display: block;
+    width: 68px;
+    height: 4px;
+    margin-top: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.monthly-summary__progress i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: #047857;
+    transition: width 220ms ease;
+}
+
+.report-signatures {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 35px;
+    padding: 25px 38px 30px;
+    text-align: center;
+}
+
+.report-signatures > div {
+    color: #6b7280;
+    font-size: 0.65rem;
+}
+
+.report-signatures span,
+.report-signatures strong,
+.report-signatures small {
+    display: block;
+}
+
+.report-signatures strong {
+    margin-top: 2px;
+    color: #374151;
+    font-size: 0.69rem;
+}
+
+.report-signatures__space {
+    height: 54px;
+}
+
+.report-signatures p {
+    max-width: 190px;
+    margin: 0 auto 3px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #4b5563;
+    color: #111827;
+    font-weight: 600;
+}
+
+.report-signatures small {
+    color: #9ca3af;
+    font-size: 0.56rem;
+}
+
+.report-toast {
+    min-width: 315px;
+    gap: 9px;
+    padding: 12px 15px;
+    border: 1px solid #a7f3d0;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 14px 35px rgba(17, 24, 39, 0.15);
+    color: #065f46;
+    font-size: 0.72rem;
+    font-weight: 500;
+    opacity: 0;
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    transform: translateY(12px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 100;
+}
+
+.report-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.report-toast svg {
+    width: 18px;
+    height: 18px;
+    color: #047857;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 7mm;
+    }
+
+    .sidebar,
+    .topbar,
+    .skip-link,
+    .monthly-report-header,
+    .report-filter-panel,
+    .report-toast {
+        display: none !important;
+    }
+
+    html,
+    .app-body,
+    .app-shell,
+    .app-workspace,
+    .app-main,
+    .monthly-report-page {
+        min-width: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+    }
+
+    .monthly-report-document {
+        width: 100%;
+        overflow: visible;
+        border: 1px solid #9ca3af;
+        border-radius: 0;
+        box-shadow: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .report-document-heading,
+    .report-information,
+    .report-table-section,
+    .monthly-summary,
+    .report-signatures {
+        break-inside: avoid;
+    }
+
+    .report-document-heading {
+        padding: 3mm 4mm;
+    }
+
+    .report-document-heading__mark {
+        width: 9mm;
+        height: 9mm;
+        flex-basis: 9mm;
+    }
+
+    .report-document-heading h3 {
+        font-size: 8pt;
+    }
+
+    .report-information {
+        padding: 3mm 4mm;
+    }
+
+    .report-information__title {
+        margin-bottom: 2mm;
+    }
+
+    .report-information__grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .report-information__grid > div,
+    .report-information__grid > div:nth-child(1),
+    .report-information__grid > div:nth-child(2) {
+        min-height: 0;
+        padding: 1.5mm;
+        grid-column: span 1;
+    }
+
+    .report-information dt {
+        margin-bottom: 0.5mm;
+        font-size: 4.5pt;
+    }
+
+    .report-information dd {
+        font-size: 5.3pt;
+    }
+
+    .report-table-section {
+        padding-top: 3mm;
+    }
+
+    .report-table-section__heading {
+        padding: 0 4mm 2mm;
+    }
+
+    .report-table-section__heading p {
+        display: none;
+    }
+
+    .report-table-section h4 {
+        font-size: 6.5pt;
+    }
+
+    .report-legend > span {
+        font-size: 4.7pt;
+    }
+
+    .report-legend .report-symbol {
+        width: 3.5mm;
+        height: 3.5mm;
+        font-size: 5pt;
+    }
+
+    .monthly-report-table-scroll {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .monthly-report-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+    }
+
+    .monthly-report-table th,
+    .monthly-report-table td {
+        height: auto;
+        padding: 0.7mm 0.35mm;
+        font-size: 4.2pt;
+        line-height: 1.2;
+        position: static !important;
+        box-shadow: none !important;
+    }
+
+    .monthly-report-table th:nth-child(1),
+    .monthly-report-table td:nth-child(1) {
+        width: 5mm;
+    }
+
+    .monthly-report-table th:nth-child(2),
+    .monthly-report-table td:nth-child(2) {
+        width: 24mm;
+    }
+
+    .monthly-report-table th:nth-child(3),
+    .monthly-report-table td:nth-child(3) {
+        width: 38mm;
+    }
+
+    .monthly-report-table th:nth-child(n+4):nth-child(-n+34),
+    .monthly-report-table td:nth-child(n+4):nth-child(-n+34) {
+        width: 5.1mm;
+    }
+
+    .monthly-report-table th:last-child,
+    .monthly-report-table td:last-child {
+        width: 29mm;
+    }
+
+    .monthly-report-table__activity strong {
+        font-size: 4.5pt;
+    }
+
+    .report-symbol {
+        width: 3.5mm;
+        height: 3.5mm;
+        border-radius: 1mm;
+        font-size: 5pt;
+    }
+
+    .report-symbol--pending {
+        width: 3.5mm;
+        height: 3.5mm;
+        font-size: 6pt;
+    }
+
+    .monthly-summary {
+        padding: 3mm 4mm;
+    }
+
+    .monthly-summary__heading {
+        margin-bottom: 2mm;
+    }
+
+    .monthly-summary__heading p,
+    .monthly-summary__icon,
+    .monthly-summary__progress {
+        display: none;
+    }
+
+    .monthly-summary__grid {
+        gap: 1.5mm;
+    }
+
+    .monthly-summary__grid article {
+        min-height: 0;
+        padding: 1.5mm;
+    }
+
+    .monthly-summary__grid small {
+        font-size: 4.5pt;
+    }
+
+    .monthly-summary__grid strong {
+        font-size: 7pt;
+    }
+
+    .report-signatures {
+        gap: 10mm;
+        padding: 4mm 12mm 5mm;
+    }
+
+    .report-signatures__space {
+        height: 11mm;
+    }
+
+    .report-signatures > div,
+    .report-signatures strong,
+    .report-signatures p {
+        font-size: 5pt;
+    }
+
+    .report-signatures small {
+        font-size: 4.2pt;
+    }
+}

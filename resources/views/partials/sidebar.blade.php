@@ -61,7 +61,7 @@
                     <i data-lucide="history" aria-hidden="true"></i>
                     <span>Riwayat Pemeriksaan</span>
                 </a>
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'laporan']) @if ($activeMenu === 'laporan') aria-current="page" @endif>
+                <a href="{{ route('reports.monthly') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'laporan']) @if ($activeMenu === 'laporan') aria-current="page" @endif>
                     <i data-lucide="file-chart-column" aria-hidden="true"></i>
                     <span>Laporan</span>
                 </a>

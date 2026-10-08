@@ -119,5 +119,25 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->name('findings.index');
 
+    Route::get('/reports/monthly', function (Request $request): View {
+        $user = $request->user();
+        $initials = Str::of($user->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
+
+        return view('reports.monthly', [
+            'activeMenu' => 'laporan',
+            'pageTitle' => 'Laporan Bulanan',
+            'pageDescription' => 'Rekap hasil preventive maintenance mesin X-Ray berdasarkan bulan dan tahun.',
+            'userName' => $user->name,
+            'userRole' => $user->role->label(),
+            'userInitials' => $initials,
+        ]);
+    })->name('reports.monthly');
+
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
