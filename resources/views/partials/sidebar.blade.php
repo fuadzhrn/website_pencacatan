@@ -30,7 +30,7 @@
         <section class="sidebar-menu" aria-labelledby="menu-master-data">
             <h2 class="sidebar-menu__label" id="menu-master-data">Master Data</h2>
             <div class="sidebar-menu__items">
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'data-mesin']) @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
+                <a href="{{ route('machines.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'data-mesin']) @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
                     <i data-lucide="scan-line" aria-hidden="true"></i>
                     <span>Data Mesin</span>
                 </a>
