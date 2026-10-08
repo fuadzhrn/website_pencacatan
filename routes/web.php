@@ -39,5 +39,25 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->name('machines.index');
 
+    Route::get('/checklists', function (Request $request): View {
+        $user = $request->user();
+        $initials = Str::of($user->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
+
+        return view('checklists.index', [
+            'activeMenu' => 'master-checklist',
+            'pageTitle' => 'Master Checklist',
+            'pageDescription' => 'Kelola kategori dan item pemeriksaan preventive maintenance mesin X-Ray.',
+            'userName' => $user->name,
+            'userRole' => $user->role->label(),
+            'userInitials' => $initials,
+        ]);
+    })->name('checklists.index');
+
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

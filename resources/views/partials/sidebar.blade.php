@@ -34,7 +34,7 @@
                     <i data-lucide="scan-line" aria-hidden="true"></i>
                     <span>Data Mesin</span>
                 </a>
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'master-checklist']) @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
+                <a href="{{ route('checklists.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'master-checklist']) @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
                     <i data-lucide="clipboard-list" aria-hidden="true"></i>
                     <span>Master Checklist</span>
                 </a>
