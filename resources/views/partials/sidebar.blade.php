@@ -38,7 +38,7 @@
                     <i data-lucide="clipboard-list" aria-hidden="true"></i>
                     <span>Master Checklist</span>
                 </a>
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'jadwal-maintenance']) @if ($activeMenu === 'jadwal-maintenance') aria-current="page" @endif>
+                <a href="{{ route('schedules.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'jadwal-maintenance']) @if ($activeMenu === 'jadwal-maintenance') aria-current="page" @endif>
                     <i data-lucide="calendar-days" aria-hidden="true"></i>
                     <span>Jadwal Maintenance</span>
                 </a>
