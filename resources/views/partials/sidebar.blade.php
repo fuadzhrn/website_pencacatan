@@ -19,7 +19,7 @@
                     <i data-lucide="layout-dashboard" aria-hidden="true"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'pemeriksaan-hari-ini']) @if ($activeMenu === 'pemeriksaan-hari-ini') aria-current="page" @endif>
+                <a href="{{ route('inspections.today') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'pemeriksaan-hari-ini']) @if ($activeMenu === 'pemeriksaan-hari-ini') aria-current="page" @endif>
                     <i data-lucide="clipboard-check" aria-hidden="true"></i>
                     <span>Pemeriksaan Hari Ini</span>
                     <span class="sidebar-menu__count" aria-label="4 pemeriksaan">4</span>

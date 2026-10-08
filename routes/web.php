@@ -79,5 +79,25 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->name('schedules.index');
 
+    Route::get('/inspections/today', function (Request $request): View {
+        $user = $request->user();
+        $initials = Str::of($user->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
+
+        return view('inspections.today', [
+            'activeMenu' => 'pemeriksaan-hari-ini',
+            'pageTitle' => 'Pemeriksaan Hari Ini',
+            'pageDescription' => 'Isi checklist preventive maintenance berdasarkan jadwal hari ini.',
+            'userName' => $user->name,
+            'userRole' => $user->role->label(),
+            'userInitials' => $initials,
+        ]);
+    })->name('inspections.today');
+
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
