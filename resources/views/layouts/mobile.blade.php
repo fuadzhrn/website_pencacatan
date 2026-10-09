@@ -81,53 +81,11 @@
     </nav>
 
     @if ($activeMenu === 'dashboard')
-        <div class="mobile-dashboard-preview" data-mobile-dashboard-preview>
-            <header class="mobile-page-heading">
-                <div><p>Operasional Maintenance</p><h1>Dashboard</h1><span>Kamis, 08 Oktober 2026</span></div>
-                <span class="mobile-page-heading__status"><i data-lucide="wifi" aria-hidden="true"></i>Online</span>
-            </header>
-
-            <section class="mobile-card mobile-summary-card" aria-labelledby="mobile-summary-title">
-                <div class="mobile-card__heading">
-                    <span class="mobile-card__icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></span>
-                    <div><p>Ringkasan operasional</p><h2 id="mobile-summary-title">Pemeriksaan Hari Ini</h2></div>
-                    <strong>12</strong>
-                </div>
-                <div class="mobile-summary-card__items">
-                    <div><span class="mobile-summary-card__marker mobile-summary-card__marker--success"></span><p>Selesai</p><strong>8</strong></div>
-                    <div><span class="mobile-summary-card__marker mobile-summary-card__marker--warning"></span><p>Belum Dikerjakan</p><strong>3</strong></div>
-                    <div><span class="mobile-summary-card__marker mobile-summary-card__marker--danger"></span><p>Temuan</p><strong>1</strong></div>
-                </div>
-                <div class="mobile-progress"><span><strong>67%</strong> selesai</span><div><i class="mobile-progress__value--67"></i></div></div>
-            </section>
-
-            <section class="mobile-card" aria-labelledby="mobile-schedule-title">
-                <div class="mobile-card__heading">
-                    <span class="mobile-card__icon mobile-card__icon--charcoal"><i data-lucide="calendar-check-2" aria-hidden="true"></i></span>
-                    <div><p>Jadwal terdekat</p><h2 id="mobile-schedule-title">Pemeriksaan Hari Ini</h2></div>
-                    <span class="mobile-badge mobile-badge--scheduled">Terjadwal</span>
-                </div>
-                <div class="mobile-card__body">
-                    <h3>Mesin X-Ray Baggage - SCP</h3>
-                    <p><i data-lucide="map-pin" aria-hidden="true"></i>Security Check Point Terminal 1</p>
-                    <p><i data-lucide="clock-3" aria-hidden="true"></i>08.00 - 10.00 WITA</p>
-                </div>
-                <a class="mobile-button mobile-button--primary" href="{{ route('inspections.today') }}">Mulai Pemeriksaan<i data-lucide="arrow-right" aria-hidden="true"></i></a>
-            </section>
-
-            <section class="mobile-card" aria-labelledby="mobile-finding-title">
-                <div class="mobile-card__heading">
-                    <span class="mobile-card__icon mobile-card__icon--danger"><i data-lucide="shield-alert" aria-hidden="true"></i></span>
-                    <div><p>Perlu tindak lanjut</p><h2 id="mobile-finding-title">Temuan Terbaru</h2></div>
-                    <span class="mobile-badge mobile-badge--open">Open</span>
-                </div>
-                <div class="mobile-card__body">
-                    <h3>Conveyor belt tidak stabil</h3>
-                    <p>Pergerakan belt tersendat dan terdengar suara gesekan saat unit dijalankan.</p>
-                    <small>Hari ini &bull; X-Ray Baggage - SCP</small>
-                </div>
-                <a class="mobile-button mobile-button--secondary" href="{{ route('findings.index') }}">Lihat Temuan<i data-lucide="chevron-right" aria-hidden="true"></i></a>
-            </section>
-        </div>
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-dashboard.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.dashboard', [
+            'userName' => $userName,
+            'userRole' => $userRole,
+        ])
+        <script type="module" src="{{ asset('assets/js/mobile-dashboard.js') }}"></script>
     @endif
 </section>
