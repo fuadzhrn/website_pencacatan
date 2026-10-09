@@ -12,9 +12,11 @@
 
         <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
         @stack('styles')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-layout.css') }}">
 
         <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
         <script type="module" src="{{ asset('assets/js/app.js') }}"></script>
+        <script type="module" src="{{ asset('assets/js/mobile-layout.js') }}"></script>
     </head>
     <body class="app-body">
         <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
@@ -37,6 +39,14 @@
                 ])
 
                 <main class="app-main" id="main-content" tabindex="-1">
+                    @include('layouts.mobile', [
+                        'activeMenu' => $activeMenu ?? 'dashboard',
+                        'pageTitle' => $pageTitle ?? 'Dashboard',
+                        'userName' => $userName ?? 'Ahmad Fauzi',
+                        'userRole' => $userRole ?? 'Admin',
+                        'userInitials' => $userInitials ?? 'AF',
+                    ])
+
                     @hasSection('content')
                         @yield('content')
                     @else
