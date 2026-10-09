@@ -1,0 +1,1077 @@
+.mobile-report {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .monthly-report-page,
+    .report-toast {
+        display: none !important;
+    }
+
+    .mobile-report {
+        display: grid;
+        min-width: 0;
+        gap: 16px;
+        color: #111827;
+    }
+
+    .mobile-report button,
+    .mobile-report select {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .mobile-report button,
+    .mobile-report select {
+        cursor: pointer;
+    }
+
+    .mobile-report-header {
+        display: grid;
+        min-width: 0;
+        padding: 2px 1px;
+        align-items: center;
+        gap: 11px;
+        grid-template-columns: 42px minmax(0, 1fr);
+    }
+
+    .mobile-report-header__icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-report-header__icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .mobile-report-header p,
+    .mobile-report-header h1,
+    .mobile-report-header span {
+        display: block;
+        margin: 0;
+    }
+
+    .mobile-report-header p {
+        color: #047857;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-header h1 {
+        margin: 1px 0;
+        color: #1f2937;
+        font: 600 0.92rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-header div > span {
+        color: #6b7280;
+        font-size: 0.68rem;
+    }
+
+    .mobile-report-filter,
+    .mobile-report-overview,
+    .mobile-report-legend,
+    .mobile-report-note {
+        min-width: 0;
+        padding: 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 4px 13px rgba(31, 41, 51, 0.035);
+    }
+
+    .mobile-report-filter > header {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .mobile-report-filter > header > span {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        flex: 0 0 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-report-filter > header svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-report-filter h2,
+    .mobile-report-filter p {
+        margin: 0;
+    }
+
+    .mobile-report-filter h2 {
+        color: #1f2937;
+        font: 600 0.8rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-filter p {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 0.65rem;
+    }
+
+    .mobile-report-filter form {
+        display: grid;
+        margin-top: 14px;
+        gap: 11px;
+    }
+
+    .mobile-report-filter__period,
+    .mobile-report-filter__actions {
+        display: grid;
+        gap: 9px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-report-field {
+        display: grid;
+        min-width: 0;
+        gap: 6px;
+    }
+
+    .mobile-report-field > span {
+        color: #374151;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-report-field select {
+        width: 100%;
+        min-height: 46px;
+        padding: 0 36px 0 11px;
+        overflow: hidden;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #1f2937;
+        font-size: 0.68rem;
+        text-overflow: ellipsis;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mobile-report-field select:focus {
+        border-color: #047857;
+        box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+    }
+
+    .mobile-report-filter__actions button {
+        display: inline-flex;
+        min-height: 46px;
+        padding: 9px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 8px;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-report-filter__actions button:first-child {
+        border: 1px solid #047857;
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-report-filter__actions button:last-child {
+        border: 1px solid #a7f3d0;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-report-filter__actions svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .mobile-report-overview {
+        display: grid;
+        gap: 13px;
+    }
+
+    .mobile-report-overview > header {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .mobile-report-overview > header > div {
+        min-width: 0;
+    }
+
+    .mobile-report-overview > header p,
+    .mobile-report-overview > header h2,
+    .mobile-report-overview > header div > span {
+        display: block;
+        margin: 0;
+    }
+
+    .mobile-report-overview > header p {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-overview > header h2 {
+        margin: 3px 0;
+        color: #1f2937;
+        font: 600 0.78rem "Montserrat", sans-serif;
+        line-height: 1.4;
+    }
+
+    .mobile-report-overview > header div > span {
+        color: #6b7280;
+        font-size: 0.65rem;
+    }
+
+    .mobile-report-overview > header > span {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        place-items: center;
+        border-radius: 8px;
+        background: #1f2933;
+        color: #d1fae5;
+    }
+
+    .mobile-report-overview > header > span svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .mobile-report-overview__metrics {
+        display: grid;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-report-overview__metrics > div {
+        min-width: 0;
+        padding: 10px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mobile-report-overview__metrics > div:nth-child(odd) {
+        border-right: 1px solid #e5e7eb;
+    }
+
+    .mobile-report-overview__metrics > div:last-child {
+        border-right: 0;
+        border-bottom: 0;
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    .mobile-report-overview__metrics dt,
+    .mobile-report-overview__metrics dd {
+        margin: 0;
+    }
+
+    .mobile-report-overview__metrics dt {
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-report-overview__metrics dd {
+        margin-top: 3px;
+        color: #1f2937;
+        font: 700 0.9rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-overview__completion {
+        display: grid;
+        gap: 7px;
+    }
+
+    .mobile-report-overview__completion > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #4b5563;
+        font-size: 0.68rem;
+    }
+
+    .mobile-report-overview__completion strong {
+        color: #047857;
+        font: 700 0.9rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-progress {
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e5e7eb;
+    }
+
+    .mobile-report-progress span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: #047857;
+        transition: width 180ms ease;
+    }
+
+    .mobile-report-view {
+        display: grid;
+        min-width: 0;
+        gap: 11px;
+    }
+
+    .mobile-report-section-heading {
+        display: flex;
+        min-width: 0;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .mobile-report-section-heading p,
+    .mobile-report-section-heading h2 {
+        margin: 0;
+    }
+
+    .mobile-report-section-heading p {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-section-heading h2 {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 600 0.82rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-section-heading > span {
+        color: #6b7280;
+        font-size: 0.65rem;
+    }
+
+    .mobile-report-tabs {
+        display: grid;
+        padding: 4px;
+        gap: 4px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mobile-report-tabs button {
+        min-width: 0;
+        min-height: 44px;
+        padding: 7px 4px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: #6b7280;
+        font-size: 0.62rem;
+        font-weight: 600;
+    }
+
+    .mobile-report-tabs button.is-active {
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-report-panel {
+        display: grid;
+        min-width: 0;
+        gap: 11px;
+    }
+
+    .mobile-report-activity-list {
+        display: grid;
+        gap: 9px;
+    }
+
+    .mobile-report-activity-card {
+        display: grid;
+        min-width: 0;
+        padding: 13px;
+        gap: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 4px 13px rgba(31, 41, 51, 0.035);
+    }
+
+    .mobile-report-activity-card > header {
+        display: grid;
+        min-width: 0;
+        align-items: start;
+        gap: 9px;
+        grid-template-columns: 29px minmax(0, 1fr) auto;
+    }
+
+    .mobile-report-activity-card > header > span:first-child {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        place-items: center;
+        border-radius: 7px;
+        background: #f3f4f6;
+        color: #4b5563;
+        font: 600 0.62rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-activity-card h3,
+    .mobile-report-activity-card header p {
+        margin: 0;
+    }
+
+    .mobile-report-activity-card h3 {
+        color: #1f2937;
+        font: 600 0.73rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-activity-card header p {
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 0.65rem;
+        line-height: 1.45;
+    }
+
+    .mobile-report-badge {
+        display: inline-flex;
+        min-height: 24px;
+        padding: 3px 7px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .mobile-report-badge--normal {
+        border-color: #a7f3d0;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-report-badge--review {
+        border-color: #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+    }
+
+    .mobile-report-badge--finding {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .mobile-report-activity-card > dl {
+        display: grid;
+        margin: 0;
+        gap: 6px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mobile-report-activity-card > dl div {
+        min-width: 0;
+        padding: 8px 5px;
+        border-radius: 7px;
+        background: #f6f7f4;
+        text-align: center;
+    }
+
+    .mobile-report-activity-card dt,
+    .mobile-report-activity-card dd {
+        margin: 0;
+    }
+
+    .mobile-report-activity-card dt {
+        min-height: 27px;
+        color: #6b7280;
+        font-size: 0.58rem;
+        line-height: 1.3;
+    }
+
+    .mobile-report-activity-card dd {
+        margin-top: 3px;
+        color: #1f2937;
+        font: 700 0.82rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-activity-card > button {
+        display: inline-flex;
+        width: 100%;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-report-activity-card > button svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .mobile-report-detail {
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        scroll-margin-top: calc(var(--mobile-topbar-height) + 12px);
+    }
+
+    .mobile-report-detail__header {
+        display: grid;
+        min-width: 0;
+        align-items: center;
+        gap: 9px;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+    }
+
+    .mobile-report-detail__header > button {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        color: #374151;
+    }
+
+    .mobile-report-detail__header > button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-report-detail__header p,
+    .mobile-report-detail__header h2 {
+        margin: 0;
+    }
+
+    .mobile-report-detail__header p {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-detail__header h2 {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 600 0.78rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-detail__criteria {
+        padding: 11px;
+        border-radius: 8px;
+        background: #f6f7f4;
+    }
+
+    .mobile-report-detail__criteria span,
+    .mobile-report-detail__criteria p,
+    .mobile-report-detail__criteria small {
+        display: block;
+        margin: 0;
+    }
+
+    .mobile-report-detail__criteria span {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-detail__criteria p {
+        margin-top: 4px;
+        color: #374151;
+        font-size: 0.68rem;
+        line-height: 1.5;
+    }
+
+    .mobile-report-detail__criteria small {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-report-detail__metrics {
+        display: grid;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mobile-report-detail__metrics div {
+        min-width: 0;
+        padding: 9px 5px;
+        text-align: center;
+    }
+
+    .mobile-report-detail__metrics div + div {
+        border-left: 1px solid #e5e7eb;
+    }
+
+    .mobile-report-detail__metrics dt,
+    .mobile-report-detail__metrics dd {
+        margin: 0;
+    }
+
+    .mobile-report-detail__metrics dt {
+        min-height: 27px;
+        color: #6b7280;
+        font-size: 0.58rem;
+        line-height: 1.3;
+    }
+
+    .mobile-report-detail__metrics dd {
+        margin-top: 3px;
+        color: #1f2937;
+        font: 700 0.82rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-detail > section {
+        display: grid;
+        gap: 9px;
+    }
+
+    .mobile-report-date-grid {
+        display: grid;
+        gap: 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-report-date-item {
+        display: grid;
+        min-width: 0;
+        padding: 9px;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fff;
+        grid-template-columns: 28px minmax(0, 1fr);
+    }
+
+    .mobile-report-date-item strong,
+    .mobile-report-date-item small {
+        display: block;
+    }
+
+    .mobile-report-date-item strong {
+        color: #374151;
+        font-size: 0.65rem;
+    }
+
+    .mobile-report-date-item small {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 0.58rem;
+        line-height: 1.3;
+    }
+
+    .mobile-report-symbol {
+        display: inline-grid;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 999px;
+        font-style: normal;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .mobile-report-symbol--conform {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .mobile-report-symbol--nonconform {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .mobile-report-symbol--not-scheduled {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .mobile-report-symbol--pending {
+        background: #f3f4f6;
+        color: #9ca3af;
+    }
+
+    .mobile-report-table-panel {
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+    }
+
+    .mobile-report-table-panel__heading {
+        display: flex;
+        padding: 12px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9faf9;
+    }
+
+    .mobile-report-table-panel__heading h2,
+    .mobile-report-table-panel__heading p {
+        margin: 0;
+    }
+
+    .mobile-report-table-panel__heading h2 {
+        color: #1f2937;
+        font: 600 0.75rem "Montserrat", sans-serif;
+    }
+
+    .mobile-report-table-panel__heading p {
+        margin-top: 3px;
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-report-table-panel__heading > svg {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+        color: #047857;
+    }
+
+    .mobile-report-table-scroll {
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-color: #9ca3af #f3f4f6;
+        scrollbar-width: thin;
+    }
+
+    .mobile-report-table-scroll:focus-visible {
+        outline: 3px solid rgba(4, 120, 87, 0.25);
+        outline-offset: -3px;
+    }
+
+    .mobile-report-table {
+        width: 1840px;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #374151;
+        font-size: 0.62rem;
+    }
+
+    .mobile-report-table th,
+    .mobile-report-table td {
+        min-width: 38px;
+        height: 42px;
+        padding: 6px;
+        box-sizing: border-box;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        background: #fff;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .mobile-report-table th {
+        background: #1f2933;
+        color: #fff;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+    }
+
+    .mobile-report-table th:first-child,
+    .mobile-report-table td:first-child {
+        width: 42px;
+        min-width: 42px;
+        left: 0;
+        position: sticky;
+        z-index: 4;
+    }
+
+    .mobile-report-table th:nth-child(2),
+    .mobile-report-table td:nth-child(2) {
+        width: 132px;
+        min-width: 132px;
+        left: 42px;
+        position: sticky;
+        text-align: left;
+        z-index: 4;
+    }
+
+    .mobile-report-table td:first-child,
+    .mobile-report-table td:nth-child(2) {
+        background: #f9faf9;
+    }
+
+    .mobile-report-table th:first-child,
+    .mobile-report-table th:nth-child(2) {
+        background: #1f2933;
+        z-index: 6;
+    }
+
+    .mobile-report-table th:nth-child(3),
+    .mobile-report-table td:nth-child(3) {
+        width: 190px;
+        min-width: 190px;
+        text-align: left;
+        white-space: normal;
+    }
+
+    .mobile-report-table th:last-child,
+    .mobile-report-table td:last-child {
+        width: 110px;
+        min-width: 110px;
+        text-align: left;
+        white-space: normal;
+    }
+
+    .mobile-report-table .mobile-report-symbol {
+        width: 24px;
+        height: 24px;
+        font-size: 0.68rem;
+    }
+
+    .mobile-report-legend {
+        display: grid;
+        gap: 11px;
+    }
+
+    .mobile-report-legend > div:last-child {
+        display: grid;
+        gap: 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-report-legend > div:last-child > span {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 7px;
+        color: #4b5563;
+        font-size: 0.62rem;
+    }
+
+    .mobile-report-legend .mobile-report-symbol {
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+    }
+
+    .mobile-report-export {
+        display: grid;
+        gap: 9px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-report-export button {
+        display: flex;
+        min-width: 0;
+        min-height: 62px;
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 9px;
+        text-align: left;
+    }
+
+    .mobile-report-export button:first-child {
+        border: 1px solid #d1d5db;
+        background: #fff;
+        color: #374151;
+    }
+
+    .mobile-report-export button:last-child {
+        border: 1px solid #047857;
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-report-export svg {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+    }
+
+    .mobile-report-export span,
+    .mobile-report-export strong,
+    .mobile-report-export small {
+        display: block;
+        min-width: 0;
+    }
+
+    .mobile-report-export strong {
+        font-size: 0.68rem;
+    }
+
+    .mobile-report-export small {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 0.58rem;
+        font-weight: 400;
+    }
+
+    .mobile-report-export button:last-child small {
+        color: #d1fae5;
+    }
+
+    .mobile-report-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        border-color: #d1d5db;
+        background: #f9faf9;
+        box-shadow: none;
+    }
+
+    .mobile-report-note svg {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+        color: #047857;
+    }
+
+    .mobile-report-note p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.62rem;
+        line-height: 1.55;
+    }
+
+    .mobile-report-toast {
+        display: grid;
+        width: calc(100vw - 28px);
+        max-width: 410px;
+        padding: 12px;
+        box-sizing: border-box;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid #a7f3d0;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.18);
+        color: #065f46;
+        font-size: 0.68rem;
+        font-weight: 500;
+        grid-template-columns: 18px minmax(0, 1fr) 44px;
+        left: 50%;
+        position: fixed;
+        top: calc(var(--mobile-topbar-height) + 12px);
+        transform: translateX(-50%);
+        z-index: 75;
+    }
+
+    .mobile-report-toast > svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-report-toast button {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: currentColor;
+    }
+
+    .mobile-report-toast button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .mobile-report [hidden] {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 768px) {
+    .mobile-report-table th:nth-child(3),
+    .mobile-report-table td:nth-child(3) {
+        left: 174px;
+        position: sticky;
+        z-index: 4;
+    }
+
+    .mobile-report-table td:nth-child(3) {
+        background: #f9faf9;
+    }
+
+    .mobile-report-table th:nth-child(3) {
+        background: #1f2933;
+        z-index: 6;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .mobile-report-activity-card > header {
+        grid-template-columns: 27px minmax(0, 1fr);
+    }
+
+    .mobile-report-activity-card > header > .mobile-report-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .mobile-report-detail__header {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .mobile-report-detail__header > .mobile-report-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .mobile-report-export {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-report-progress span,
+    .mobile-report-field select {
+        transition: none;
+    }
+}

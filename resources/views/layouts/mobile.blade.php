@@ -94,5 +94,13 @@
             'userRole' => $userRole,
         ])
         <script type="module" src="{{ asset('assets/js/mobile-inspection.js') }}"></script>
+    @elseif ($activeMenu === 'jadwal-maintenance')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-schedules.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.schedules')
+        <script type="module" src="{{ asset('assets/js/mobile-schedules.js') }}"></script>
+    @elseif ($activeMenu === 'laporan')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.report')
+        <script type="module" src="{{ asset('assets/js/mobile-report.js') }}"></script>
     @endif
 </section>
