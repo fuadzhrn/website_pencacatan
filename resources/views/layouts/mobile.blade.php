@@ -87,5 +87,12 @@
             'userRole' => $userRole,
         ])
         <script type="module" src="{{ asset('assets/js/mobile-dashboard.js') }}"></script>
+    @elseif ($activeMenu === 'pemeriksaan-hari-ini')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-inspection.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.inspection-today', [
+            'userName' => $userName,
+            'userRole' => $userRole,
+        ])
+        <script type="module" src="{{ asset('assets/js/mobile-inspection.js') }}"></script>
     @endif
 </section>

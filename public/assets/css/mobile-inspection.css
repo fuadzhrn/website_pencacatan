@@ -1,0 +1,1082 @@
+.mobile-inspection {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .today-inspection-page {
+        display: none !important;
+    }
+
+    .mobile-inspection {
+        display: grid;
+        min-width: 0;
+        padding-bottom: 80px;
+        gap: 16px;
+        color: #111827;
+    }
+
+    .mobile-inspection button,
+    .mobile-inspection textarea,
+    .mobile-inspection input {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .mobile-inspection button {
+        cursor: pointer;
+    }
+
+    .mobile-inspection-header {
+        display: grid;
+        min-width: 0;
+        padding: 2px 1px;
+        align-items: center;
+        gap: 4px 11px;
+        grid-template-columns: 42px minmax(0, 1fr);
+    }
+
+    .mobile-inspection-header__icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        grid-row: 1 / span 2;
+        place-items: center;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-inspection-header__icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .mobile-inspection-header p,
+    .mobile-inspection-header h1,
+    .mobile-inspection-header span,
+    .mobile-inspection-header time {
+        display: block;
+        margin: 0;
+    }
+
+    .mobile-inspection-header p {
+        color: #047857;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .mobile-inspection-header h1 {
+        margin: 1px 0;
+        color: #1f2937;
+        font: 600 0.92rem "Montserrat", sans-serif;
+        line-height: 1.35;
+    }
+
+    .mobile-inspection-header div > span,
+    .mobile-inspection-header time {
+        color: #6b7280;
+        font-size: 0.68rem;
+    }
+
+    .mobile-inspection-header time {
+        grid-column: 2;
+    }
+
+    .mobile-inspection-section,
+    .mobile-inspection-form {
+        display: grid;
+        min-width: 0;
+        gap: 11px;
+    }
+
+    .mobile-inspection-section__heading {
+        display: flex;
+        min-width: 0;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .mobile-inspection-section__heading p,
+    .mobile-inspection-section__heading h2 {
+        margin: 0;
+    }
+
+    .mobile-inspection-section__heading p {
+        color: #047857;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .mobile-inspection-section__heading h2 {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 600 0.86rem "Montserrat", sans-serif;
+    }
+
+    .mobile-inspection-section__heading > span {
+        flex: 0 0 auto;
+        color: #6b7280;
+        font-size: 0.68rem;
+    }
+
+    .mobile-machine-list,
+    .mobile-checklist-categories {
+        display: grid;
+        min-width: 0;
+        gap: 9px;
+    }
+
+    .mobile-machine-card {
+        display: grid;
+        min-width: 0;
+        padding: 13px;
+        align-items: center;
+        gap: 11px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 4px 13px rgba(31, 41, 51, 0.035);
+        grid-template-columns: minmax(0, 1fr) auto;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mobile-machine-card.is-selected {
+        border-color: #6ee7b7;
+        box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.08);
+    }
+
+    .mobile-machine-card__identity {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-machine-card__icon {
+        display: grid;
+        width: 37px;
+        height: 37px;
+        flex: 0 0 37px;
+        place-items: center;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .mobile-machine-card.is-selected .mobile-machine-card__icon {
+        background: #d1fae5;
+        color: #047857;
+    }
+
+    .mobile-machine-card__icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-machine-card h3,
+    .mobile-machine-card p {
+        margin: 0;
+    }
+
+    .mobile-machine-card h3 {
+        overflow: hidden;
+        color: #1f2937;
+        font: 600 0.72rem "Montserrat", sans-serif;
+        line-height: 1.4;
+        text-overflow: ellipsis;
+    }
+
+    .mobile-machine-card p {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 0.65rem;
+    }
+
+    .mobile-machine-card p svg {
+        width: 13px;
+        height: 13px;
+        color: #047857;
+    }
+
+    .mobile-inspection-badge,
+    .mobile-category-badge {
+        display: inline-flex;
+        min-height: 24px;
+        padding: 3px 8px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #d1d5db;
+        border-radius: 999px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .mobile-inspection-badge--pending,
+    .mobile-inspection-badge--processing,
+    .mobile-category-badge {
+        border-color: #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+    }
+
+    .mobile-inspection-badge--scheduled {
+        border-color: #d1d5db;
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .mobile-inspection-badge--complete,
+    .mobile-category-badge--complete {
+        border-color: #a7f3d0;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-inspection-badge--finding,
+    .mobile-category-badge--finding {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .mobile-machine-card__meta {
+        display: grid;
+        margin: 0;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-machine-card__meta div {
+        padding: 7px 9px;
+        border-radius: 7px;
+        background: #f6f7f4;
+    }
+
+    .mobile-machine-card__meta dt,
+    .mobile-machine-card__meta dd {
+        margin: 0;
+    }
+
+    .mobile-machine-card__meta dt {
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-machine-card__meta dd {
+        margin-top: 2px;
+        color: #374151;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-machine-card > button {
+        display: inline-flex;
+        min-width: 76px;
+        min-height: 44px;
+        padding: 8px 10px;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border: 1px solid #a7f3d0;
+        border-radius: 7px;
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 0.65rem;
+        font-weight: 600;
+    }
+
+    .mobile-machine-card.is-selected > button {
+        border-color: #047857;
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-machine-card > button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .mobile-selected-machine,
+    .mobile-inspection-progress,
+    .mobile-general-note {
+        min-width: 0;
+        padding: 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 4px 13px rgba(31, 41, 51, 0.035);
+    }
+
+    .mobile-selected-machine > header {
+        display: grid;
+        min-width: 0;
+        align-items: center;
+        gap: 10px;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+    }
+
+    .mobile-selected-machine > header > span:first-child {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: #1f2933;
+        color: #d1fae5;
+    }
+
+    .mobile-selected-machine > header > span:first-child svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-selected-machine header p,
+    .mobile-selected-machine header h2 {
+        margin: 0;
+    }
+
+    .mobile-selected-machine header p {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .mobile-selected-machine header h2 {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 600 0.72rem "Montserrat", sans-serif;
+        line-height: 1.4;
+    }
+
+    .mobile-selected-machine > header > span:last-child {
+        padding: 4px 7px;
+        border-radius: 999px;
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+    }
+
+    .mobile-selected-machine > dl {
+        display: grid;
+        margin: 13px 0 0;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-selected-machine > dl div {
+        min-width: 0;
+        padding: 9px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mobile-selected-machine > dl div:nth-child(odd) {
+        border-right: 1px solid #e5e7eb;
+    }
+
+    .mobile-selected-machine > dl div:nth-last-child(-n + 2) {
+        border-bottom: 0;
+    }
+
+    .mobile-selected-machine dt,
+    .mobile-selected-machine dd {
+        overflow-wrap: anywhere;
+        margin: 0;
+    }
+
+    .mobile-selected-machine dt {
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-selected-machine dd {
+        margin-top: 3px;
+        color: #374151;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-inspection-progress {
+        display: grid;
+        gap: 12px;
+    }
+
+    .mobile-inspection-progress > header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .mobile-inspection-progress header p,
+    .mobile-inspection-progress header h2 {
+        margin: 0;
+    }
+
+    .mobile-inspection-progress header p {
+        color: #047857;
+        font-size: 0.62rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .mobile-inspection-progress header h2 {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 600 0.82rem "Montserrat", sans-serif;
+    }
+
+    .mobile-inspection-progress__value {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .mobile-inspection-progress__value strong {
+        color: #111827;
+        font: 700 1.45rem "Montserrat", sans-serif;
+    }
+
+    .mobile-inspection-progress__value span {
+        color: #6b7280;
+        font-size: 0.65rem;
+        text-align: right;
+    }
+
+    .mobile-inspection-progress__track {
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e5e7eb;
+    }
+
+    .mobile-inspection-progress__track span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: #047857;
+        transition: width 180ms ease;
+    }
+
+    .mobile-inspection-progress > dl {
+        display: grid;
+        margin: 0;
+        gap: 7px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mobile-inspection-progress > dl div {
+        padding: 8px 5px;
+        border-radius: 7px;
+        background: #f6f7f4;
+        text-align: center;
+    }
+
+    .mobile-inspection-progress dt,
+    .mobile-inspection-progress dd {
+        margin: 0;
+    }
+
+    .mobile-inspection-progress dt {
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-inspection-progress dd {
+        margin-top: 2px;
+        color: #1f2937;
+        font: 700 0.82rem "Montserrat", sans-serif;
+    }
+
+    .mobile-mark-all-button {
+        display: flex;
+        width: 100%;
+        min-height: 58px;
+        padding: 10px 13px;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid #6ee7b7;
+        border-radius: 9px;
+        background: #ecfdf5;
+        color: #047857;
+        text-align: left;
+    }
+
+    .mobile-mark-all-button > svg {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+    }
+
+    .mobile-mark-all-button span,
+    .mobile-mark-all-button strong,
+    .mobile-mark-all-button small {
+        display: block;
+    }
+
+    .mobile-mark-all-button strong {
+        font-size: 0.72rem;
+    }
+
+    .mobile-mark-all-button small {
+        margin-top: 2px;
+        color: #4b5563;
+        font-size: 0.62rem;
+        font-weight: 400;
+    }
+
+    .mobile-checklist-category {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        background: #fff;
+    }
+
+    .mobile-checklist-category__toggle {
+        display: grid;
+        width: 100%;
+        min-height: 62px;
+        padding: 10px 11px;
+        align-items: center;
+        gap: 9px;
+        border: 0;
+        background: #fff;
+        color: #1f2937;
+        grid-template-columns: 34px minmax(0, 1fr) auto 18px;
+        text-align: left;
+    }
+
+    .mobile-checklist-category__toggle[aria-expanded="true"] {
+        background: #f9faf9;
+    }
+
+    .mobile-checklist-category__icon {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 7px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-checklist-category__icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mobile-checklist-category__toggle span:nth-child(2),
+    .mobile-checklist-category__toggle strong,
+    .mobile-checklist-category__toggle small {
+        display: block;
+        min-width: 0;
+    }
+
+    .mobile-checklist-category__toggle strong {
+        font: 600 0.72rem "Montserrat", sans-serif;
+    }
+
+    .mobile-checklist-category__toggle small {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 0.62rem;
+        font-weight: 400;
+    }
+
+    .mobile-checklist-category__toggle > svg {
+        width: 18px;
+        height: 18px;
+        color: #6b7280;
+        transition: transform 160ms ease;
+    }
+
+    .mobile-checklist-category__toggle[aria-expanded="true"] > svg {
+        transform: rotate(180deg);
+    }
+
+    .mobile-checklist-category__panel {
+        padding: 0 10px 10px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9faf9;
+    }
+
+    .mobile-checklist-item {
+        display: grid;
+        min-width: 0;
+        margin-top: 10px;
+        padding: 12px;
+        gap: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fff;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mobile-checklist-item.is-conform {
+        border-color: #a7f3d0;
+    }
+
+    .mobile-checklist-item.is-nonconform {
+        border-color: #fdba74;
+        box-shadow: inset 3px 0 #ea580c;
+    }
+
+    .mobile-checklist-item > header {
+        display: grid;
+        min-width: 0;
+        align-items: start;
+        gap: 9px;
+        grid-template-columns: 27px minmax(0, 1fr);
+    }
+
+    .mobile-checklist-item > header > span {
+        display: grid;
+        width: 27px;
+        height: 27px;
+        place-items: center;
+        border-radius: 7px;
+        background: #f3f4f6;
+        color: #4b5563;
+        font: 600 0.62rem "Montserrat", sans-serif;
+    }
+
+    .mobile-checklist-item h3,
+    .mobile-checklist-item header p {
+        margin: 0;
+    }
+
+    .mobile-checklist-item h3 {
+        color: #1f2937;
+        font: 600 0.73rem "Montserrat", sans-serif;
+        line-height: 1.45;
+    }
+
+    .mobile-checklist-item header p {
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 0.65rem;
+        line-height: 1.5;
+    }
+
+    .mobile-checklist-item__choices {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mobile-checklist-item__choices button {
+        display: inline-flex;
+        min-height: 48px;
+        padding: 9px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        color: #4b5563;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-checklist-item__choices button:first-child.is-active {
+        border-color: #047857;
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-checklist-item__choices button:last-child.is-active {
+        border-color: #c2410c;
+        background: #c2410c;
+        color: #fff;
+    }
+
+    .mobile-checklist-item__choices svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mobile-field {
+        display: grid;
+        min-width: 0;
+        gap: 6px;
+    }
+
+    .mobile-field > span {
+        color: #374151;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-field > span small {
+        margin-left: 4px;
+        color: #6b7280;
+        font-size: 0.62rem;
+        font-weight: 400;
+    }
+
+    .mobile-field textarea,
+    .mobile-general-note textarea {
+        width: 100%;
+        min-height: 76px;
+        box-sizing: border-box;
+        padding: 10px 11px;
+        resize: vertical;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #111827;
+        font-size: 0.72rem;
+        line-height: 1.5;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mobile-field textarea:focus,
+    .mobile-general-note textarea:focus,
+    .mobile-photo-field input:focus-visible {
+        border-color: #047857;
+        box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+    }
+
+    .mobile-finding-form {
+        display: grid;
+        padding: 12px;
+        gap: 12px;
+        border: 1px solid #fed7aa;
+        border-radius: 8px;
+        background: #fff7ed;
+    }
+
+    .mobile-finding-form__heading {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .mobile-finding-form__heading > span {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+        place-items: center;
+        border-radius: 7px;
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .mobile-finding-form__heading svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-finding-form__heading strong,
+    .mobile-finding-form__heading small {
+        display: block;
+    }
+
+    .mobile-finding-form__heading strong {
+        color: #9a3412;
+        font-size: 0.72rem;
+    }
+
+    .mobile-finding-form__heading small {
+        margin-top: 2px;
+        color: #7c2d12;
+        font-size: 0.62rem;
+    }
+
+    .mobile-photo-field {
+        display: grid;
+        padding: 10px;
+        gap: 8px;
+        border: 1px dashed #fb923c;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .mobile-photo-field > span {
+        display: grid;
+        align-items: center;
+        gap: 2px 7px;
+        color: #9a3412;
+        grid-template-columns: 19px minmax(0, 1fr);
+    }
+
+    .mobile-photo-field > span svg {
+        width: 18px;
+        height: 18px;
+        grid-row: 1 / span 2;
+    }
+
+    .mobile-photo-field > span strong {
+        font-size: 0.68rem;
+    }
+
+    .mobile-photo-field > span small {
+        color: #7c2d12;
+        font-size: 0.62rem;
+        grid-column: 2;
+    }
+
+    .mobile-photo-field input {
+        width: 100%;
+        min-height: 44px;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        background: #f9fafb;
+        color: #4b5563;
+        font-size: 0.62rem;
+    }
+
+    .mobile-photo-field input::file-selector-button {
+        min-height: 32px;
+        margin-right: 8px;
+        padding: 6px 9px;
+        border: 0;
+        border-radius: 6px;
+        background: #1f2933;
+        color: #fff;
+        font: 600 0.62rem "Poppins", sans-serif;
+    }
+
+    .mobile-photo-preview {
+        display: grid;
+        padding: 8px;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid #fed7aa;
+        border-radius: 7px;
+        background: #fff;
+        grid-template-columns: 54px minmax(0, 1fr);
+    }
+
+    .mobile-photo-preview img {
+        width: 54px;
+        height: 54px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+
+    .mobile-photo-preview span {
+        overflow: hidden;
+        color: #4b5563;
+        font-size: 0.65rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mobile-apply-finding {
+        display: inline-flex;
+        width: 100%;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid #fdba74;
+        border-radius: 7px;
+        background: #ffedd5;
+        color: #9a3412;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-apply-finding svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .mobile-general-note {
+        display: grid;
+        gap: 12px;
+    }
+
+    .mobile-general-note > div {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .mobile-general-note > div > span {
+        display: grid;
+        width: 35px;
+        height: 35px;
+        flex: 0 0 35px;
+        place-items: center;
+        border-radius: 7px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-general-note svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mobile-general-note h2,
+    .mobile-general-note p {
+        margin: 0;
+    }
+
+    .mobile-general-note h2 {
+        color: #1f2937;
+        font: 600 0.76rem "Montserrat", sans-serif;
+    }
+
+    .mobile-general-note p {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+
+    .mobile-general-note textarea {
+        min-height: 100px;
+    }
+
+    .mobile-inspection-actions {
+        display: grid;
+        padding: 10px;
+        gap: 8px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 -8px 24px rgba(31, 41, 51, 0.08);
+        bottom: calc(var(--mobile-bottom-nav-height) + 9px + env(safe-area-inset-bottom));
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        left: 14px;
+        position: fixed;
+        right: 14px;
+        z-index: 45;
+    }
+
+    .mobile-inspection-actions button {
+        display: inline-flex;
+        min-height: 48px;
+        padding: 9px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 8px;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .mobile-inspection-actions button:first-child {
+        border: 1px solid #a7f3d0;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-inspection-actions button:last-child {
+        border: 1px solid #047857;
+        background: #047857;
+        color: #fff;
+    }
+
+    .mobile-inspection-actions svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mobile-inspection-toast {
+        display: grid;
+        width: calc(100vw - 28px);
+        max-width: 410px;
+        padding: 12px;
+        box-sizing: border-box;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid #a7f3d0;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.18);
+        color: #065f46;
+        font-size: 0.68rem;
+        font-weight: 500;
+        grid-template-columns: 18px minmax(0, 1fr) 44px;
+        left: 50%;
+        position: fixed;
+        top: calc(var(--mobile-topbar-height) + 12px);
+        transform: translateX(-50%);
+        z-index: 75;
+    }
+
+    .mobile-inspection-toast.is-error {
+        border-color: #fecaca;
+        color: #991b1b;
+    }
+
+    .mobile-inspection-toast > svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mobile-inspection-toast button {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: currentColor;
+    }
+
+    .mobile-inspection-toast button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .mobile-inspection [hidden] {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .mobile-machine-card {
+        padding: 11px;
+        gap: 9px;
+    }
+
+    .mobile-machine-card__icon {
+        width: 33px;
+        height: 33px;
+        flex-basis: 33px;
+    }
+
+    .mobile-inspection-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-inspection {
+        padding-bottom: 136px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-machine-card,
+    .mobile-checklist-item,
+    .mobile-checklist-category__toggle > svg,
+    .mobile-inspection-progress__track span {
+        transition: none;
+    }
+}
