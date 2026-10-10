@@ -94,6 +94,10 @@
             'userRole' => $userRole,
         ])
         <script type="module" src="{{ asset('assets/js/mobile-inspection.js') }}"></script>
+    @elseif ($activeMenu === 'master-checklist')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-checklists.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.checklists')
+        <script type="module" src="{{ asset('assets/js/mobile-checklists.js') }}"></script>
     @elseif ($activeMenu === 'jadwal-maintenance')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-schedules.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.schedules')
