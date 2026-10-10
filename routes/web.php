@@ -99,6 +99,26 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->name('inspections.today');
 
+    Route::get('/inspections/history', function (Request $request): View {
+        $user = $request->user();
+        $initials = Str::of($user->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
+
+        return view('inspections.history', [
+            'activeMenu' => 'riwayat-pemeriksaan',
+            'pageTitle' => 'Riwayat Pemeriksaan',
+            'pageDescription' => 'Lihat pemeriksaan preventive maintenance yang sudah dilakukan.',
+            'userName' => $user->name,
+            'userRole' => $user->role->label(),
+            'userInitials' => $initials,
+        ]);
+    })->name('inspections.history');
+
     Route::get('/findings', function (Request $request): View {
         $user = $request->user();
         $initials = Str::of($user->name)

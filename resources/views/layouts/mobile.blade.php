@@ -45,7 +45,7 @@
             <a href="{{ route('checklists.index') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'master-checklist']) data-mobile-nav-link>
                 <i data-lucide="list-checks" aria-hidden="true"></i><span>Master Checklist</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
-            <a href="#" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-dummy-link>
+            <a href="{{ route('inspections.history') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                 <i data-lucide="history" aria-hidden="true"></i><span>Riwayat Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
             <a href="#" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'user-management']) data-mobile-nav-link data-mobile-dummy-link>
@@ -106,6 +106,10 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.findings')
         <script type="module" src="{{ asset('assets/js/mobile-findings.js') }}"></script>
+    @elseif ($activeMenu === 'riwayat-pemeriksaan')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-history.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.history')
+        <script type="module" src="{{ asset('assets/js/mobile-history.js') }}"></script>
     @elseif ($activeMenu === 'laporan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.report')
