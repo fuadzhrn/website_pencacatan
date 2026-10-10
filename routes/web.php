@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -158,6 +159,29 @@ Route::middleware('auth')->group(function (): void {
             'userInitials' => $initials,
         ]);
     })->name('reports.monthly');
+
+    Route::get('/users', function (Request $request): View {
+        $user = $request->user();
+
+        abort_unless($user->role === UserRole::Admin, 403);
+
+        $initials = Str::of($user->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
+
+        return view('users.index', [
+            'activeMenu' => 'user-management',
+            'pageTitle' => 'User Management',
+            'pageDescription' => 'Kelola akun pengguna dan hak akses Sistem Preventive Maintenance X-Ray.',
+            'userName' => $user->name,
+            'userRole' => $user->role->label(),
+            'userInitials' => $initials,
+        ]);
+    })->name('users.index');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

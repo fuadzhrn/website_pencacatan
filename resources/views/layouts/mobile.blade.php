@@ -48,9 +48,11 @@
             <a href="{{ route('inspections.history') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                 <i data-lucide="history" aria-hidden="true"></i><span>Riwayat Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
-            <a href="#" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'user-management']) data-mobile-nav-link data-mobile-dummy-link>
-                <i data-lucide="users-round" aria-hidden="true"></i><span>User Management</span><i data-lucide="chevron-right" aria-hidden="true"></i>
-            </a>
+            @if ($userRole === 'Admin')
+                <a href="{{ route('users.index') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'user-management']) data-mobile-nav-link data-user-management-navigation="mobile" @if ($activeMenu === 'user-management') aria-current="page" @endif>
+                    <i data-lucide="users-round" aria-hidden="true"></i><span>User Management</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+                </a>
+            @endif
         </nav>
 
         <footer class="mobile-drawer__footer">
@@ -110,6 +112,10 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-history.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.history')
         <script type="module" src="{{ asset('assets/js/mobile-history.js') }}"></script>
+    @elseif ($activeMenu === 'user-management')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-users.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.users')
+        <script type="module" src="{{ asset('assets/js/mobile-users.js') }}"></script>
     @elseif ($activeMenu === 'laporan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.report')

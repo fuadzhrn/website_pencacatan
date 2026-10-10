@@ -42,10 +42,12 @@
                     <i data-lucide="calendar-days" aria-hidden="true"></i>
                     <span>Jadwal Maintenance</span>
                 </a>
-                <a href="#" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'user-management']) @if ($activeMenu === 'user-management') aria-current="page" @endif>
-                    <i data-lucide="users" aria-hidden="true"></i>
-                    <span>User Management</span>
-                </a>
+                @if ($userRole === 'Admin')
+                    <a href="{{ route('users.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'user-management']) data-user-management-navigation="desktop" @if ($activeMenu === 'user-management') aria-current="page" @endif>
+                        <i data-lucide="users" aria-hidden="true"></i>
+                        <span>User Management</span>
+                    </a>
+                @endif
             </div>
         </section>
 

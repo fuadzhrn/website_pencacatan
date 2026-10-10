@@ -6,6 +6,7 @@ import {
     findUserById,
     getTrappedFocusIndex,
     removeUser,
+    resolveFocusTarget,
     summarizeUsers,
     toggleUserStatus,
     upsertUser,
@@ -119,4 +120,14 @@ test('getTrappedFocusIndex wraps keyboard focus inside a sheet', () => {
     assert.equal(getTrappedFocusIndex(0, 3, true), 2);
     assert.equal(getTrappedFocusIndex(1, 3, false), 2);
     assert.equal(getTrappedFocusIndex(-1, 0, false), -1);
+});
+
+test('resolveFocusTarget avoids a detached trigger after the user list is rerendered', () => {
+    const detachedTrigger = { isConnected: false };
+    const replacementTrigger = { isConnected: true };
+    const fallbackButton = { isConnected: true };
+
+    assert.equal(resolveFocusTarget(detachedTrigger, replacementTrigger, fallbackButton), replacementTrigger);
+    assert.equal(resolveFocusTarget(detachedTrigger, null, fallbackButton), fallbackButton);
+    assert.equal(resolveFocusTarget({ isConnected: true }, null, fallbackButton)?.isConnected, true);
 });

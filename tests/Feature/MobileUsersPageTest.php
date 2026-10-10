@@ -55,6 +55,7 @@ final class MobileUsersPageTest extends TestCase
             ->assertSeeText('Rudi Hartono')
             ->assertSeeText('Tambah User')
             ->assertSeeText('Reset Password')
+            ->assertSee('aria-label="Tambah User"', false)
             ->assertSee('data-mobile-users-detail="name"', false)
             ->assertSee('data-mobile-users-result-count role="status" aria-live="polite"', false)
             ->assertSee(asset('assets/css/mobile-users.css'), false)
@@ -81,7 +82,8 @@ final class MobileUsersPageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee(route('users.index'), false)
+            ->assertSee('data-user-management-navigation="desktop"', false)
+            ->assertSee('data-user-management-navigation="mobile"', false)
             ->assertSeeText('User Management');
     }
 }
