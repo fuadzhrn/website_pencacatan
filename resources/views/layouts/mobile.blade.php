@@ -102,6 +102,10 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-schedules.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.schedules')
         <script type="module" src="{{ asset('assets/js/mobile-schedules.js') }}"></script>
+    @elseif ($activeMenu === 'temuan')
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.findings')
+        <script type="module" src="{{ asset('assets/js/mobile-findings.js') }}"></script>
     @elseif ($activeMenu === 'laporan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.report')
