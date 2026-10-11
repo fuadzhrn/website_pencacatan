@@ -256,6 +256,8 @@ class MaintenanceRelationshipsTest extends TestCase
     }
 
     /**
+     * Separate table identities before creating children to expose swapped foreign keys.
+     *
      * @return array{machine: Machine, category: MaintenanceCategory, item: MaintenanceItem, schedule: MaintenanceSchedule, check: MaintenanceCheck, detail: MaintenanceCheckDetail, finding: MaintenanceFinding, assignee: User, checker: User, reviewer: User}
      */
     private function createMaintenanceRecords(string $suffix = '001'): array
@@ -268,20 +270,28 @@ class MaintenanceRelationshipsTest extends TestCase
             'type' => 'HI-SCAN 6040', 'serial_number' => 'XRAY-'.$suffix, 'location' => 'Terminal 1',
             'airport' => 'Soekarno-Hatta', 'status' => 'inactive', 'description' => 'Training machine',
         ]);
+        $machine->id += 100;
+        $machine->save();
         $category = MaintenanceCategory::create([
             'name' => 'Daily maintenance '.$suffix, 'frequency' => 'daily',
             'description' => 'Daily checklist', 'status' => 'inactive',
         ]);
+        $category->id += 200;
+        $category->save();
         $item = MaintenanceItem::create([
             'maintenance_category_id' => $category->id, 'item_name' => 'Check conveyor',
             'criteria' => 'Conveyor operates normally', 'input_type' => 'nilai_aktual',
             'sort_order' => 2, 'status' => 'inactive',
         ]);
+        $item->id += 300;
+        $item->save();
         $schedule = MaintenanceSchedule::create([
             'machine_id' => $machine->id, 'maintenance_category_id' => $category->id,
             'scheduled_date' => '2026-10-11', 'scheduled_time' => '08:00:00',
             'assigned_user_id' => $assignee->id, 'status' => 'completed', 'notes' => 'Assigned inspection',
         ]);
+        $schedule->id += 400;
+        $schedule->save();
         $check = MaintenanceCheck::create([
             'maintenance_schedule_id' => $schedule->id, 'machine_id' => $machine->id,
             'checked_by' => $checker->id, 'verified_by' => $reviewer->id,
@@ -290,11 +300,15 @@ class MaintenanceRelationshipsTest extends TestCase
             'general_note' => 'Conveyor issue', 'supervisor_note' => 'Repair approved',
             'verified_at' => '2026-10-11 10:00:00',
         ]);
+        $check->id += 500;
+        $check->save();
         $detail = MaintenanceCheckDetail::create([
             'maintenance_check_id' => $check->id, 'maintenance_item_id' => $item->id,
             'result_status' => 'tidak_sesuai', 'actual_value' => '5', 'note' => 'Conveyor stops',
             'photo' => 'checks/conveyor.jpg',
         ]);
+        $detail->id += 600;
+        $detail->save();
         $finding = MaintenanceFinding::create([
             'maintenance_check_id' => $check->id, 'maintenance_check_detail_id' => $detail->id,
             'machine_id' => $machine->id, 'maintenance_item_id' => $item->id,
@@ -303,6 +317,8 @@ class MaintenanceRelationshipsTest extends TestCase
             'photo' => 'findings/conveyor.jpg', 'status' => 'resolved', 'reviewed_by' => $reviewer->id,
             'reviewed_at' => '2026-10-11 10:15:00', 'resolved_at' => '2026-10-12 11:00:00',
         ]);
+        $finding->id += 700;
+        $finding->save();
 
         return compact('machine', 'category', 'item', 'schedule', 'check', 'detail', 'finding', 'assignee', 'checker', 'reviewer');
     }
