@@ -19,6 +19,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $credentials = $request->safe()->only(['email', 'password']);
+        $credentials['status'] = 'active';
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
@@ -28,7 +29,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route($request->user()->role->dashboardRouteName(), absolute: false));
     }
 
     public function destroy(Request $request): RedirectResponse
