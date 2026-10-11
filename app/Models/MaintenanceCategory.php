@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+#[Fillable(['name', 'frequency', 'description', 'status'])]
+class MaintenanceCategory extends Model
+{
+    public function items(): HasMany
+    {
+        return $this->hasMany(MaintenanceItem::class);
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(MaintenanceSchedule::class);
+    }
+}

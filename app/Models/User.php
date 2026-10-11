@@ -8,10 +8,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'phone', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -30,5 +31,30 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    public function assignedMaintenanceSchedules(): HasMany
+    {
+        return $this->hasMany(MaintenanceSchedule::class, 'assigned_user_id');
+    }
+
+    public function performedMaintenanceChecks(): HasMany
+    {
+        return $this->hasMany(MaintenanceCheck::class, 'checked_by');
+    }
+
+    public function verifiedMaintenanceChecks(): HasMany
+    {
+        return $this->hasMany(MaintenanceCheck::class, 'verified_by');
+    }
+
+    public function reportedMaintenanceFindings(): HasMany
+    {
+        return $this->hasMany(MaintenanceFinding::class, 'reported_by');
+    }
+
+    public function reviewedMaintenanceFindings(): HasMany
+    {
+        return $this->hasMany(MaintenanceFinding::class, 'reviewed_by');
     }
 }
