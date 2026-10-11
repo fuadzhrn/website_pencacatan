@@ -117,7 +117,7 @@ class MaintenanceDatabaseSeederTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
 
-        $findings = MaintenanceFinding::with(['check.checkedBy', 'checkDetail', 'machine', 'item', 'reportedBy', 'reviewedBy'])->get();
+        $findings = MaintenanceFinding::with(['check.checkedBy', 'check.verifiedBy', 'checkDetail', 'machine', 'item', 'reportedBy', 'reviewedBy'])->get();
 
         $this->assertSame(['open', 'resolved', 'review'], $findings->pluck('status')->unique()->sort()->values()->all());
         foreach ($findings as $finding) {
@@ -134,13 +134,21 @@ class MaintenanceDatabaseSeederTest extends TestCase
         $this->assertNull($open->reviewedBy);
         $this->assertNull($open->reviewed_at);
         $this->assertNull($open->resolved_at);
-        foreach (['review', 'resolved'] as $status) {
+        $this->assertSame('waiting', $open->check->verification_status);
+        $this->assertNull($open->check->verified_by);
+        $this->assertNull($open->check->verified_at);
+        foreach (['review' => '2026-10-09 10:00:00', 'resolved' => '2026-10-03 10:00:00'] as $status => $verifiedAt) {
             $finding = $findings->firstWhere('status', $status);
 
             $this->assertSame(UserRole::Supervisor, $finding->reviewedBy->role);
             $this->assertSame('2026-10', $finding->reviewed_at->format('Y-m'));
             $this->assertGreaterThanOrEqual($finding->finding_date, $finding->reviewed_at);
             $this->assertNotEmpty($finding->follow_up);
+            $this->assertSame('verified', $finding->check->verification_status);
+            $this->assertSame(UserRole::Supervisor, $finding->check->verifiedBy->role);
+            $this->assertTrue($finding->check->verifiedBy->is($finding->reviewedBy));
+            $this->assertSame($verifiedAt, $finding->check->verified_at->toDateTimeString());
+            $this->assertSame($verifiedAt, $finding->reviewed_at->toDateTimeString());
         }
         $this->assertNull($findings->firstWhere('status', 'review')->resolved_at);
         $resolved = $findings->firstWhere('status', 'resolved');
