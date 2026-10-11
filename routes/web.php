@@ -183,5 +183,99 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->name('users.index');
 
+    $mobilePages = [
+        'dashboard' => [
+            'path' => 'dashboard',
+            'view' => 'dashboard',
+            'activeMenu' => 'dashboard',
+            'pageTitle' => 'Dashboard',
+            'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
+        ],
+        'machines' => [
+            'path' => 'machines',
+            'view' => 'machines.index',
+            'activeMenu' => 'data-mesin',
+            'pageTitle' => 'Data Mesin',
+            'pageDescription' => 'Kelola data mesin/peralatan X-Ray.',
+        ],
+        'checklists' => [
+            'path' => 'checklists',
+            'view' => 'checklists.index',
+            'activeMenu' => 'master-checklist',
+            'pageTitle' => 'Master Checklist',
+            'pageDescription' => 'Kelola kategori dan item pemeriksaan preventive maintenance.',
+        ],
+        'schedules' => [
+            'path' => 'schedules',
+            'view' => 'schedules.index',
+            'activeMenu' => 'jadwal-maintenance',
+            'pageTitle' => 'Jadwal Maintenance',
+            'pageDescription' => 'Pantau jadwal pemeriksaan preventive maintenance mesin X-Ray.',
+        ],
+        'inspection-today' => [
+            'path' => 'inspection-today',
+            'view' => 'inspections.today',
+            'activeMenu' => 'pemeriksaan-hari-ini',
+            'pageTitle' => 'Pemeriksaan Hari Ini',
+            'pageDescription' => 'Isi checklist preventive maintenance berdasarkan jadwal hari ini.',
+        ],
+        'findings' => [
+            'path' => 'findings',
+            'view' => 'findings.index',
+            'activeMenu' => 'temuan',
+            'pageTitle' => 'Temuan Pemeriksaan',
+            'pageDescription' => 'Kelola temuan dari hasil preventive maintenance mesin X-Ray.',
+        ],
+        'history' => [
+            'path' => 'history',
+            'view' => 'inspections.history',
+            'activeMenu' => 'riwayat-pemeriksaan',
+            'pageTitle' => 'Riwayat Pemeriksaan',
+            'pageDescription' => 'Lihat pemeriksaan preventive maintenance yang sudah dilakukan.',
+        ],
+        'report' => [
+            'path' => 'report',
+            'view' => 'reports.monthly',
+            'activeMenu' => 'laporan',
+            'pageTitle' => 'Laporan Bulanan',
+            'pageDescription' => 'Rekap hasil preventive maintenance berdasarkan periode.',
+        ],
+        'users' => [
+            'path' => 'users',
+            'view' => 'users.index',
+            'activeMenu' => 'user-management',
+            'pageTitle' => 'User Management',
+            'pageDescription' => 'Kelola akun pengguna sistem.',
+            'adminOnly' => true,
+        ],
+    ];
+
+    foreach ($mobilePages as $routeName => $mobilePage) {
+        Route::get('/mobile/'.$mobilePage['path'], function (Request $request) use ($mobilePage): View {
+            $user = $request->user();
+
+            if ($mobilePage['adminOnly'] ?? false) {
+                abort_unless($user->role === UserRole::Admin, 403);
+            }
+
+            $initials = Str::of($user->name)
+                ->trim()
+                ->explode(' ')
+                ->filter()
+                ->take(2)
+                ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+                ->implode('');
+
+            return view($mobilePage['view'], [
+                'activeMenu' => $mobilePage['activeMenu'],
+                'pageTitle' => $mobilePage['pageTitle'],
+                'pageDescription' => $mobilePage['pageDescription'],
+                'userName' => $user->name,
+                'userRole' => $user->role->label(),
+                'userInitials' => $initials,
+            ]);
+        })->name('mobile.'.$routeName);
+    }
+
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
