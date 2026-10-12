@@ -1,32 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const formDialog = document.querySelector('#checklist-form-dialog');
-    const detailDialog = document.querySelector('#checklist-detail-dialog');
-    const checklistForm = document.querySelector('#checklist-form');
-    const formDialogTitle = document.querySelector('#checklist-form-title');
-    const addChecklistButton = document.querySelector('[data-checklist-create]');
-    const categoryTabs = document.querySelectorAll('[data-category-filter]');
-    const checklistRows = document.querySelectorAll('[data-checklist-row]');
-    const checklistCount = document.querySelector('[data-checklist-count]');
-    const checklistRange = document.querySelector('[data-checklist-range]');
-    const emptyRow = document.querySelector('[data-checklist-empty]');
+function initializeDatabaseChecklists() {
+    const root = document.querySelector('[data-checklists]');
 
-    const formFields = {
-        category: document.querySelector('#checklist-category'),
-        group: document.querySelector('#checklist-group'),
-        item: document.querySelector('#checklist-item'),
-        criteria: document.querySelector('#checklist-criteria'),
-        frequency: document.querySelector('#checklist-frequency'),
-        inputType: document.querySelector('#checklist-input-type'),
-        status: document.querySelector('#checklist-status'),
-        note: document.querySelector('#checklist-note'),
-    };
+    if (!root) {
+        return;
+    }
+
+    const categoryDialog = document.querySelector('#category-form-dialog');
+    const itemDialog = document.querySelector('#checklist-form-dialog');
+    const categoryForm = document.querySelector('#category-form');
+    const itemForm = document.querySelector('#checklist-form');
 
     const openDialog = (dialog) => {
-        if (!dialog) {
-            return;
-        }
-
-        if (typeof dialog.showModal === 'function') {
+        if (dialog && !dialog.open) {
             dialog.showModal();
         }
     };
@@ -37,129 +22,95 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const setFormValue = (field, value) => {
+    const setValue = (form, name, value) => {
+        const field = form?.elements.namedItem(name);
+
         if (field) {
             field.value = value ?? '';
         }
     };
 
-    const updateVisibleRows = (category) => {
-        let visibleCount = 0;
-
-        checklistRows.forEach((row) => {
-            const isVisible = category === 'Semua' || row.dataset.category === category;
-            row.hidden = !isVisible;
-
-            if (isVisible) {
-                visibleCount += 1;
-            }
-        });
-
-        if (checklistCount) {
-            checklistCount.textContent = `${visibleCount} data`;
-        }
-
-        if (checklistRange) {
-            checklistRange.textContent = visibleCount > 0
-                ? `Menampilkan 1–${visibleCount} dari ${visibleCount} item`
-                : 'Tidak ada item ditampilkan';
-        }
-
-        if (emptyRow) {
-            emptyRow.hidden = visibleCount !== 0;
-        }
+    const configureForm = (form, action, method) => {
+        form.action = action;
+        setValue(form, '_method', method);
     };
 
-    categoryTabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-            categoryTabs.forEach((candidate) => {
-                const isSelected = candidate === tab;
-                candidate.classList.toggle('is-active', isSelected);
-                candidate.setAttribute('aria-selected', String(isSelected));
-            });
+    root.addEventListener('click', (event) => {
+        const createCategoryButton = event.target.closest('[data-category-create]');
+        const editCategoryButton = event.target.closest('[data-category-edit]');
+        const createItemButton = event.target.closest('[data-checklist-create]');
+        const editItemButton = event.target.closest('[data-checklist-edit]');
 
-            updateVisibleRows(tab.dataset.categoryFilter ?? 'Semua');
-        });
-    });
-
-    addChecklistButton?.addEventListener('click', () => {
-        checklistForm?.reset();
-        setFormValue(formFields.category, 'Harian');
-        setFormValue(formFields.frequency, 'daily');
-        setFormValue(formFields.inputType, 'checklist');
-        setFormValue(formFields.status, 'Aktif');
-
-        if (formDialogTitle) {
-            formDialogTitle.textContent = 'Tambah Item Checklist';
+        if (createCategoryButton) {
+            categoryForm.reset();
+            configureForm(categoryForm, categoryForm.dataset.storeAction, 'POST');
+            setValue(categoryForm, 'status', 'active');
+            document.querySelector('[data-category-form-title]').textContent = 'Tambah Kategori';
+            openDialog(categoryDialog);
         }
 
-        openDialog(formDialog);
-    });
+        if (editCategoryButton) {
+            configureForm(categoryForm, editCategoryButton.dataset.action, 'PUT');
+            setValue(categoryForm, 'name', editCategoryButton.dataset.name);
+            setValue(categoryForm, 'frequency', editCategoryButton.dataset.frequency);
+            setValue(categoryForm, 'description', editCategoryButton.dataset.description);
+            setValue(categoryForm, 'status', editCategoryButton.dataset.status);
+            document.querySelector('[data-category-form-title]').textContent = 'Edit Kategori';
+            openDialog(categoryDialog);
+        }
 
-    document.querySelectorAll('[data-checklist-edit]').forEach((button) => {
-        button.addEventListener('click', () => {
-            setFormValue(formFields.category, button.dataset.category);
-            setFormValue(formFields.group, button.dataset.group);
-            setFormValue(formFields.item, button.dataset.item);
-            setFormValue(formFields.criteria, button.dataset.criteria);
-            setFormValue(formFields.frequency, button.dataset.frequency);
-            setFormValue(formFields.inputType, button.dataset.inputType);
-            setFormValue(formFields.status, button.dataset.status);
-            setFormValue(formFields.note, button.dataset.note);
+        if (createItemButton) {
+            itemForm.reset();
+            configureForm(itemForm, itemForm.dataset.storeAction, 'POST');
+            setValue(itemForm, 'status', 'active');
+            document.querySelector('[data-checklist-form-title]').textContent = 'Tambah Item Checklist';
+            openDialog(itemDialog);
+        }
 
-            if (formDialogTitle) {
-                formDialogTitle.textContent = 'Edit Item Checklist';
-            }
-
-            openDialog(formDialog);
-        });
-    });
-
-    document.querySelectorAll('[data-checklist-detail]').forEach((button) => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('[data-detail-field]').forEach((field) => {
-                const fieldName = field.dataset.detailField;
-
-                if (fieldName) {
-                    field.textContent = button.dataset[fieldName] ?? '-';
-                }
-            });
-
-            const categoryBadge = document.querySelector('[data-detail-category]');
-            const statusBadge = document.querySelector('[data-detail-status]');
-            const normalizedCategory = (button.dataset.category ?? '').toLowerCase();
-            const normalizedStatus = button.dataset.status === 'Aktif' ? 'active' : 'inactive';
-
-            if (categoryBadge) {
-                categoryBadge.className = `checklist-category checklist-category--${normalizedCategory}`;
-                categoryBadge.textContent = button.dataset.category ?? '-';
-            }
-
-            if (statusBadge) {
-                statusBadge.className = `checklist-status checklist-status--${normalizedStatus}`;
-                statusBadge.textContent = button.dataset.status ?? '-';
-            }
-
-            openDialog(detailDialog);
-        });
-    });
-
-    checklistForm?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        closeDialog(formDialog);
+        if (editItemButton) {
+            configureForm(itemForm, editItemButton.dataset.action, 'PUT');
+            setValue(itemForm, 'maintenance_category_id', editItemButton.dataset.categoryId);
+            setValue(itemForm, 'item_name', editItemButton.dataset.itemName);
+            setValue(itemForm, 'criteria', editItemButton.dataset.criteria);
+            setValue(itemForm, 'input_type', editItemButton.dataset.inputType);
+            setValue(itemForm, 'sort_order', editItemButton.dataset.sortOrder);
+            setValue(itemForm, 'status', editItemButton.dataset.status);
+            document.querySelector('[data-checklist-form-title]').textContent = 'Edit Item Checklist';
+            openDialog(itemDialog);
+        }
     });
 
     document.querySelectorAll('[data-dialog-close]').forEach((button) => {
-        button.addEventListener('click', () => {
-            closeDialog(button.closest('dialog'));
-        });
+        button.addEventListener('click', () => closeDialog(button.closest('dialog')));
     });
 
-    [formDialog, detailDialog].forEach((dialog) => {
-        dialog?.addEventListener('click', (event) => {
+    document.querySelectorAll('dialog').forEach((dialog) => {
+        dialog.addEventListener('click', (event) => {
             if (event.target === dialog) {
                 closeDialog(dialog);
             }
         });
     });
-});
+
+    document.querySelectorAll('form[data-confirm]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            if (!window.confirm(form.dataset.confirm)) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    if (root.dataset.openForm === 'category') {
+        openDialog(categoryDialog);
+    }
+
+    if (root.dataset.openForm === 'item') {
+        openDialog(itemDialog);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDatabaseChecklists, { once: true });
+} else {
+    initializeDatabaseChecklists();
+}

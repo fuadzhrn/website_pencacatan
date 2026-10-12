@@ -6,453 +6,154 @@
     <link rel="stylesheet" href="{{ asset('assets/css/checklists.css') }}">
 @endpush
 
-@php
-    $checklistItems = [
-        [
-            'category' => 'Harian',
-            'group' => 'Safety Check',
-            'item' => 'Pemeriksaan lead curtain',
-            'criteria' => 'Tidak sobek',
-            'frequency' => 'daily',
-            'frequency_label' => 'Harian',
-            'input_type' => 'checklist',
-            'input_label' => 'Sesuai / Tidak Sesuai',
-            'status' => 'Aktif',
-            'note' => 'Pastikan seluruh bagian tirai timbal diperiksa dari sisi masuk dan keluar.',
-        ],
-        [
-            'category' => 'Harian',
-            'group' => 'Safety Check',
-            'item' => 'Pemeriksaan conveyor belt',
-            'criteria' => 'Tidak sobek',
-            'frequency' => 'daily',
-            'frequency_label' => 'Harian',
-            'input_type' => 'checklist',
-            'input_label' => 'Sesuai / Tidak Sesuai',
-            'status' => 'Aktif',
-            'note' => 'Periksa permukaan dan kestabilan pergerakan conveyor belt.',
-        ],
-        [
-            'category' => 'Harian',
-            'group' => 'Safety Check',
-            'item' => 'Leakage Radiation Test',
-            'criteria' => 'Maksimal 1 uSv/jam pada jarak 10 cm dari permukaan mesin X-Ray',
-            'frequency' => 'daily',
-            'frequency_label' => 'Harian',
-            'input_type' => 'numeric_with_note',
-            'input_label' => 'Nilai Aktual + Catatan',
-            'status' => 'Aktif',
-            'note' => 'Catat nilai hasil pengukuran dan titik pengambilan sampel.',
-        ],
-        [
-            'category' => 'Harian',
-            'group' => 'Pembersihan',
-            'item' => 'Unit bagian luar',
-            'criteria' => 'Bersih',
-            'frequency' => 'daily',
-            'frequency_label' => 'Harian',
-            'input_type' => 'checklist',
-            'input_label' => 'Sesuai / Tidak Sesuai',
-            'status' => 'Aktif',
-            'note' => 'Gunakan bahan pembersih yang tidak merusak permukaan unit.',
-        ],
-        [
-            'category' => 'Mingguan',
-            'group' => 'Pemeriksaan Mingguan',
-            'item' => 'Pembersihan dan pemeriksaan light barriers',
-            'criteria' => 'Bersih',
-            'frequency' => 'weekly',
-            'frequency_label' => 'Mingguan',
-            'input_type' => 'checklist',
-            'input_label' => 'Sesuai / Tidak Sesuai',
-            'status' => 'Aktif',
-            'note' => 'Pastikan sensor light barriers merespons tanpa hambatan.',
-        ],
-        [
-            'category' => 'Bulanan',
-            'group' => 'Functional Test',
-            'item' => 'Zoom-in / Zoom-out',
-            'criteria' => 'Berfungsi',
-            'frequency' => 'monthly',
-            'frequency_label' => 'Bulanan',
-            'input_type' => 'checklist',
-            'input_label' => 'Sesuai / Tidak Sesuai',
-            'status' => 'Aktif',
-            'note' => 'Uji fungsi zoom pada beberapa tingkat pembesaran citra.',
-        ],
-        [
-            'category' => 'Triwulan',
-            'group' => 'Unit Configuration',
-            'item' => 'Pemeriksaan pengaturan tanggal, bulan, tahun, dan image orientation',
-            'criteria' => 'Sesuai kebutuhan operasional',
-            'frequency' => 'quarterly',
-            'frequency_label' => 'Triwulan',
-            'input_type' => 'note',
-            'input_label' => 'Catatan',
-            'status' => 'Aktif',
-            'note' => 'Dokumentasikan perubahan konfigurasi apabila dilakukan penyesuaian.',
-        ],
-        [
-            'category' => 'Semesteran',
-            'group' => 'Pemeriksaan Semesteran',
-            'item' => 'Pemeriksaan X-Ray beam alignment',
-            'criteria' => 'Signal',
-            'frequency' => 'semester',
-            'frequency_label' => 'Semesteran',
-            'input_type' => 'numeric_with_note',
-            'input_label' => 'Nilai Aktual + Catatan',
-            'status' => 'Aktif',
-            'note' => 'Rekam hasil pengukuran signal dan catat penyimpangan yang ditemukan.',
-        ],
-        [
-            'category' => 'Tahunan',
-            'group' => 'Pemeriksaan Tahunan',
-            'item' => 'Pemeriksaan drum motor',
-            'criteria' => 'Tidak bunyi dan tidak bocor oli',
-            'frequency' => 'yearly',
-            'frequency_label' => 'Tahunan',
-            'input_type' => 'checklist_with_note',
-            'input_label' => 'Sesuai / Tidak Sesuai + Catatan',
-            'status' => 'Aktif',
-            'note' => 'Catat kondisi suara motor dan indikasi kebocoran setelah unit dijalankan.',
-        ],
-    ];
-@endphp
-
 @section('content')
-    <div class="checklists-page">
+    <div
+        class="checklists-page"
+        data-checklists
+        data-open-form="{{ old('form_type') }}"
+    >
         <header class="checklists-page-header">
-            <div>
+            <div class="checklists-page-header__content">
                 <p class="checklists-page-header__eyebrow">Konfigurasi Pemeriksaan</p>
-                <h2>Master Checklist</h2>
-                <p>Kelola kategori dan item pemeriksaan preventive maintenance mesin X-Ray.</p>
+                <h2 class="checklists-page-header__title">Master Checklist</h2>
+                <p class="checklists-page-header__description">Kelola kategori dan item pemeriksaan preventive maintenance mesin X-Ray.</p>
             </div>
-            <button class="button button--primary" type="button" data-checklist-create>
-                <i data-lucide="plus" aria-hidden="true"></i>
-                Tambah Item Checklist
-            </button>
+            <div class="checklists-header-actions">
+                <button class="checklists-secondary-button" type="button" data-category-create>
+                    <i data-lucide="folder-plus" aria-hidden="true"></i> Tambah Kategori
+                </button>
+                <button class="checklists-primary-button" type="button" data-checklist-create>
+                    <i data-lucide="plus" aria-hidden="true"></i> Tambah Item
+                </button>
+            </div>
         </header>
 
-        <section class="checklists-summary" aria-label="Ringkasan master checklist">
-            <article class="checklists-summary-card checklists-summary-card--total">
-                <span class="checklists-summary-card__icon" aria-hidden="true">
-                    <i data-lucide="list-checks"></i>
-                </span>
-                <div>
-                    <p>Total Item</p>
-                    <strong>9</strong>
-                    <span>Seluruh item pemeriksaan</span>
-                </div>
-            </article>
+        @if (session('success'))
+            <div class="checklists-alert checklists-alert--success" role="status">
+                <i data-lucide="circle-check-big" aria-hidden="true"></i><span>{{ session('success') }}</span>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="checklists-alert checklists-alert--error" role="alert">
+                <i data-lucide="triangle-alert" aria-hidden="true"></i><span>{{ session('error') }}</span>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="checklists-alert checklists-alert--error" role="alert">
+                <i data-lucide="circle-alert" aria-hidden="true"></i>
+                <div><strong>Data belum dapat disimpan.</strong><ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+            </div>
+        @endif
 
-            <article class="checklists-summary-card checklists-summary-card--daily">
-                <span class="checklists-summary-card__icon" aria-hidden="true">
-                    <i data-lucide="calendar-check-2"></i>
-                </span>
-                <div>
-                    <p>Item Harian</p>
-                    <strong>4</strong>
-                    <span>Pemeriksaan setiap hari</span>
-                </div>
-            </article>
+        @if ($selectedCategory)
+            <section class="checklists-detail-panel" aria-labelledby="selected-category-title">
+                <div><p>Detail kategori</p><h3 id="selected-category-title">{{ $selectedCategory->name }}</h3></div>
+                <dl>
+                    <div><dt>Frekuensi</dt><dd>{{ $frequencyOptions[$selectedCategory->frequency] ?? $selectedCategory->frequency }}</dd></div>
+                    <div><dt>Status</dt><dd>{{ $statusOptions[$selectedCategory->status] ?? $selectedCategory->status }}</dd></div>
+                    <div><dt>Jumlah item</dt><dd>{{ $selectedCategory->items_count }}</dd></div>
+                    <div><dt>Deskripsi</dt><dd>{{ $selectedCategory->description ?: '-' }}</dd></div>
+                </dl>
+                <a href="{{ route('checklists.index') }}">Tutup detail</a>
+            </section>
+        @endif
 
-            <article class="checklists-summary-card checklists-summary-card--periodic">
-                <span class="checklists-summary-card__icon" aria-hidden="true">
-                    <i data-lucide="calendar-range"></i>
-                </span>
-                <div>
-                    <p>Mingguan / Bulanan</p>
-                    <strong>2</strong>
-                    <span>Item pemeriksaan berkala</span>
-                </div>
-            </article>
+        @if ($selectedItem)
+            <section class="checklists-detail-panel" aria-labelledby="selected-item-title">
+                <div><p>Detail item checklist</p><h3 id="selected-item-title">{{ $selectedItem->item_name }}</h3></div>
+                <dl>
+                    <div><dt>Kategori</dt><dd>{{ $selectedItem->category->name }}</dd></div>
+                    <div><dt>Frekuensi</dt><dd>{{ $frequencyOptions[$selectedItem->category->frequency] ?? $selectedItem->category->frequency }}</dd></div>
+                    <div><dt>Kriteria</dt><dd>{{ $selectedItem->criteria }}</dd></div>
+                    <div><dt>Tipe input</dt><dd>{{ $inputTypeOptions[$selectedItem->input_type] ?? $selectedItem->input_type }}</dd></div>
+                    <div><dt>Urutan</dt><dd>{{ $selectedItem->sort_order ?? '-' }}</dd></div>
+                    <div><dt>Status</dt><dd>{{ $statusOptions[$selectedItem->status] ?? $selectedItem->status }}</dd></div>
+                </dl>
+                <a href="{{ route('checklists.index') }}">Tutup detail</a>
+            </section>
+        @endif
 
-            <article class="checklists-summary-card checklists-summary-card--inactive">
-                <span class="checklists-summary-card__icon" aria-hidden="true">
-                    <i data-lucide="circle-off"></i>
-                </span>
-                <div>
-                    <p>Item Nonaktif</p>
-                    <strong>0</strong>
-                    <span>Tidak ada item nonaktif</span>
-                </div>
-            </article>
+        <section class="checklists-summary-grid" aria-label="Ringkasan master checklist">
+            <article class="checklists-summary-card checklists-summary-card--emerald"><div class="checklists-summary-card__head"><p class="checklists-summary-card__label">Total Kategori</p><span class="checklists-summary-card__icon"><i data-lucide="folders"></i></span></div><p class="checklists-summary-card__value">{{ $summary['categories'] }}</p><p class="checklists-summary-card__note">Kategori pemeriksaan</p></article>
+            <article class="checklists-summary-card checklists-summary-card--green"><div class="checklists-summary-card__head"><p class="checklists-summary-card__label">Total Item</p><span class="checklists-summary-card__icon"><i data-lucide="list-checks"></i></span></div><p class="checklists-summary-card__value">{{ $summary['total'] }}</p><p class="checklists-summary-card__note">Seluruh item pemeriksaan</p></article>
+            <article class="checklists-summary-card checklists-summary-card--amber"><div class="checklists-summary-card__head"><p class="checklists-summary-card__label">Item Aktif</p><span class="checklists-summary-card__icon"><i data-lucide="circle-check-big"></i></span></div><p class="checklists-summary-card__value">{{ $summary['active'] }}</p><p class="checklists-summary-card__note">Digunakan dalam pemeriksaan</p></article>
+            <article class="checklists-summary-card checklists-summary-card--gray"><div class="checklists-summary-card__head"><p class="checklists-summary-card__label">Item Nonaktif</p><span class="checklists-summary-card__icon"><i data-lucide="circle-off"></i></span></div><p class="checklists-summary-card__value">{{ $summary['inactive'] }}</p><p class="checklists-summary-card__note">Tidak digunakan sementara</p></article>
         </section>
 
-        <section class="checklists-filter" aria-labelledby="checklist-filter-title">
-            <div class="checklists-filter__heading">
-                <span aria-hidden="true"><i data-lucide="list-filter"></i></span>
-                <div>
-                    <h2 id="checklist-filter-title">Filter Kategori</h2>
-                    <p>Pilih periode pemeriksaan untuk menyaring daftar.</p>
-                </div>
-            </div>
-            <div class="checklists-tabs" role="tablist" aria-label="Filter kategori pemeriksaan">
-                <button class="checklists-tab is-active" type="button" role="tab" aria-selected="true" data-category-filter="Semua">Semua <span>9</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Harian">Harian <span>4</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Mingguan">Mingguan <span>1</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Bulanan">Bulanan <span>1</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Triwulan">Triwulan <span>1</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Semesteran">Semesteran <span>1</span></button>
-                <button class="checklists-tab" type="button" role="tab" aria-selected="false" data-category-filter="Tahunan">Tahunan <span>1</span></button>
-            </div>
+        <section class="checklists-filter-panel" aria-labelledby="checklists-filter-title">
+            <div class="checklists-filter-panel__header"><div><h2 class="checklists-section-title" id="checklists-filter-title">Filter Checklist</h2><p class="checklists-section-note">Cari dan saring data dari database.</p></div><span class="checklists-count">{{ $items->count() }} item</span></div>
+            <form class="checklists-filter-form" method="GET" action="{{ route('checklists.index') }}">
+                <label><span>Pencarian</span><input name="search" type="search" value="{{ $filters['search'] }}" placeholder="Nama item atau kriteria"></label>
+                <label><span>Kategori</span><select name="category"><option value="">Semua kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected((string) $category->id === $filters['category'])>{{ $category->name }}</option>@endforeach</select></label>
+                <label><span>Frekuensi</span><select name="frequency"><option value="">Semua frekuensi</option>@foreach ($frequencyOptions as $value => $label)<option value="{{ $value }}" @selected($value === $filters['frequency'])>{{ $label }}</option>@endforeach</select></label>
+                <label><span>Tipe Input</span><select name="input_type"><option value="">Semua tipe</option>@foreach ($inputTypeOptions as $value => $label)<option value="{{ $value }}" @selected($value === $filters['inputType'])>{{ $label }}</option>@endforeach</select></label>
+                <label><span>Status</span><select name="status"><option value="">Semua status</option>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected($value === $filters['status'])>{{ $label }}</option>@endforeach</select></label>
+                <div class="checklists-filter-actions"><button class="checklists-primary-button" type="submit"><i data-lucide="search"></i>Terapkan</button><a class="checklists-secondary-button" href="{{ route('checklists.index') }}"><i data-lucide="rotate-ccw"></i>Reset</a></div>
+            </form>
         </section>
 
-        <section class="checklists-table-panel" aria-labelledby="checklists-table-title">
-            <header class="checklists-table-panel__header">
-                <div>
-                    <h2 id="checklists-table-title">Daftar Item Pemeriksaan</h2>
-                    <p>Item aktif yang digunakan sebagai acuan preventive maintenance.</p>
-                </div>
-                <span class="checklists-table-panel__count" data-checklist-count>9 data</span>
-            </header>
+        <section class="checklists-table-panel" aria-labelledby="categories-table-title">
+            <header class="checklists-table-panel__header"><div><h2 class="checklists-section-title" id="categories-table-title">Kategori Pemeriksaan</h2><p class="checklists-section-note">Kategori menentukan periode pemeriksaan.</p></div><span class="checklists-count">{{ $categories->count() }} kategori</span></header>
+            <div class="checklists-table-wrap"><table class="checklists-table checklists-table--categories"><thead><tr><th>Nama</th><th>Frekuensi</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+                @forelse ($categories as $category)
+                    <tr><td><strong>{{ $category->name }}</strong><small class="checklists-block-note">{{ $category->description ?: 'Tanpa deskripsi' }}</small></td><td>{{ $frequencyOptions[$category->frequency] ?? $category->frequency }}</td><td>{{ $category->items_count }}</td><td><span class="checklist-status checklist-status--{{ $category->status }}">{{ $statusOptions[$category->status] ?? $category->status }}</span></td><td><div class="checklists-actions">
+                        <a class="checklists-action-button checklists-action-button--detail" href="{{ route('maintenance-categories.show', $category) }}" title="Detail kategori"><i data-lucide="eye"></i></a>
+                        <button class="checklists-action-button checklists-action-button--edit" type="button" title="Edit kategori" data-category-edit data-action="{{ route('maintenance-categories.update', $category) }}" data-name="{{ $category->name }}" data-frequency="{{ $category->frequency }}" data-description="{{ $category->description }}" data-status="{{ $category->status }}"><i data-lucide="pencil"></i></button>
+                        <form method="POST" action="{{ route('maintenance-categories.toggle-status', $category) }}">@csrf @method('PATCH')<button class="checklists-action-button" type="submit" title="Ubah status"><i data-lucide="power"></i></button></form>
+                        <form method="POST" action="{{ route('maintenance-categories.destroy', $category) }}" data-confirm="Hapus kategori {{ $category->name }}?">@csrf @method('DELETE')<button class="checklists-action-button checklists-action-button--delete" type="submit" title="Hapus kategori"><i data-lucide="trash-2"></i></button></form>
+                    </div></td></tr>
+                @empty
+                    <tr class="checklists-empty-row"><td colspan="5"><div class="checklists-empty-state"><i data-lucide="folder-x"></i><strong>Belum ada kategori</strong><span>Tambahkan kategori pertama untuk mulai menyusun checklist.</span></div></td></tr>
+                @endforelse
+            </tbody></table></div>
+        </section>
 
-            <div class="checklists-table-wrap">
-                <table class="checklists-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Kategori</th>
-                            <th scope="col">Kelompok</th>
-                            <th scope="col">Item Pemeriksaan</th>
-                            <th scope="col">Kriteria / Standar</th>
-                            <th scope="col">Frekuensi</th>
-                            <th scope="col">Tipe Input</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($checklistItems as $index => $checklist)
-                            @php
-                                $categoryClass = strtolower($checklist['category']);
-                                $inputClass = str_contains($checklist['input_type'], 'numeric')
-                                    ? 'numeric'
-                                    : (str_contains($checklist['input_type'], 'note') ? 'note' : 'checklist');
-                            @endphp
-                            <tr data-checklist-row data-category="{{ $checklist['category'] }}">
-                                <td><span class="checklists-table__number">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span></td>
-                                <td><span class="checklist-category checklist-category--{{ $categoryClass }}">{{ $checklist['category'] }}</span></td>
-                                <td>{{ $checklist['group'] }}</td>
-                                <td>
-                                    <div class="checklist-item-name">
-                                        <span aria-hidden="true"><i data-lucide="clipboard-check"></i></span>
-                                        <strong>{{ $checklist['item'] }}</strong>
-                                    </div>
-                                </td>
-                                <td><p class="checklist-criteria">{{ $checklist['criteria'] }}</p></td>
-                                <td>
-                                    <span class="checklist-frequency">
-                                        {{ $checklist['frequency_label'] }}
-                                        <small>{{ $checklist['frequency'] }}</small>
-                                    </span>
-                                </td>
-                                <td><span class="checklist-input checklist-input--{{ $inputClass }}">{{ $checklist['input_label'] }}</span></td>
-                                <td><span class="checklist-status checklist-status--active">{{ $checklist['status'] }}</span></td>
-                                <td>
-                                    <div class="checklists-actions">
-                                        <button
-                                            class="checklist-action checklist-action--detail"
-                                            type="button"
-                                            title="Detail checklist"
-                                            data-checklist-detail
-                                            data-category="{{ $checklist['category'] }}"
-                                            data-group="{{ $checklist['group'] }}"
-                                            data-item="{{ $checklist['item'] }}"
-                                            data-criteria="{{ $checklist['criteria'] }}"
-                                            data-frequency="{{ $checklist['frequency'] }}"
-                                            data-frequency-label="{{ $checklist['frequency_label'] }}"
-                                            data-input-type="{{ $checklist['input_type'] }}"
-                                            data-input-label="{{ $checklist['input_label'] }}"
-                                            data-status="{{ $checklist['status'] }}"
-                                            data-note="{{ $checklist['note'] }}"
-                                        >
-                                            <i data-lucide="eye" aria-hidden="true"></i>
-                                            Detail
-                                        </button>
-                                        <button
-                                            class="checklist-action checklist-action--edit"
-                                            type="button"
-                                            title="Edit checklist"
-                                            data-checklist-edit
-                                            data-category="{{ $checklist['category'] }}"
-                                            data-group="{{ $checklist['group'] }}"
-                                            data-item="{{ $checklist['item'] }}"
-                                            data-criteria="{{ $checklist['criteria'] }}"
-                                            data-frequency="{{ $checklist['frequency'] }}"
-                                            data-input-type="{{ $checklist['input_type'] }}"
-                                            data-status="{{ $checklist['status'] }}"
-                                        >
-                                            <i data-lucide="pencil" aria-hidden="true"></i>
-                                            Edit
-                                        </button>
-                                        <button class="checklist-action checklist-action--delete" type="button" title="Hapus checklist">
-                                            <i data-lucide="trash-2" aria-hidden="true"></i>
-                                            Hapus
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                        <tr class="checklists-empty-row" data-checklist-empty hidden>
-                            <td colspan="9">
-                                <div>
-                                    <i data-lucide="clipboard-x" aria-hidden="true"></i>
-                                    <strong>Tidak ada item pada kategori ini</strong>
-                                    <span>Pilih kategori lain untuk melihat item pemeriksaan.</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <footer class="checklists-table-panel__footer">
-                <span data-checklist-range>Menampilkan 1&ndash;9 dari 9 item</span>
-                <span>Data dummy &bull; Belum terhubung database</span>
-            </footer>
+        <section class="checklists-table-panel" aria-labelledby="items-table-title">
+            <header class="checklists-table-panel__header"><div><h2 class="checklists-section-title" id="items-table-title">Daftar Item Pemeriksaan</h2><p class="checklists-section-note">Item checklist yang sesuai dengan filter aktif.</p></div><span class="checklists-count">{{ $items->count() }} item</span></header>
+            <div class="checklists-table-wrap"><table class="checklists-table"><thead><tr><th>No</th><th>Kategori</th><th>Item Pemeriksaan</th><th>Kriteria / Standar</th><th>Frekuensi</th><th>Tipe Input</th><th>Urutan</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+                @forelse ($items as $index => $item)
+                    <tr><td class="checklists-table__number">{{ $index + 1 }}</td><td><span class="checklist-category">{{ $item->category->name }}</span></td><td class="checklists-item-name">{{ $item->item_name }}</td><td class="checklists-criteria">{{ $item->criteria }}</td><td><span class="checklist-frequency">{{ $frequencyOptions[$item->category->frequency] ?? $item->category->frequency }}</span></td><td><span class="checklist-input-type checklist-input-type--{{ $item->input_type === 'nilai_aktual' ? 'numeric' : ($item->input_type === 'catatan' ? 'note' : 'checklist') }}">{{ $inputTypeOptions[$item->input_type] ?? $item->input_type }}</span></td><td>{{ $item->sort_order ?? '-' }}</td><td><span class="checklist-status checklist-status--{{ $item->status }}">{{ $statusOptions[$item->status] ?? $item->status }}</span></td><td><div class="checklists-actions">
+                        <a class="checklists-action-button checklists-action-button--detail" href="{{ route('maintenance-items.show', $item) }}" title="Detail item"><i data-lucide="eye"></i></a>
+                        <button class="checklists-action-button checklists-action-button--edit" type="button" title="Edit item" data-checklist-edit data-action="{{ route('maintenance-items.update', $item) }}" data-category-id="{{ $item->maintenance_category_id }}" data-item-name="{{ $item->item_name }}" data-criteria="{{ $item->criteria }}" data-input-type="{{ $item->input_type }}" data-sort-order="{{ $item->sort_order }}" data-status="{{ $item->status }}"><i data-lucide="pencil"></i></button>
+                        <form method="POST" action="{{ route('maintenance-items.toggle-status', $item) }}">@csrf @method('PATCH')<button class="checklists-action-button" type="submit" title="Ubah status"><i data-lucide="power"></i></button></form>
+                        <form method="POST" action="{{ route('maintenance-items.destroy', $item) }}" data-confirm="Hapus item {{ $item->item_name }}?">@csrf @method('DELETE')<button class="checklists-action-button checklists-action-button--delete" type="submit" title="Hapus item"><i data-lucide="trash-2"></i></button></form>
+                    </div></td></tr>
+                @empty
+                    <tr class="checklists-empty-row"><td colspan="9"><div class="checklists-empty-state"><i data-lucide="clipboard-x"></i><strong>Checklist tidak ditemukan</strong><span>Ubah filter atau tambahkan item checklist baru.</span></div></td></tr>
+                @endforelse
+            </tbody></table></div>
+            <footer class="checklists-table-panel__footer"><span>Menampilkan {{ $items->count() }} item</span><span>Data tersimpan di database</span></footer>
         </section>
     </div>
 
-    <dialog class="checklist-dialog" id="checklist-form-dialog" aria-labelledby="checklist-form-title">
-        <form class="checklist-form" id="checklist-form">
-            <header class="checklist-dialog__header">
-                <div class="checklist-dialog__title">
-                    <span aria-hidden="true"><i data-lucide="clipboard-plus"></i></span>
-                    <div>
-                        <p>Konfigurasi pemeriksaan</p>
-                        <h2 id="checklist-form-title">Tambah Item Checklist</h2>
-                    </div>
-                </div>
-                <button class="checklist-dialog__close" type="button" data-dialog-close aria-label="Tutup form checklist">
-                    <i data-lucide="x" aria-hidden="true"></i>
-                </button>
-            </header>
-
-            <div class="checklist-form__body">
-                <div class="checklist-form__grid">
-                    <div class="form-field">
-                        <label for="checklist-category">Kategori pemeriksaan</label>
-                        <select class="form-control" id="checklist-category" name="category" required>
-                            <option value="Harian">Harian</option>
-                            <option value="Mingguan">Mingguan</option>
-                            <option value="Bulanan">Bulanan</option>
-                            <option value="Triwulan">Triwulan</option>
-                            <option value="Semesteran">Semesteran</option>
-                            <option value="Tahunan">Tahunan</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label for="checklist-group">Kelompok pemeriksaan</label>
-                        <input class="form-control" id="checklist-group" name="group" type="text" placeholder="Contoh: Safety Check" required>
-                    </div>
-
-                    <div class="form-field checklist-form__field--wide">
-                        <label for="checklist-item">Nama item pemeriksaan</label>
-                        <input class="form-control" id="checklist-item" name="item" type="text" placeholder="Contoh: Pemeriksaan lead curtain" required>
-                    </div>
-
-                    <div class="form-field checklist-form__field--wide">
-                        <label for="checklist-criteria">Kriteria / standar pemeriksaan</label>
-                        <textarea class="form-control" id="checklist-criteria" name="criteria" rows="3" placeholder="Tuliskan standar hasil pemeriksaan" required></textarea>
-                    </div>
-
-                    <div class="form-field">
-                        <label for="checklist-frequency">Frekuensi pemeriksaan</label>
-                        <select class="form-control" id="checklist-frequency" name="frequency" required>
-                            <option value="daily">daily</option>
-                            <option value="weekly">weekly</option>
-                            <option value="monthly">monthly</option>
-                            <option value="quarterly">quarterly</option>
-                            <option value="semester">semester</option>
-                            <option value="yearly">yearly</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label for="checklist-input-type">Tipe input</label>
-                        <select class="form-control" id="checklist-input-type" name="input_type" required>
-                            <option value="checklist">checklist</option>
-                            <option value="numeric">numeric</option>
-                            <option value="note">note</option>
-                            <option value="checklist_with_note">checklist_with_note</option>
-                            <option value="numeric_with_note">numeric_with_note</option>
-                            <option value="checklist_with_photo">checklist_with_photo</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field checklist-form__field--wide">
-                        <label for="checklist-status">Status</label>
-                        <select class="form-control" id="checklist-status" name="status" required>
-                            <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <footer class="checklist-dialog__footer">
-                <p><i data-lucide="info" aria-hidden="true"></i> Form masih menggunakan data statis.</p>
-                <div>
-                    <button class="button button--neutral" type="button" data-dialog-close>Batal</button>
-                    <button class="button button--primary" type="submit">
-                        <i data-lucide="save" aria-hidden="true"></i>
-                        Simpan Item
-                    </button>
-                </div>
-            </footer>
+    <dialog class="checklist-dialog" id="category-form-dialog" aria-labelledby="category-form-title">
+        <form class="checklist-form" id="category-form" method="POST" action="{{ route('maintenance-categories.store') }}" data-store-action="{{ route('maintenance-categories.store') }}">
+            @csrf <input data-method-field type="hidden" name="_method" value="POST"><input type="hidden" name="form_type" value="category">
+            <header class="checklist-dialog__header"><div class="checklist-dialog__title"><span><i data-lucide="folder-plus"></i></span><div><p>Master kategori</p><h2 id="category-form-title" data-category-form-title>Tambah Kategori</h2></div></div><button class="checklist-dialog__close" type="button" data-dialog-close aria-label="Tutup"><i data-lucide="x"></i></button></header>
+            <div class="checklist-form__body"><div class="checklist-form__grid">
+                <div class="form-field checklist-form__field--wide"><label for="category-name">Nama kategori</label><input class="form-control" id="category-name" name="name" value="{{ old('form_type') === 'category' ? old('name') : '' }}" required></div>
+                <div class="form-field"><label for="category-frequency">Frekuensi</label><select class="form-control" id="category-frequency" name="frequency" required>@foreach ($frequencyOptions as $value => $label)<option value="{{ $value }}" @selected(old('form_type') === 'category' && old('frequency') === $value)>{{ $label }}</option>@endforeach</select></div>
+                <div class="form-field"><label for="category-status">Status</label><select class="form-control" id="category-status" name="status" required>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected(old('form_type') === 'category' && old('status', 'active') === $value)>{{ $label }}</option>@endforeach</select></div>
+                <div class="form-field checklist-form__field--wide"><label for="category-description">Deskripsi</label><textarea class="form-control" id="category-description" name="description" rows="4">{{ old('form_type') === 'category' ? old('description') : '' }}</textarea></div>
+            </div></div>
+            <footer class="checklist-form__footer"><button class="checklists-secondary-button" type="button" data-dialog-close>Batal</button><button class="checklists-primary-button" type="submit"><i data-lucide="save"></i>Simpan Kategori</button></footer>
         </form>
     </dialog>
 
-    <dialog class="checklist-dialog checklist-dialog--detail" id="checklist-detail-dialog" aria-labelledby="checklist-detail-title">
-        <div class="checklist-detail">
-            <header class="checklist-dialog__header">
-                <div class="checklist-dialog__title">
-                    <span aria-hidden="true"><i data-lucide="clipboard-list"></i></span>
-                    <div>
-                        <p>Informasi item pemeriksaan</p>
-                        <h2 id="checklist-detail-title">Detail Checklist</h2>
-                    </div>
-                </div>
-                <button class="checklist-dialog__close" type="button" data-dialog-close aria-label="Tutup detail checklist">
-                    <i data-lucide="x" aria-hidden="true"></i>
-                </button>
-            </header>
-
-            <div class="checklist-detail__hero">
-                <span aria-hidden="true"><i data-lucide="clipboard-check"></i></span>
-                <div>
-                    <p data-detail-field="group">Kelompok pemeriksaan</p>
-                    <h3 data-detail-field="item">Item pemeriksaan</h3>
-                    <span class="checklist-category checklist-category--harian" data-detail-category>Harian</span>
-                </div>
-                <span class="checklist-status checklist-status--active" data-detail-status>Aktif</span>
-            </div>
-
-            <dl class="checklist-detail__grid">
-                <div class="checklist-detail__wide">
-                    <dt>Kriteria / standar</dt>
-                    <dd data-detail-field="criteria">-</dd>
-                </div>
-                <div>
-                    <dt>Frekuensi</dt>
-                    <dd><span data-detail-field="frequencyLabel">-</span> <code data-detail-field="frequency">-</code></dd>
-                </div>
-                <div>
-                    <dt>Tipe input</dt>
-                    <dd><span data-detail-field="inputLabel">-</span> <code data-detail-field="inputType">-</code></dd>
-                </div>
-                <div class="checklist-detail__wide">
-                    <dt>Catatan tambahan</dt>
-                    <dd data-detail-field="note">Tidak ada catatan tambahan.</dd>
-                </div>
-            </dl>
-
-            <footer class="checklist-dialog__footer checklist-dialog__footer--detail">
-                <button class="button button--neutral" type="button" data-dialog-close>Tutup</button>
-            </footer>
-        </div>
+    <dialog class="checklist-dialog" id="checklist-form-dialog" aria-labelledby="checklist-form-title">
+        <form class="checklist-form" id="checklist-form" method="POST" action="{{ route('maintenance-items.store') }}" data-store-action="{{ route('maintenance-items.store') }}">
+            @csrf <input data-method-field type="hidden" name="_method" value="POST"><input type="hidden" name="form_type" value="item">
+            <header class="checklist-dialog__header"><div class="checklist-dialog__title"><span><i data-lucide="clipboard-plus"></i></span><div><p>Master item pemeriksaan</p><h2 id="checklist-form-title" data-checklist-form-title>Tambah Item Checklist</h2></div></div><button class="checklist-dialog__close" type="button" data-dialog-close aria-label="Tutup"><i data-lucide="x"></i></button></header>
+            <div class="checklist-form__body"><div class="checklist-form__grid">
+                <div class="form-field"><label for="checklist-category">Kategori</label><select class="form-control" id="checklist-category" name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('form_type') === 'item' && (string) old('maintenance_category_id') === (string) $category->id)>{{ $category->name }}</option>@endforeach</select></div>
+                <div class="form-field"><label for="checklist-sort-order">Urutan</label><input class="form-control" id="checklist-sort-order" name="sort_order" type="number" min="0" max="65535" value="{{ old('form_type') === 'item' ? old('sort_order') : '' }}"></div>
+                <div class="form-field checklist-form__field--wide"><label for="checklist-item-name">Nama item pemeriksaan</label><input class="form-control" id="checklist-item-name" name="item_name" value="{{ old('form_type') === 'item' ? old('item_name') : '' }}" required></div>
+                <div class="form-field checklist-form__field--wide"><label for="checklist-criteria">Kriteria / standar</label><textarea class="form-control" id="checklist-criteria" name="criteria" rows="4" required>{{ old('form_type') === 'item' ? old('criteria') : '' }}</textarea></div>
+                <div class="form-field"><label for="checklist-input-type">Tipe input</label><select class="form-control" id="checklist-input-type" name="input_type" required>@foreach ($inputTypeOptions as $value => $label)<option value="{{ $value }}" @selected(old('form_type') === 'item' && old('input_type') === $value)>{{ $label }}</option>@endforeach</select></div>
+                <div class="form-field"><label for="checklist-status">Status</label><select class="form-control" id="checklist-status" name="status" required>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected(old('form_type') === 'item' && old('status', 'active') === $value)>{{ $label }}</option>@endforeach</select></div>
+            </div></div>
+            <footer class="checklist-form__footer"><button class="checklists-secondary-button" type="button" data-dialog-close>Batal</button><button class="checklists-primary-button" type="submit"><i data-lucide="save"></i>Simpan Item</button></footer>
+        </form>
     </dialog>
 @endsection
 

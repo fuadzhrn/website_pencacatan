@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MachineController;
+use App\Http\Controllers\MaintenanceCategoryController;
+use App\Http\Controllers\MaintenanceItemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,26 +22,6 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin,supervisor')->name('dashboard');
-
-    Route::get('/checklists', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('checklists.index', [
-            'activeMenu' => 'master-checklist',
-            'pageTitle' => 'Master Checklist',
-            'pageDescription' => 'Kelola kategori dan item pemeriksaan preventive maintenance mesin X-Ray.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin')->name('checklists.index');
 
     Route::get('/schedules', function (Request $request): View {
         $user = $request->user();
@@ -142,6 +124,21 @@ Route::middleware('auth')->group(function (): void {
     })->middleware('role:admin,supervisor')->name('reports.monthly');
 
     Route::middleware('role:admin')->group(function (): void {
+        Route::get('/checklists', [MaintenanceCategoryController::class, 'index'])
+            ->name('checklists.index');
+
+        Route::patch('/maintenance-categories/{category}/toggle-status', [MaintenanceCategoryController::class, 'toggleStatus'])
+            ->name('maintenance-categories.toggle-status');
+        Route::resource('maintenance-categories', MaintenanceCategoryController::class)
+            ->parameters(['maintenance-categories' => 'category'])
+            ->only(['store', 'show', 'update', 'destroy']);
+
+        Route::patch('/maintenance-items/{item}/toggle-status', [MaintenanceItemController::class, 'toggleStatus'])
+            ->name('maintenance-items.toggle-status');
+        Route::resource('maintenance-items', MaintenanceItemController::class)
+            ->parameters(['maintenance-items' => 'item'])
+            ->only(['store', 'show', 'update', 'destroy']);
+
         Route::patch('/machines/{machine}/toggle-status', [MachineController::class, 'toggleStatus'])
             ->name('machines.toggle-status');
         Route::resource('machines', MachineController::class);
@@ -161,14 +158,6 @@ Route::middleware('auth')->group(function (): void {
             'activeMenu' => 'dashboard',
             'pageTitle' => 'Dashboard',
             'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
-        ],
-        'checklists' => [
-            'path' => 'checklists',
-            'roles' => 'admin',
-            'view' => 'checklists.index',
-            'activeMenu' => 'master-checklist',
-            'pageTitle' => 'Master Checklist',
-            'pageDescription' => 'Kelola kategori dan item pemeriksaan preventive maintenance.',
         ],
         'schedules' => [
             'path' => 'schedules',
@@ -242,6 +231,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/mobile/machines', [MachineController::class, 'index'])
         ->middleware('role:admin')
         ->name('mobile.machines');
+
+    Route::get('/mobile/checklists', [MaintenanceCategoryController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('mobile.checklists');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
