@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MachineController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,26 +20,6 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin,supervisor')->name('dashboard');
-
-    Route::get('/machines', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('machines.index', [
-            'activeMenu' => 'data-mesin',
-            'pageTitle' => 'Data Mesin',
-            'pageDescription' => 'Kelola data mesin/peralatan X-Ray yang digunakan untuk preventive maintenance.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin')->name('machines.index');
 
     Route::get('/checklists', function (Request $request): View {
         $user = $request->user();
@@ -161,6 +142,10 @@ Route::middleware('auth')->group(function (): void {
     })->middleware('role:admin,supervisor')->name('reports.monthly');
 
     Route::middleware('role:admin')->group(function (): void {
+        Route::patch('/machines/{machine}/toggle-status', [MachineController::class, 'toggleStatus'])
+            ->name('machines.toggle-status');
+        Route::resource('machines', MachineController::class);
+
         Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])
             ->name('users.toggle-status');
         Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
@@ -176,14 +161,6 @@ Route::middleware('auth')->group(function (): void {
             'activeMenu' => 'dashboard',
             'pageTitle' => 'Dashboard',
             'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
-        ],
-        'machines' => [
-            'path' => 'machines',
-            'roles' => 'admin',
-            'view' => 'machines.index',
-            'activeMenu' => 'data-mesin',
-            'pageTitle' => 'Data Mesin',
-            'pageDescription' => 'Kelola data mesin/peralatan X-Ray.',
         ],
         'checklists' => [
             'path' => 'checklists',
@@ -261,6 +238,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/mobile/users', [UserController::class, 'index'])
         ->middleware('role:admin')
         ->name('mobile.users');
+
+    Route::get('/mobile/machines', [MachineController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('mobile.machines');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

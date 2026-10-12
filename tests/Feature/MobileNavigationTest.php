@@ -45,7 +45,7 @@ final class MobileNavigationTest extends TestCase
     {
         return [
             'dashboard' => ['mobile.dashboard', 'dashboard', 'Monitoring preventive maintenance hari ini'],
-            'machines' => ['mobile.machines', 'data-mesin', 'Halaman ini akan dikembangkan'],
+            'machines' => ['mobile.machines', 'data-mesin', 'Inventaris Mesin'],
             'checklists' => ['mobile.checklists', 'master-checklist', 'Kelola kategori dan item pemeriksaan'],
             'schedules' => ['mobile.schedules', 'jadwal-maintenance', 'Pantau jadwal pemeriksaan mesin X-Ray'],
             'inspection today' => ['mobile.inspection-today', 'pemeriksaan-hari-ini', 'Pemeriksaan Hari Ini'],

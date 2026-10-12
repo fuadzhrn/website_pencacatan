@@ -119,12 +119,7 @@
         @include('mobile.checklists')
         <script type="module" src="{{ asset('assets/js/mobile-checklists.js') }}"></script>
     @elseif ($activeMenu === 'data-mesin')
-        @include('mobile.placeholder', [
-            'eyebrow' => 'Master data peralatan',
-            'title' => 'Data Mesin',
-            'subtitle' => 'Lihat dan kelola inventaris mesin X-Ray melalui perangkat mobile.',
-            'icon' => 'scan-line',
-        ])
+        @include('mobile.machines')
     @elseif ($activeMenu === 'jadwal-maintenance')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-schedules.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.schedules')
