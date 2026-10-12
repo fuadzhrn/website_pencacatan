@@ -129,11 +129,9 @@ function initializeMobileUsers() {
     const filterForm = page.querySelector('[data-mobile-users-filter]');
     const resetButton = page.querySelector('[data-mobile-users-reset]');
     const list = page.querySelector('[data-mobile-users-list]');
-    const emptyState = page.querySelector('[data-mobile-users-empty]');
-    const resultCount = page.querySelector('[data-mobile-users-result-count]');
-    const cardTemplate = page.querySelector('[data-mobile-users-card-template]');
     const addButton = page.querySelector('[data-mobile-users-add]');
     const userForm = page.querySelector('[data-mobile-users-form]');
+    const methodInput = page.querySelector('[data-mobile-users-method]');
     const formTitle = page.querySelector('[data-mobile-users-form-title]');
     const formError = page.querySelector('[data-mobile-users-form-error]');
     const passwordHint = page.querySelector('[data-mobile-users-password-hint]');
@@ -143,6 +141,9 @@ function initializeMobileUsers() {
     const toggleStatusLabel = page.querySelector('[data-mobile-users-toggle-label]');
     const resetPasswordButton = page.querySelector('[data-mobile-users-reset-password]');
     const deleteButton = page.querySelector('[data-mobile-users-delete]');
+    const toggleStatusForm = page.querySelector('[data-mobile-users-toggle-form]');
+    const resetPasswordForm = page.querySelector('[data-mobile-users-reset-form]');
+    const deleteForm = page.querySelector('[data-mobile-users-delete-form]');
     const toast = page.querySelector('[data-mobile-users-toast]');
     const toastMessage = page.querySelector('[data-mobile-users-toast-message]');
     const toastCloseButton = page.querySelector('[data-mobile-users-toast-close]');
@@ -164,8 +165,11 @@ function initializeMobileUsers() {
         statusLabel: card.dataset.statusLabel,
         createdAt: card.dataset.createdAt,
         lastActivity: card.dataset.lastActivity,
+        updateUrl: card.dataset.updateUrl,
+        toggleUrl: card.dataset.toggleUrl,
+        resetUrl: card.dataset.resetUrl,
+        deleteUrl: card.dataset.deleteUrl,
     }));
-    let nextUserNumber = users.length + 1;
     let selectedUserId = null;
     let activeSheet = null;
     let lastFocusedElement = null;
@@ -173,90 +177,6 @@ function initializeMobileUsers() {
 
     function refreshIcons() {
         window.lucide?.createIcons();
-    }
-
-    function readFilters() {
-        const formData = new FormData(filterForm);
-
-        return {
-            query: formData.get('query')?.toString() ?? '',
-            role: formData.get('role')?.toString() ?? '',
-            status: formData.get('status')?.toString() ?? '',
-        };
-    }
-
-    function updateSummary(visibleUsers) {
-        const summary = summarizeUsers(visibleUsers);
-
-        Object.entries(summary).forEach(([key, value]) => {
-            const output = page.querySelector(`[data-mobile-users-summary="${key}"]`);
-
-            if (output) {
-                output.textContent = value.toString();
-            }
-        });
-
-        if (resultCount) {
-            resultCount.textContent = `${visibleUsers.length} user`;
-        }
-    }
-
-    function setCardField(card, field, value) {
-        const output = card.querySelector(`[data-card-field="${field}"]`);
-
-        if (output) {
-            output.textContent = value;
-        }
-    }
-
-    function createUserCard(user) {
-        const card = cardTemplate.content.firstElementChild.cloneNode(true);
-        const emailLink = card.querySelector('[data-card-field="email-link"]');
-        const roleBadge = card.querySelector('[data-card-field="role"]');
-        const statusBadge = card.querySelector('[data-card-field="status"]');
-        const actionButtons = card.querySelectorAll('[data-user-id], [data-mobile-users-actions-open], [data-mobile-users-detail-open], [data-mobile-users-form-open]');
-
-        card.dataset.id = user.id;
-        setCardField(card, 'initials', getInitials(user.name));
-        setCardField(card, 'name', user.name);
-        setCardField(card, 'email', user.email);
-        setCardField(card, 'phone', user.phone);
-        setCardField(card, 'role', user.roleLabel);
-        setCardField(card, 'status', user.statusLabel);
-
-        if (emailLink) {
-            emailLink.href = `mailto:${user.email}`;
-        }
-
-        if (roleBadge) {
-            roleBadge.className = `mobile-users-badge mobile-users-badge--role-${user.role}`;
-        }
-
-        if (statusBadge) {
-            statusBadge.className = `mobile-users-badge mobile-users-badge--status-${user.status}`;
-        }
-
-        actionButtons.forEach((button) => {
-            button.dataset.userId = user.id;
-
-            if (button.matches('[data-mobile-users-actions-open]')) {
-                button.setAttribute('aria-label', `Buka aksi untuk ${user.name}`);
-            }
-        });
-
-        return card;
-    }
-
-    function renderUsers(visibleUsers) {
-        list.replaceChildren(...visibleUsers.map(createUserCard));
-        list.hidden = visibleUsers.length === 0;
-        emptyState.hidden = visibleUsers.length > 0;
-        updateSummary(visibleUsers);
-        refreshIcons();
-    }
-
-    function applyFilters() {
-        renderUsers(filterUsers(users, readFilters()));
     }
 
     function closeToast() {
@@ -365,12 +285,14 @@ function initializeMobileUsers() {
         }
     }
 
-    function openUserForm(userId, trigger) {
+    function openUserForm(userId, trigger, preserveFormValues = false) {
         const user = userId ? findUserById(users, userId) : null;
 
-        userForm.reset();
-        formError.hidden = true;
-        formError.textContent = '';
+        if (!preserveFormValues) {
+            userForm.reset();
+            formError.hidden = true;
+            formError.textContent = '';
+        }
         const passwordInput = userForm.elements.namedItem('password');
 
         passwordInput.type = 'password';
@@ -379,16 +301,18 @@ function initializeMobileUsers() {
         selectedUserId = user?.id ?? null;
         formTitle.textContent = user ? 'Edit User' : 'Tambah User';
         passwordHint.textContent = user ? '(opsional)' : '(wajib)';
+        userForm.action = user?.updateUrl ?? userForm.dataset.storeUrl;
+        methodInput.disabled = !user;
 
-        if (user) {
-            setFormValue('id', user.id);
+        if (user && !preserveFormValues) {
+            setFormValue('editing_user_id', user.id);
             setFormValue('name', user.name);
             setFormValue('email', user.email);
             setFormValue('phone', user.phone);
             setFormValue('role', user.role);
             setFormValue('status', user.status);
-        } else {
-            setFormValue('id', '');
+        } else if (!user && !preserveFormValues) {
+            setFormValue('editing_user_id', '');
             setFormValue('role', 'petugas');
             setFormValue('status', 'active');
         }
@@ -406,17 +330,14 @@ function initializeMobileUsers() {
         selectedUserId = user.id;
         actionsTitle.textContent = user.name;
         toggleStatusLabel.textContent = user.status === 'active' ? 'Nonaktifkan User' : 'Aktifkan User';
+        toggleStatusForm.action = user.toggleUrl;
+        resetPasswordForm.action = user.resetUrl;
+        deleteForm.action = user.deleteUrl;
         openSheet('actions', trigger);
     }
 
-    filterForm?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        applyFilters();
-    });
-
     resetButton?.addEventListener('click', () => {
-        filterForm.reset();
-        applyFilters();
+        window.location.assign(filterForm.action);
     });
 
     addButton?.addEventListener('click', (event) => openUserForm(null, event.currentTarget));
@@ -437,9 +358,8 @@ function initializeMobileUsers() {
     });
 
     userForm?.addEventListener('submit', (event) => {
-        event.preventDefault();
-
         if (!userForm.reportValidity()) {
+            event.preventDefault();
             return;
         }
 
@@ -447,40 +367,16 @@ function initializeMobileUsers() {
         const isEditing = selectedUserId !== null;
         const passwordCheck = validatePasswordConfirmation(
             formData.get('password')?.toString() ?? '',
-            formData.get('passwordConfirmation')?.toString() ?? '',
+            formData.get('password_confirmation')?.toString() ?? '',
             isEditing,
         );
 
         if (!passwordCheck.valid) {
+            event.preventDefault();
             formError.textContent = passwordCheck.message;
             formError.hidden = false;
             return;
         }
-
-        const existingUser = findUserById(users, selectedUserId);
-        const role = formData.get('role')?.toString() ?? 'petugas';
-        const status = formData.get('status')?.toString() ?? 'active';
-        const user = {
-            id: existingUser?.id ?? `user-${nextUserNumber++}`,
-            name: formData.get('name')?.toString().trim() ?? '',
-            email: formData.get('email')?.toString().trim() ?? '',
-            phone: formData.get('phone')?.toString().trim() ?? '',
-            role,
-            roleLabel: roleLabels[role],
-            status,
-            statusLabel: statusLabels[status],
-            createdAt: existingUser?.createdAt ?? '10 Oktober 2026',
-            lastActivity: existingUser?.lastActivity ?? 'Belum pernah login',
-        };
-
-        users = upsertUser(users, user);
-        const restoreSelector = isEditing
-            ? `[data-mobile-users-form-open][data-user-id="${user.id}"]`
-            : null;
-
-        closeSheet(restoreSelector);
-        applyFilters();
-        showToast(`${isEditing ? 'Perubahan' : 'User baru'} ${user.name} berhasil disimpan.`);
     });
 
     passwordToggle?.addEventListener('click', () => {
@@ -493,42 +389,20 @@ function initializeMobileUsers() {
         refreshIcons();
     });
 
-    toggleStatusButton?.addEventListener('click', () => {
+    resetPasswordButton?.addEventListener('click', (event) => {
         const user = findUserById(users, selectedUserId);
 
-        if (!user) {
-            return;
+        if (!user || !window.confirm(`Reset password ${user.name} ke password default?`)) {
+            event.preventDefault();
         }
-
-        users = toggleUserStatus(users, user.id);
-        const updatedUser = findUserById(users, user.id);
-        closeSheet(`[data-mobile-users-actions-open][data-user-id="${user.id}"]`);
-        applyFilters();
-        showToast(`${updatedUser.name} sekarang berstatus ${updatedUser.statusLabel}.`);
     });
 
-    resetPasswordButton?.addEventListener('click', () => {
-        const user = findUserById(users, selectedUserId);
-
-        if (!user) {
-            return;
-        }
-
-        closeSheet();
-        showToast(`Instruksi reset password untuk ${user.name} berhasil disimulasikan.`);
-    });
-
-    deleteButton?.addEventListener('click', () => {
+    deleteButton?.addEventListener('click', (event) => {
         const user = findUserById(users, selectedUserId);
 
         if (!user || !window.confirm(`Hapus ${user.name} dari daftar user?`)) {
-            return;
+            event.preventDefault();
         }
-
-        users = removeUser(users, user.id);
-        closeSheet('[data-mobile-users-actions-open]');
-        applyFilters();
-        showToast(`${user.name} berhasil dihapus dari daftar simulasi.`);
     });
 
     sheets.forEach((sheet) => {
@@ -557,7 +431,15 @@ function initializeMobileUsers() {
         }
     });
 
-    applyFilters();
+    if (!toast.hidden) {
+        toastTimer = window.setTimeout(closeToast, 4200);
+    }
+
+    if (page.dataset.hasErrors === 'true') {
+        const editingUserId = page.dataset.editingUserId || null;
+        openUserForm(editingUserId, addButton, true);
+        formError.hidden = false;
+    }
 }
 
 if (typeof document !== 'undefined') {

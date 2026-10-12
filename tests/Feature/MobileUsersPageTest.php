@@ -43,6 +43,10 @@ final class MobileUsersPageTest extends TestCase
     public function test_admin_receives_mobile_user_management_content_and_assets(): void
     {
         $admin = User::factory()->create(['role' => UserRole::Admin]);
+        User::factory()->create(['name' => 'Ahmad Admin', 'role' => UserRole::Admin]);
+        User::factory()->create(['name' => 'Budi Santoso', 'role' => UserRole::Petugas]);
+        User::factory()->create(['name' => 'Siti Rahma', 'role' => UserRole::Supervisor]);
+        User::factory()->create(['name' => 'Rudi Hartono', 'role' => UserRole::Petugas, 'status' => 'inactive']);
 
         $response = $this->actingAs($admin)->get('/users');
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -159,26 +160,13 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->middleware('role:admin,supervisor')->name('reports.monthly');
 
-    Route::get('/users', function (Request $request): View {
-        $user = $request->user();
-
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('users.index', [
-            'activeMenu' => 'user-management',
-            'pageTitle' => 'User Management',
-            'pageDescription' => 'Kelola akun pengguna dan hak akses Sistem Preventive Maintenance X-Ray.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin')->name('users.index');
+    Route::middleware('role:admin')->group(function (): void {
+        Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])
+            ->name('users.toggle-status');
+        Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
+            ->name('users.reset-password');
+        Route::resource('users', UserController::class);
+    });
 
     $mobilePages = [
         'dashboard' => [
@@ -245,14 +233,6 @@ Route::middleware('auth')->group(function (): void {
             'pageTitle' => 'Laporan Bulanan',
             'pageDescription' => 'Rekap hasil preventive maintenance berdasarkan periode.',
         ],
-        'users' => [
-            'path' => 'users',
-            'roles' => 'admin',
-            'view' => 'users.index',
-            'activeMenu' => 'user-management',
-            'pageTitle' => 'User Management',
-            'pageDescription' => 'Kelola akun pengguna sistem.',
-        ],
     ];
 
     foreach ($mobilePages as $routeName => $mobilePage) {
@@ -277,6 +257,10 @@ Route::middleware('auth')->group(function (): void {
             ]);
         })->middleware('role:'.$mobilePage['roles'])->name('mobile.'.$routeName);
     }
+
+    Route::get('/mobile/users', [UserController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('mobile.users');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
