@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
-use App\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -18,7 +17,7 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->middleware('role:admin,supervisor')->name('dashboard');
 
     Route::get('/machines', function (Request $request): View {
         $user = $request->user();
@@ -38,7 +37,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('machines.index');
+    })->middleware('role:admin')->name('machines.index');
 
     Route::get('/checklists', function (Request $request): View {
         $user = $request->user();
@@ -58,7 +57,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('checklists.index');
+    })->middleware('role:admin')->name('checklists.index');
 
     Route::get('/schedules', function (Request $request): View {
         $user = $request->user();
@@ -78,7 +77,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('schedules.index');
+    })->middleware('role:admin,petugas')->name('schedules.index');
 
     Route::get('/inspections/today', function (Request $request): View {
         $user = $request->user();
@@ -98,7 +97,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('inspections.today');
+    })->middleware('role:admin,petugas')->name('inspections.today');
 
     Route::get('/inspections/history', function (Request $request): View {
         $user = $request->user();
@@ -118,7 +117,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('inspections.history');
+    })->middleware('role:admin,petugas,supervisor')->name('inspections.history');
 
     Route::get('/findings', function (Request $request): View {
         $user = $request->user();
@@ -138,7 +137,7 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('findings.index');
+    })->middleware('role:admin,petugas,supervisor')->name('findings.index');
 
     Route::get('/reports/monthly', function (Request $request): View {
         $user = $request->user();
@@ -158,12 +157,10 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('reports.monthly');
+    })->middleware('role:admin,supervisor')->name('reports.monthly');
 
     Route::get('/users', function (Request $request): View {
         $user = $request->user();
-
-        abort_unless($user->role === UserRole::Admin, 403);
 
         $initials = Str::of($user->name)
             ->trim()
@@ -181,11 +178,12 @@ Route::middleware('auth')->group(function (): void {
             'userRole' => $user->role->label(),
             'userInitials' => $initials,
         ]);
-    })->name('users.index');
+    })->middleware('role:admin')->name('users.index');
 
     $mobilePages = [
         'dashboard' => [
             'path' => 'dashboard',
+            'roles' => 'admin,petugas,supervisor',
             'view' => 'dashboard',
             'activeMenu' => 'dashboard',
             'pageTitle' => 'Dashboard',
@@ -193,6 +191,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'machines' => [
             'path' => 'machines',
+            'roles' => 'admin',
             'view' => 'machines.index',
             'activeMenu' => 'data-mesin',
             'pageTitle' => 'Data Mesin',
@@ -200,6 +199,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'checklists' => [
             'path' => 'checklists',
+            'roles' => 'admin',
             'view' => 'checklists.index',
             'activeMenu' => 'master-checklist',
             'pageTitle' => 'Master Checklist',
@@ -207,6 +207,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'schedules' => [
             'path' => 'schedules',
+            'roles' => 'admin,petugas',
             'view' => 'schedules.index',
             'activeMenu' => 'jadwal-maintenance',
             'pageTitle' => 'Jadwal Maintenance',
@@ -214,6 +215,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'inspection-today' => [
             'path' => 'inspection-today',
+            'roles' => 'admin,petugas',
             'view' => 'inspections.today',
             'activeMenu' => 'pemeriksaan-hari-ini',
             'pageTitle' => 'Pemeriksaan Hari Ini',
@@ -221,6 +223,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'findings' => [
             'path' => 'findings',
+            'roles' => 'admin,petugas,supervisor',
             'view' => 'findings.index',
             'activeMenu' => 'temuan',
             'pageTitle' => 'Temuan Pemeriksaan',
@@ -228,6 +231,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'history' => [
             'path' => 'history',
+            'roles' => 'admin,petugas,supervisor',
             'view' => 'inspections.history',
             'activeMenu' => 'riwayat-pemeriksaan',
             'pageTitle' => 'Riwayat Pemeriksaan',
@@ -235,6 +239,7 @@ Route::middleware('auth')->group(function (): void {
         ],
         'report' => [
             'path' => 'report',
+            'roles' => 'admin,supervisor',
             'view' => 'reports.monthly',
             'activeMenu' => 'laporan',
             'pageTitle' => 'Laporan Bulanan',
@@ -242,21 +247,17 @@ Route::middleware('auth')->group(function (): void {
         ],
         'users' => [
             'path' => 'users',
+            'roles' => 'admin',
             'view' => 'users.index',
             'activeMenu' => 'user-management',
             'pageTitle' => 'User Management',
             'pageDescription' => 'Kelola akun pengguna sistem.',
-            'adminOnly' => true,
         ],
     ];
 
     foreach ($mobilePages as $routeName => $mobilePage) {
         Route::get('/mobile/'.$mobilePage['path'], function (Request $request) use ($mobilePage): View {
             $user = $request->user();
-
-            if ($mobilePage['adminOnly'] ?? false) {
-                abort_unless($user->role === UserRole::Admin, 403);
-            }
 
             $initials = Str::of($user->name)
                 ->trim()
@@ -274,7 +275,7 @@ Route::middleware('auth')->group(function (): void {
                 'userRole' => $user->role->label(),
                 'userInitials' => $initials,
             ]);
-        })->name('mobile.'.$routeName);
+        })->middleware('role:'.$mobilePage['roles'])->name('mobile.'.$routeName);
     }
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

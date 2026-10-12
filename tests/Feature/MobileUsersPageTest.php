@@ -67,7 +67,7 @@ final class MobileUsersPageTest extends TestCase
     {
         $user = User::factory()->create(['role' => $role]);
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get(route($role->dashboardRouteName()));
 
         $response
             ->assertOk()

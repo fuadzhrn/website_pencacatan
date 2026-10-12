@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\UserRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,7 +13,7 @@ final class MobileChecklistsPageTest extends TestCase
 
     public function test_authenticated_user_receives_mobile_checklist_content_and_assets(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => UserRole::Admin]);
 
         $response = $this->actingAs($user)->get(route('checklists.index'));
 

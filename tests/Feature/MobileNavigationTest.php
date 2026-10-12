@@ -61,7 +61,7 @@ final class MobileNavigationTest extends TestCase
         string $activeMenu,
         string $visibleText,
     ): void {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => UserRole::Admin]);
 
         $response = $this->actingAs($user)->get(route($routeName));
 
