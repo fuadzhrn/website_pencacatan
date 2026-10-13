@@ -863,3 +863,75 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .mobile-schedules-filter__actions a,
+    .mobile-schedule-card__actions a,
+    .mobile-schedule-card__actions button,
+    .mobile-schedules-fab a {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 12px;
+        border: 1px solid var(--mobile-schedules-border);
+        border-radius: 9px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .mobile-schedules-filter__actions a {
+        color: var(--mobile-schedules-emerald);
+        background: var(--mobile-schedules-emerald-soft);
+        border-color: #a7f3d0;
+    }
+
+    .mobile-schedule-card__actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-top: 13px;
+        padding-top: 13px;
+        border-top: 1px solid var(--mobile-schedules-border);
+    }
+
+    .mobile-schedule-card__actions form {
+        display: contents;
+    }
+
+    .mobile-schedule-card__actions a,
+    .mobile-schedule-card__actions button {
+        width: 100%;
+        color: var(--mobile-schedules-charcoal);
+        background: #fff;
+    }
+
+    .mobile-schedule-card__actions svg,
+    .mobile-schedules-fab svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mobile-schedules-fab {
+        position: fixed;
+        z-index: 1050;
+        right: 14px;
+        bottom: calc(84px + env(safe-area-inset-bottom));
+        display: flex;
+        gap: 8px;
+    }
+
+    .mobile-schedules-fab a {
+        color: #fff;
+        background: var(--mobile-schedules-emerald);
+        border-color: var(--mobile-schedules-emerald);
+        box-shadow: 0 8px 24px rgba(4, 120, 87, 0.22);
+    }
+
+    .mobile-schedules-toast.is-visible {
+        display: flex;
+    }
+}

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\MaintenanceCategoryController;
 use App\Http\Controllers\MaintenanceItemController;
+use App\Http\Controllers\MaintenanceScheduleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,25 +24,16 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->middleware('role:admin,supervisor')->name('dashboard');
 
-    Route::get('/schedules', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('schedules.index', [
-            'activeMenu' => 'jadwal-maintenance',
-            'pageTitle' => 'Jadwal Maintenance',
-            'pageDescription' => 'Pantau jadwal pemeriksaan preventive maintenance mesin X-Ray.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin,petugas')->name('schedules.index');
+    Route::get('/schedules', [MaintenanceScheduleController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('schedules.index');
+    Route::patch('/schedules/{schedule}/status', [MaintenanceScheduleController::class, 'updateStatus'])
+        ->middleware('role:admin,petugas')
+        ->name('schedules.update-status');
+    Route::get('/schedules/{schedule}', [MaintenanceScheduleController::class, 'show'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('schedule')
+        ->name('schedules.show');
 
     Route::get('/inspections/today', function (Request $request): View {
         $user = $request->user();
@@ -124,6 +116,11 @@ Route::middleware('auth')->group(function (): void {
     })->middleware('role:admin,supervisor')->name('reports.monthly');
 
     Route::middleware('role:admin')->group(function (): void {
+        Route::post('/schedules/generate', [MaintenanceScheduleController::class, 'generate'])
+            ->name('schedules.generate');
+        Route::resource('schedules', MaintenanceScheduleController::class)
+            ->except(['index', 'show']);
+
         Route::get('/checklists', [MaintenanceCategoryController::class, 'index'])
             ->name('checklists.index');
 
@@ -158,14 +155,6 @@ Route::middleware('auth')->group(function (): void {
             'activeMenu' => 'dashboard',
             'pageTitle' => 'Dashboard',
             'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
-        ],
-        'schedules' => [
-            'path' => 'schedules',
-            'roles' => 'admin,petugas',
-            'view' => 'schedules.index',
-            'activeMenu' => 'jadwal-maintenance',
-            'pageTitle' => 'Jadwal Maintenance',
-            'pageDescription' => 'Pantau jadwal pemeriksaan preventive maintenance mesin X-Ray.',
         ],
         'inspection-today' => [
             'path' => 'inspection-today',
@@ -223,6 +212,10 @@ Route::middleware('auth')->group(function (): void {
             ]);
         })->middleware('role:'.$mobilePage['roles'])->name('mobile.'.$routeName);
     }
+
+    Route::get('/mobile/schedules', [MaintenanceScheduleController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('mobile.schedules');
 
     Route::get('/mobile/users', [UserController::class, 'index'])
         ->middleware('role:admin')

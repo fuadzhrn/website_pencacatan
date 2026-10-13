@@ -55,7 +55,7 @@ export function getTrappedFocusIndex(currentIndex, focusableCount, backwards) {
         : (currentIndex + 1) % focusableCount;
 }
 
-function initializeMobileSchedules() {
+export function initializeMobileSchedules() {
     const page = document.querySelector('[data-mobile-schedules]');
 
     if (!page) {
@@ -63,6 +63,11 @@ function initializeMobileSchedules() {
     }
 
     const filterForm = page.querySelector('[data-mobile-schedules-filter]');
+
+    if (!filterForm) {
+        return;
+    }
+
     const resetButton = page.querySelector('[data-mobile-schedules-reset]');
     const scheduleCards = [...page.querySelectorAll('[data-mobile-schedule-card]')];
     const scheduleList = page.querySelector('[data-mobile-schedules-list]');

@@ -840,3 +840,136 @@
     min-height: 38px;
     font-size: 11px;
 }
+
+.schedule-notice {
+    padding: 12px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 12px;
+}
+
+.schedule-notice--success {
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.schedule-notice--error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.schedule-notice ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+
+.schedules-filter {
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+}
+
+.schedules-filter > header {
+    margin-bottom: 16px;
+}
+
+.schedules-filter h2,
+.schedules-filter p {
+    margin: 0;
+}
+
+.schedules-filter h2 {
+    font-family: var(--font-heading);
+    font-size: 15px;
+}
+
+.schedules-filter header p {
+    margin-top: 4px;
+    color: var(--color-text-muted);
+    font-size: 10px;
+}
+
+.schedules-filter__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.schedules-filter label {
+    display: grid;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.schedules-filter input,
+.schedules-filter select,
+.schedules-filter textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--color-text);
+    font: 500 11px var(--font-body);
+}
+
+.schedules-filter textarea {
+    min-height: 82px;
+    resize: vertical;
+}
+
+.schedules-filter input:focus,
+.schedules-filter select:focus,
+.schedules-filter textarea:focus {
+    border-color: var(--color-primary);
+    outline: 3px solid rgba(4, 120, 87, 0.12);
+}
+
+.schedules-filter__wide,
+.schedules-filter__actions {
+    grid-column: 1 / -1;
+}
+
+.schedules-filter__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.schedules-table td small {
+    display: block;
+    margin-top: 3px;
+    color: var(--color-text-muted);
+    font-size: 9px;
+}
+
+.schedules-actions form {
+    margin: 0;
+}
+
+.schedules-empty {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 28px;
+    color: var(--color-text-muted);
+}
+
+.schedule-status--progress {
+    color: #065f46;
+    background: #d1fae5;
+}
+
+.schedule-status--cancelled {
+    color: #4b5563;
+    background: #f3f4f6;
+}

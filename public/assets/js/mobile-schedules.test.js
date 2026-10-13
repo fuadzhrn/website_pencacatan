@@ -6,6 +6,7 @@ import {
     filterSchedules,
     findScheduleById,
     getTrappedFocusIndex,
+    initializeMobileSchedules,
     summarizeSchedules,
 } from './mobile-schedules.js';
 
@@ -89,4 +90,18 @@ test('getTrappedFocusIndex wraps keyboard focus inside the detail sheet', () => 
     assert.equal(getTrappedFocusIndex(2, 3, false), 0);
     assert.equal(getTrappedFocusIndex(0, 3, true), 2);
     assert.equal(getTrappedFocusIndex(1, 3, false), 2);
+});
+
+test('initializeMobileSchedules safely ignores server-rendered schedules without dummy filter controls', () => {
+    const originalDocument = globalThis.document;
+
+    globalThis.document = {
+        querySelector: () => ({
+            querySelector: () => null,
+        }),
+    };
+
+    assert.doesNotThrow(() => initializeMobileSchedules());
+
+    globalThis.document = originalDocument;
 });

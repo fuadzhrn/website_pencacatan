@@ -1,3 +1,5 @@
+@include('schedules._database-mobile-content')
+@if (false)
 @php
     $mobileSchedules = [
         [
@@ -313,3 +315,4 @@
         </button>
     </div>
 </main>
+@endif

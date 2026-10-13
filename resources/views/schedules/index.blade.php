@@ -6,8 +6,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/schedules.css') }}">
 @endpush
 
+@if (false)
 @php
-    $schedules = [
+    $dummySchedules = [
         [
             'date' => '2026-10-08',
             'date_label' => '08 Oktober 2026',
@@ -136,7 +137,10 @@
     );
 @endphp
 
+@endif
 @section('content')
+    @include('schedules._database-content')
+    @if (false)
     <div class="schedules-page">
         <header class="schedules-page-header">
             <div>
@@ -413,6 +417,7 @@
             </footer>
         </div>
     </dialog>
+    @endif
 @endsection
 
 @push('scripts')
