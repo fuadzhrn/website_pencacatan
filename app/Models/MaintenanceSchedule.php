@@ -25,9 +25,14 @@ class MaintenanceSchedule extends Model
         return $this->belongsTo(Machine::class);
     }
 
-    public function category(): BelongsTo
+    public function maintenanceCategory(): BelongsTo
     {
         return $this->belongsTo(MaintenanceCategory::class, 'maintenance_category_id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->maintenanceCategory();
     }
 
     public function assignedUser(): BelongsTo

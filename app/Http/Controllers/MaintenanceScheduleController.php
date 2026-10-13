@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GenerateMaintenanceScheduleRequest;
 use App\Http\Requests\StoreMaintenanceScheduleRequest;
 use App\Http\Requests\UpdateMaintenanceScheduleRequest;
+use App\Http\Requests\UpdateMaintenanceScheduleStatusRequest;
 use App\Models\Machine;
 use App\Models\MaintenanceCategory;
 use App\Models\MaintenanceSchedule;
@@ -27,7 +28,7 @@ class MaintenanceScheduleController extends Controller
         $this->scheduleService->markOverdue();
 
         $filters = $this->filters($request);
-        $query = $this->visibleScheduleQuery($request)->with(['machine', 'category', 'assignedUser']);
+        $query = $this->visibleScheduleQuery($request)->with(['machine', 'maintenanceCategory', 'assignedUser']);
         $this->applyFilters($query, $filters);
 
         $summaryQuery = clone $query;
@@ -36,7 +37,7 @@ class MaintenanceScheduleController extends Controller
 
         if ($request->filled('schedule_detail')) {
             $selectedSchedule = $this->visibleScheduleQuery($request)
-                ->with(['machine', 'category', 'assignedUser', 'check'])
+                ->with(['machine', 'maintenanceCategory', 'assignedUser', 'check'])
                 ->findOrFail($request->integer('schedule_detail'));
         }
 
@@ -61,7 +62,7 @@ class MaintenanceScheduleController extends Controller
                 'overdue' => (clone $summaryQuery)->where('status', 'overdue')->count(),
             ],
             'todaySchedules' => $this->visibleScheduleQuery($request)
-                ->with(['machine', 'category', 'assignedUser'])
+                ->with(['machine', 'maintenanceCategory', 'assignedUser'])
                 ->whereDate('scheduled_date', today())
                 ->orderBy('scheduled_time')
                 ->get(),
@@ -109,15 +110,21 @@ class MaintenanceScheduleController extends Controller
 
     public function update(UpdateMaintenanceScheduleRequest $request, MaintenanceSchedule $schedule): RedirectResponse
     {
-        $schedule->update($this->normalizedScheduleAttributes($request->safe()->except(['context', 'form_type'])));
+        $schedule->update($this->normalizedScheduleAttributes($request->safe()->only([
+            'scheduled_date',
+            'scheduled_time',
+            'assigned_user_id',
+            'status',
+            'notes',
+        ])));
 
         return redirect()->route($this->indexRouteName($request))->with('success', 'Jadwal berhasil diperbarui.');
     }
 
     public function destroy(Request $request, MaintenanceSchedule $schedule): RedirectResponse
     {
-        if ($schedule->status === 'completed' || $schedule->check()->exists()) {
-            return back()->with('error', 'Jadwal selesai atau yang sudah memiliki pemeriksaan tidak dapat dihapus.');
+        if ($schedule->check()->exists()) {
+            return back()->with('error', 'Jadwal yang sudah memiliki pemeriksaan tidak dapat dihapus.');
         }
 
         $schedule->delete();
@@ -137,7 +144,7 @@ class MaintenanceScheduleController extends Controller
         return redirect()->route($this->indexRouteName($request))->with('success', $message.'.');
     }
 
-    public function updateStatus(UpdateMaintenanceScheduleRequest $request, MaintenanceSchedule $schedule): RedirectResponse
+    public function updateStatus(UpdateMaintenanceScheduleStatusRequest $request, MaintenanceSchedule $schedule): RedirectResponse
     {
         $schedule->update(['status' => $request->validated('status')]);
 
@@ -151,6 +158,8 @@ class MaintenanceScheduleController extends Controller
             'month' => $request->string('month')->toString() ?: null,
             'year' => $request->string('year')->toString() ?: null,
             'machine_id' => $request->string('machine_id')->toString() ?: ($request->string('machine')->toString() ?: null),
+            'maintenance_category_id' => $request->string('maintenance_category_id')->toString() ?: null,
+            'assigned_user_id' => $request->string('assigned_user_id')->toString() ?: null,
             'frequency' => $request->string('frequency')->toString() ?: null,
             'status' => $request->string('status')->toString() ?: null,
             'search' => Str::limit(trim($request->string('search')->toString()), 100, ''),
@@ -164,7 +173,9 @@ class MaintenanceScheduleController extends Controller
             ->when($filters['month'], fn (Builder $query, string $month): Builder => $query->whereMonth('scheduled_date', $month))
             ->when($filters['year'], fn (Builder $query, string $year): Builder => $query->whereYear('scheduled_date', $year))
             ->when($filters['machine_id'], fn (Builder $query, string $machineId): Builder => $query->where('machine_id', $machineId))
-            ->when($filters['frequency'], fn (Builder $query, string $frequency): Builder => $query->whereHas('category', fn (Builder $categoryQuery): Builder => $categoryQuery->where('frequency', $frequency)))
+            ->when($filters['maintenance_category_id'], fn (Builder $query, string $categoryId): Builder => $query->where('maintenance_category_id', $categoryId))
+            ->when($filters['assigned_user_id'], fn (Builder $query, string $assignedUserId): Builder => $query->where('assigned_user_id', $assignedUserId))
+            ->when($filters['frequency'], fn (Builder $query, string $frequency): Builder => $query->whereHas('maintenanceCategory', fn (Builder $categoryQuery): Builder => $categoryQuery->where('frequency', $frequency)))
             ->when($filters['status'], fn (Builder $query, string $status): Builder => $query->where('status', $status))
             ->when($filters['search'], function (Builder $query, string $search): Builder {
                 return $query->where(function (Builder $searchQuery) use ($search): void {

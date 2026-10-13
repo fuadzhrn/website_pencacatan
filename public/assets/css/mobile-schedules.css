@@ -666,6 +666,7 @@
     }
 
     .mobile-schedule-sheet__panel > header button,
+    .mobile-schedule-sheet__panel > header a,
     .mobile-schedules-toast button {
         display: grid;
         flex: 0 0 44px;
@@ -681,6 +682,7 @@
     }
 
     .mobile-schedule-sheet__panel > header button svg,
+    .mobile-schedule-sheet__panel > header a svg,
     .mobile-schedules-toast button svg {
         width: 19px;
         height: 19px;
@@ -767,6 +769,7 @@
         color: var(--mobile-schedules-emerald);
         background: var(--mobile-schedules-emerald-soft);
         border: 1px solid #a7f3d0;
+        text-decoration: none;
     }
 
     .mobile-schedules-toast {

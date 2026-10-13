@@ -16,22 +16,7 @@ class UpdateMaintenanceScheduleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $user = $this->user();
-
-        if ($user?->role === UserRole::Admin) {
-            return true;
-        }
-
-        if (! $this->routeIs('schedules.update-status') || $user?->role !== UserRole::Petugas) {
-            return false;
-        }
-
-        $schedule = $this->route('schedule');
-
-        return $schedule instanceof MaintenanceSchedule
-            && $schedule->assigned_user_id === $user->id
-            && in_array($schedule->status, ['scheduled', 'pending'], true)
-            && $this->input('status') === 'in_progress';
+        return $this->user()?->role === UserRole::Admin;
     }
 
     /**
@@ -41,24 +26,19 @@ class UpdateMaintenanceScheduleRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->routeIs('schedules.update-status')) {
-            return [
-                'status' => ['required', Rule::in(['scheduled', 'pending', 'in_progress', 'completed', 'overdue', 'cancelled'])],
-                'context' => ['nullable', Rule::in(['mobile'])],
-            ];
-        }
-
         $schedule = $this->route('schedule');
 
         return [
-            'machine_id' => ['required', 'integer', Rule::exists('machines', 'id')],
-            'maintenance_category_id' => ['required', 'integer', Rule::exists('maintenance_categories', 'id')],
             'scheduled_date' => ['required', 'date', function (string $attribute, mixed $value, Closure $fail) use ($schedule): void {
+                if (! $schedule instanceof MaintenanceSchedule) {
+                    return;
+                }
+
                 $exists = MaintenanceSchedule::query()
-                    ->where('machine_id', $this->integer('machine_id'))
-                    ->where('maintenance_category_id', $this->integer('maintenance_category_id'))
+                    ->where('machine_id', $schedule->machine_id)
+                    ->where('maintenance_category_id', $schedule->maintenance_category_id)
                     ->whereDate('scheduled_date', $value)
-                    ->when($schedule instanceof MaintenanceSchedule, fn ($query) => $query->whereKeyNot($schedule->getKey()))
+                    ->whereKeyNot($schedule->getKey())
                     ->exists();
 
                 if ($exists) {
@@ -82,10 +62,6 @@ class UpdateMaintenanceScheduleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'machine_id.required' => 'Mesin wajib dipilih.',
-            'machine_id.exists' => 'Mesin yang dipilih tidak ditemukan.',
-            'maintenance_category_id.required' => 'Kategori maintenance wajib dipilih.',
-            'maintenance_category_id.exists' => 'Kategori maintenance yang dipilih tidak ditemukan.',
             'scheduled_date.required' => 'Tanggal jadwal wajib diisi.',
             'scheduled_date.date' => 'Tanggal jadwal tidak valid.',
             'scheduled_date.unique' => 'Jadwal untuk mesin, kategori, dan tanggal tersebut sudah tersedia.',
@@ -98,10 +74,6 @@ class UpdateMaintenanceScheduleRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if ($this->routeIs('schedules.update-status')) {
-            return;
-        }
-
         $this->merge([
             'scheduled_time' => $this->filled('scheduled_time') ? $this->input('scheduled_time') : null,
             'assigned_user_id' => $this->filled('assigned_user_id') ? $this->input('assigned_user_id') : null,

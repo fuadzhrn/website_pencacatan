@@ -67,8 +67,13 @@
                 @csrf
                 @if ($editingSchedule) @method('PUT') @endif
                 <input type="hidden" name="form_type" value="schedule">
-                <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id', $editingSchedule?->machine_id) == $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
-                <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id', $editingSchedule?->maintenance_category_id) == $category->id)>{{ $category->name }}</option>@endforeach</select></label>
+                @if ($editingSchedule)
+                    <label>Mesin<input type="text" value="{{ $editingSchedule->machine->equipment_name }}" disabled></label>
+                    <label>Kategori<input type="text" value="{{ $editingSchedule->maintenanceCategory->name }}" disabled></label>
+                @else
+                    <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id') == $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
+                    <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id') == $category->id)>{{ $category->name }}</option>@endforeach</select></label>
+                @endif
                 <label>Tanggal<input type="date" name="scheduled_date" value="{{ old('scheduled_date', $editingSchedule?->scheduled_date?->toDateString()) }}" required></label>
                 <label>Jam<input type="time" name="scheduled_time" value="{{ old('scheduled_time', $editingSchedule?->scheduled_time ? substr($editingSchedule->scheduled_time, 0, 5) : null) }}"></label>
                 <label>Petugas<select name="assigned_user_id"><option value="">Belum ditentukan</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected(old('assigned_user_id', $editingSchedule?->assigned_user_id) == $officer->id)>{{ $officer->name }}</option>@endforeach</select></label>
@@ -90,9 +95,13 @@
         <form method="GET" action="{{ route('schedules.index') }}" class="schedules-filter__grid">
             <label>Bulan<select name="month"><option value="">Semua bulan</option>@foreach (range(1, 12) as $month)<option value="{{ $month }}" @selected((string) $filters['month'] === (string) $month)>{{ \Carbon\CarbonImmutable::create(2026, $month)->translatedFormat('F') }}</option>@endforeach</select></label>
             <label>Tahun<input type="number" name="year" min="2020" max="2100" value="{{ $filters['year'] }}" placeholder="Semua tahun"></label>
-            <label>Mesin<select name="machine"><option value="">Semua mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected((string) $filters['machine_id'] === (string) $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
+            <label>Mesin<select name="machine_id"><option value="">Semua mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected((string) $filters['machine_id'] === (string) $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
+            <label>Kategori<select name="maintenance_category_id"><option value="">Semua kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected((string) $filters['maintenance_category_id'] === (string) $category->id)>{{ $category->name }}</option>@endforeach</select></label>
             <label>Frekuensi<select name="frequency"><option value="">Semua frekuensi</option>@foreach ($frequencyOptions as $value => $label)<option value="{{ $value }}" @selected($filters['frequency'] === $value)>{{ $label }}</option>@endforeach</select></label>
             <label>Status<select name="status"><option value="">Semua status</option>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected($filters['status'] === $value)>{{ $label }}</option>@endforeach</select></label>
+            @if (auth()->user()->role !== \App\UserRole::Petugas)
+                <label>Petugas<select name="assigned_user_id"><option value="">Semua petugas</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected((string) $filters['assigned_user_id'] === (string) $officer->id)>{{ $officer->name }}</option>@endforeach</select></label>
+            @endif
             <label>Cari<input type="search" name="search" value="{{ $filters['search'] }}" placeholder="Mesin, serial, lokasi, petugas"></label>
             <div class="schedules-filter__actions"><button class="button button--primary" type="submit">Terapkan</button><a class="button button--secondary" href="{{ route('schedules.index') }}">Reset</a></div>
         </form>
@@ -109,8 +118,8 @@
                             <td>{{ $schedules->firstItem() + $loop->index }}</td>
                             <td><time datetime="{{ $schedule->scheduled_date->toDateString() }}"><strong>{{ $schedule->scheduled_date->translatedFormat('d F Y') }}</strong><span>{{ $schedule->scheduled_time ? substr($schedule->scheduled_time, 0, 5).' WITA' : 'Jam belum ditentukan' }}</span></time></td>
                             <td><strong>{{ $schedule->machine->equipment_name }}</strong><small>{{ $schedule->machine->serial_number }}</small></td>
-                            <td>{{ $schedule->machine->location }}</td>
-                            <td>{{ $frequencyOptions[$schedule->category->frequency] ?? $schedule->category->frequency }}<small>{{ $schedule->category->name }}</small></td>
+                            <td>{{ $schedule->machine->location }}<small>{{ $schedule->machine->airport }}</small></td>
+                            <td>{{ $frequencyOptions[$schedule->maintenanceCategory->frequency] ?? $schedule->maintenanceCategory->frequency }}<small>{{ $schedule->maintenanceCategory->name }}</small></td>
                             <td>{{ $schedule->assignedUser?->name ?? 'Belum ditentukan' }}</td>
                             <td><span class="schedule-status schedule-status--{{ $statusClass($schedule->status) }}">{{ $statusOptions[$schedule->status] ?? $schedule->status }}</span></td>
                             <td><div class="schedules-actions">
@@ -140,12 +149,22 @@
                 <div><dt>Merk / Tipe</dt><dd>{{ $selectedSchedule->machine->brand }} / {{ $selectedSchedule->machine->type }}</dd></div>
                 <div><dt>Serial Number</dt><dd>{{ $selectedSchedule->machine->serial_number }}</dd></div>
                 <div><dt>Lokasi</dt><dd>{{ $selectedSchedule->machine->location }}</dd></div>
+                <div><dt>Bandara</dt><dd>{{ $selectedSchedule->machine->airport }}</dd></div>
                 <div><dt>Tanggal</dt><dd>{{ $selectedSchedule->scheduled_date->translatedFormat('d F Y') }}</dd></div>
-                <div><dt>Frekuensi</dt><dd>{{ $frequencyOptions[$selectedSchedule->category->frequency] ?? $selectedSchedule->category->frequency }}</dd></div>
+                <div><dt>Frekuensi</dt><dd>{{ $frequencyOptions[$selectedSchedule->maintenanceCategory->frequency] ?? $selectedSchedule->maintenanceCategory->frequency }}</dd></div>
                 <div><dt>Petugas</dt><dd>{{ $selectedSchedule->assignedUser?->name ?? 'Belum ditentukan' }}</dd></div>
                 <div><dt>Status</dt><dd>{{ $statusOptions[$selectedSchedule->status] ?? $selectedSchedule->status }}</dd></div>
                 <div class="schedule-dialog__wide"><dt>Catatan</dt><dd>{{ $selectedSchedule->notes ?: '-' }}</dd></div>
             </dl>
+            @if ($selectedSchedule->check)
+                <h3>Informasi Pemeriksaan</h3>
+                <dl class="schedule-dialog__details">
+                    <div><dt>Tanggal Pemeriksaan</dt><dd>{{ $selectedSchedule->check->check_date->translatedFormat('d F Y') }}</dd></div>
+                    <div><dt>Hasil</dt><dd>{{ $selectedSchedule->check->overall_status }}</dd></div>
+                    <div><dt>Verifikasi</dt><dd>{{ $selectedSchedule->check->verification_status }}</dd></div>
+                    <div class="schedule-dialog__wide"><dt>Catatan Pemeriksaan</dt><dd>{{ $selectedSchedule->check->general_note ?: '-' }}</dd></div>
+                </dl>
+            @endif
         </section>
     @endif
 
@@ -153,7 +172,7 @@
         <header class="today-schedules__header"><div><p class="today-schedules__eyebrow">Agenda Operasional</p><h2 id="today-schedules-title">Jadwal Hari Ini</h2><p>{{ today()->translatedFormat('l, d F Y') }} · {{ $todaySchedules->count() }} agenda</p></div></header>
         <div class="today-schedules__list">
             @forelse ($todaySchedules as $schedule)
-                <article class="today-schedule-item"><span class="today-schedule-item__icon"><i data-lucide="scan-line" aria-hidden="true"></i></span><div class="today-schedule-item__content"><h3>{{ $schedule->machine->equipment_name }}</h3><p>{{ $schedule->category->name }} · {{ $schedule->machine->location }}</p></div><time>{{ $schedule->scheduled_time ? substr($schedule->scheduled_time, 0, 5).' WITA' : '-' }}</time><span class="schedule-status schedule-status--{{ $statusClass($schedule->status) }}">{{ $statusOptions[$schedule->status] ?? $schedule->status }}</span></article>
+                <article class="today-schedule-item"><span class="today-schedule-item__icon"><i data-lucide="scan-line" aria-hidden="true"></i></span><div class="today-schedule-item__content"><h3>{{ $schedule->machine->equipment_name }}</h3><p>{{ $schedule->maintenanceCategory->name }} · {{ $schedule->machine->location }}</p></div><time>{{ $schedule->scheduled_time ? substr($schedule->scheduled_time, 0, 5).' WITA' : '-' }}</time><span class="schedule-status schedule-status--{{ $statusClass($schedule->status) }}">{{ $statusOptions[$schedule->status] ?? $schedule->status }}</span></article>
             @empty
                 <p>Belum ada jadwal untuk hari ini.</p>
             @endforelse
