@@ -9,6 +9,7 @@ use App\Http\Controllers\MaintenanceFindingController;
 use App\Http\Controllers\MaintenanceItemController;
 use App\Http\Controllers\MaintenanceScheduleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -53,25 +54,25 @@ Route::middleware('auth')->group(function (): void {
         ->whereNumber('schedule')
         ->name('inspections.store');
 
-    Route::get('/inspections/history', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
+    Route::get('/inspections/history', [VerificationController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('inspections.history');
 
-        return view('inspections.history', [
-            'activeMenu' => 'riwayat-pemeriksaan',
-            'pageTitle' => 'Riwayat Pemeriksaan',
-            'pageDescription' => 'Lihat pemeriksaan preventive maintenance yang sudah dilakukan.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin,petugas,supervisor')->name('inspections.history');
+    Route::get('/verifications', [VerificationController::class, 'index'])
+        ->middleware('role:admin,supervisor')
+        ->name('verifications.index');
+    Route::get('/verifications/{check}', [VerificationController::class, 'show'])
+        ->middleware('role:admin,supervisor')
+        ->whereNumber('check')
+        ->name('verifications.show');
+    Route::patch('/verifications/{check}/verify', [VerificationController::class, 'verify'])
+        ->middleware('role:supervisor')
+        ->whereNumber('check')
+        ->name('verifications.verify');
+    Route::patch('/verifications/{check}/reject', [VerificationController::class, 'reject'])
+        ->middleware('role:supervisor')
+        ->whereNumber('check')
+        ->name('verifications.reject');
 
     Route::get('/findings', [MaintenanceFindingController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')
@@ -153,14 +154,6 @@ Route::middleware('auth')->group(function (): void {
             'pageTitle' => 'Dashboard',
             'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
         ],
-        'history' => [
-            'path' => 'history',
-            'roles' => 'admin,petugas,supervisor',
-            'view' => 'inspections.history',
-            'activeMenu' => 'riwayat-pemeriksaan',
-            'pageTitle' => 'Riwayat Pemeriksaan',
-            'pageDescription' => 'Lihat pemeriksaan preventive maintenance yang sudah dilakukan.',
-        ],
         'report' => [
             'path' => 'report',
             'roles' => 'admin,supervisor',
@@ -197,6 +190,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/mobile/schedules', [MaintenanceScheduleController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')
         ->name('mobile.schedules');
+
+    Route::get('/mobile/history', [VerificationController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('mobile.history');
 
     Route::get('/mobile/findings', [MaintenanceFindingController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')

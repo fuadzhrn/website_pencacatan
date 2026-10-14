@@ -369,6 +369,25 @@ final class InspectionManagementTest extends TestCase
         $this->assertDatabaseCount('maintenance_check_details', 0);
     }
 
+    public function test_petugas_cannot_change_a_rejected_inspection_until_a_revision_flow_exists(): void
+    {
+        $this->travelTo(CarbonImmutable::parse('2026-10-13 11:00:00'));
+        $petugas = User::factory()->create(['role' => UserRole::Petugas]);
+        $category = $this->createCategory();
+        $item = $this->createItem($category);
+        $schedule = $this->createSchedule($this->createMachine(), $category, $petugas, ['status' => 'in_progress']);
+        $check = $this->createCheck($schedule, $petugas, ['verification_status' => 'rejected']);
+
+        $this->actingAs($petugas)->post('/inspections/schedules/'.$schedule->id, [
+            'maintenance_schedule_id' => $schedule->id,
+            'submission_type' => 'final',
+            'items' => [$item->id => $this->itemPayload($item, 'sesuai')],
+        ])->assertForbidden();
+
+        $this->assertSame('rejected', $check->fresh()->verification_status);
+        $this->assertDatabaseCount('maintenance_check_details', 0);
+    }
+
     #[DataProvider('monitoringRoles')]
     public function test_monitoring_roles_cannot_submit_an_inspection(UserRole $role): void
     {
@@ -421,6 +440,40 @@ final class InspectionManagementTest extends TestCase
             ->assertViewHas('canEditInspection', false)
             ->assertSeeText('Mesin Riwayat Pemeriksaan')
             ->assertSeeText('Item Riwayat Pemeriksaan');
+    }
+
+    public function test_history_detail_follows_original_checker_after_schedule_reassignment(): void
+    {
+        $originalChecker = User::factory()->create(['role' => UserRole::Petugas]);
+        $newAssignee = User::factory()->create(['role' => UserRole::Petugas]);
+        $category = $this->createCategory(['name' => 'Kategori Alih Petugas']);
+        $item = $this->createItem($category, ['item_name' => 'Item Milik Pemeriksa Asli']);
+        $machine = $this->createMachine(['equipment_name' => 'Mesin Riwayat Dialihkan']);
+        $schedule = $this->createSchedule($machine, $category, $originalChecker, [
+            'scheduled_date' => '2026-10-12',
+            'status' => 'completed',
+        ]);
+        $check = $this->createCheck($schedule, $originalChecker, ['check_date' => '2026-10-12']);
+        MaintenanceCheckDetail::query()->create([
+            'maintenance_check_id' => $check->id,
+            'maintenance_item_id' => $item->id,
+            'result_status' => 'sesuai',
+        ]);
+        $schedule->update(['assigned_user_id' => $newAssignee->id]);
+
+        $this->actingAs($originalChecker)->get('/inspections/'.$check->id)
+            ->assertOk()
+            ->assertSeeText('Mesin Riwayat Dialihkan')
+            ->assertSeeText('Item Milik Pemeriksa Asli');
+
+        $this->actingAs($originalChecker)->get('/inspections/'.$check->id.'?context=mobile')
+            ->assertOk()
+            ->assertSee('mobile-verification-detail', false)
+            ->assertSeeText('Mesin Riwayat Dialihkan')
+            ->assertSeeText('Item Milik Pemeriksa Asli')
+            ->assertSee(route('mobile.history'), false);
+
+        $this->actingAs($newAssignee)->get('/inspections/'.$check->id)->assertNotFound();
     }
 
     public function test_uploading_a_replacement_photo_removes_the_previous_file(): void

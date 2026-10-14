@@ -57,6 +57,11 @@
             <a href="{{ route('mobile.findings') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'temuan']) data-mobile-nav-link data-mobile-route="findings" @if ($activeMenu === 'temuan') aria-current="page" @endif>
                 <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
+            @if ($userRole !== 'Petugas')
+                <a href="{{ route('verifications.index') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'verifikasi-pemeriksaan']) data-mobile-nav-link data-mobile-route="verifications" @if ($activeMenu === 'verifikasi-pemeriksaan') aria-current="page" @endif>
+                    <i data-lucide="badge-check" aria-hidden="true"></i><span>Verifikasi Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+                </a>
+            @endif
             <a href="{{ route('mobile.history') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-route="history" @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                 <i data-lucide="history" aria-hidden="true"></i><span>Riwayat Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
@@ -128,10 +133,9 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.findings-data-partial')
         <script src="{{ asset('assets/js/findings-database.js') }}" defer></script>
-    @elseif ($activeMenu === 'riwayat-pemeriksaan')
-        <link rel="stylesheet" href="{{ asset('assets/css/mobile-history.css') }}" media="screen and (max-width: 768px)">
-        @include('mobile.history')
-        <script type="module" src="{{ asset('assets/js/mobile-history.js') }}"></script>
+    @elseif (in_array($activeMenu, ['riwayat-pemeriksaan', 'verifikasi-pemeriksaan'], true))
+        <link rel="stylesheet" href="{{ asset('assets/css/verifications.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.history-database')
     @elseif ($activeMenu === 'user-management')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-users.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.users')

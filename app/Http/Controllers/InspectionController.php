@@ -54,7 +54,7 @@ class InspectionController extends Controller
                 $isHistoricalInspection = $selectedSchedule->check !== null
                     && ($selectedSchedule->status === 'completed'
                         || ! $selectedSchedule->scheduled_date->isToday()
-                        || $selectedSchedule->check->verification_status === 'verified');
+                        || $selectedSchedule->check->verification_status !== 'waiting');
                 $checklistItems = $isHistoricalInspection
                     ? $selectedSchedule->check->details
                         ->pluck('item')
@@ -70,7 +70,7 @@ class InspectionController extends Controller
             && $selectedSchedule->assigned_user_id === $user->id
             && $selectedSchedule->scheduled_date->isToday()
             && $selectedSchedule->status === 'in_progress'
-            && $selectedSchedule->check?->verification_status !== 'verified';
+            && $selectedSchedule->check?->verification_status === 'waiting';
 
         return view('inspections.today', [
             ...$this->layoutData($user),
@@ -106,19 +106,24 @@ class InspectionController extends Controller
                 abort(403);
             }
 
-            $check = MaintenanceCheck::query()->firstOrCreate(
-                ['maintenance_schedule_id' => $lockedSchedule->id],
-                [
+            $check = MaintenanceCheck::query()
+                ->where('maintenance_schedule_id', $lockedSchedule->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($check === null) {
+                $check = MaintenanceCheck::query()->create([
+                    'maintenance_schedule_id' => $lockedSchedule->id,
                     'machine_id' => $lockedSchedule->machine_id,
                     'checked_by' => $user->id,
                     'check_date' => now()->toDateString(),
                     'start_time' => now()->format('H:i:s'),
                     'overall_status' => 'incomplete',
                     'verification_status' => 'waiting',
-                ],
-            );
+                ]);
+            }
 
-            if ($check->verification_status === 'verified') {
+            if ($check->verification_status !== 'waiting') {
                 abort(403);
             }
 
@@ -146,19 +151,24 @@ class InspectionController extends Controller
                     abort(403);
                 }
 
-                $check = MaintenanceCheck::query()->firstOrCreate(
-                    ['maintenance_schedule_id' => $lockedSchedule->id],
-                    [
+                $check = MaintenanceCheck::query()
+                    ->where('maintenance_schedule_id', $lockedSchedule->id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($check === null) {
+                    $check = MaintenanceCheck::query()->create([
+                        'maintenance_schedule_id' => $lockedSchedule->id,
                         'machine_id' => $lockedSchedule->machine_id,
                         'checked_by' => $request->user()->id,
                         'check_date' => now()->toDateString(),
                         'start_time' => now()->format('H:i:s'),
                         'overall_status' => 'incomplete',
                         'verification_status' => 'waiting',
-                    ],
-                );
+                    ]);
+                }
 
-                if ($check->verification_status === 'verified') {
+                if ($check->verification_status !== 'waiting') {
                     abort(403);
                 }
 
@@ -275,12 +285,40 @@ class InspectionController extends Controller
             ->with('success', $message);
     }
 
-    public function show(Request $request, MaintenanceCheck $check): RedirectResponse
+    public function show(Request $request, MaintenanceCheck $check): View
     {
-        $check->loadMissing('schedule');
-        $this->ensureScheduleIsVisible($request->user(), $check->schedule);
+        $user = $request->user();
 
-        return redirect()->route($this->todayRouteName($request), ['schedule' => $check->maintenance_schedule_id]);
+        if ($user->role === UserRole::Petugas && $check->checked_by !== $user->id) {
+            abort(404);
+        }
+
+        $check->load([
+            'schedule.machine',
+            'schedule.maintenanceCategory',
+            'schedule.assignedUser',
+            'details.item',
+            'details.finding',
+        ]);
+        $selectedSchedule = $check->schedule;
+        $selectedSchedule->setRelation('check', $check);
+
+        return view('inspections.today', [
+            ...$this->layoutData($user),
+            'activeMenu' => 'riwayat-pemeriksaan',
+            'pageTitle' => 'Detail Riwayat Pemeriksaan',
+            'pageDescription' => 'Lihat hasil pemeriksaan preventive maintenance yang telah dilakukan.',
+            'schedules' => collect(),
+            'selectedSchedule' => $selectedSchedule,
+            'check' => $check,
+            'checklistItems' => $check->details->pluck('item')->filter()->values(),
+            'checkDetails' => $check->details->keyBy('maintenance_item_id'),
+            'canEditInspection' => false,
+            'frequencyLabels' => $this->frequencyLabels(),
+            'scheduleStatusLabels' => $this->scheduleStatusLabels(),
+            'resultStatusLabels' => $this->resultStatusLabels(),
+            'inputTypeLabels' => $this->inputTypeLabels(),
+        ]);
     }
 
     /** @return Builder<MaintenanceSchedule> */
@@ -314,7 +352,7 @@ class InspectionController extends Controller
             abort(403);
         }
 
-        if ($schedule->check()->where('verification_status', 'verified')->exists()) {
+        if ($schedule->check()->where('verification_status', '!=', 'waiting')->exists()) {
             abort(403);
         }
     }

@@ -59,6 +59,12 @@
                     <span>Temuan</span>
                     <span class="sidebar-menu__count sidebar-menu__count--danger" aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</span>
                 </a>
+                @if ($userRole !== 'Petugas')
+                    <a href="{{ route('verifications.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'verifikasi-pemeriksaan']) @if ($activeMenu === 'verifikasi-pemeriksaan') aria-current="page" @endif>
+                        <i data-lucide="badge-check" aria-hidden="true"></i>
+                        <span>Verifikasi Pemeriksaan</span>
+                    </a>
+                @endif
                 <a href="{{ route('inspections.history') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                     <i data-lucide="history" aria-hidden="true"></i>
                     <span>Riwayat Pemeriksaan</span>

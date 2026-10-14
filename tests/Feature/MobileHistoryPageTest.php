@@ -17,7 +17,7 @@ final class MobileHistoryPageTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_authenticated_user_receives_mobile_history_content_and_assets(): void
+    public function test_authenticated_user_receives_database_backed_mobile_history_content(): void
     {
         $user = User::factory()->create();
 
@@ -26,14 +26,11 @@ final class MobileHistoryPageTest extends TestCase
         $response
             ->assertOk()
             ->assertSeeText('Lihat pemeriksaan yang sudah dilakukan')
-            ->assertSeeText('X-Ray Baggage HI-Scan 100100T')
-            ->assertSeeText('X-Ray Cabin')
-            ->assertSeeText('X-Ray Cargo')
+            ->assertSeeText('Filter Riwayat')
             ->assertSeeText('Menunggu Verifikasi')
-            ->assertSeeText('Detail Checklist')
-            ->assertSee('data-mobile-history-detail="machineName"', false)
-            ->assertSee('data-mobile-history-result-count role="status" aria-live="polite"', false)
-            ->assertSee(asset('assets/css/mobile-history.css'), false)
-            ->assertSee(asset('assets/js/mobile-history.js'), false);
+            ->assertSeeText('Riwayat tidak ditemukan')
+            ->assertDontSeeText('X-Ray Baggage HI-Scan 100100T')
+            ->assertSee(asset('assets/css/verifications.css'), false)
+            ->assertDontSee(asset('assets/js/mobile-history.js'), false);
     }
 }
