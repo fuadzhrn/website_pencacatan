@@ -22,7 +22,7 @@
                 <a href="{{ route('inspections.today') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'pemeriksaan-hari-ini']) @if ($activeMenu === 'pemeriksaan-hari-ini') aria-current="page" @endif>
                     <i data-lucide="clipboard-check" aria-hidden="true"></i>
                     <span>Pemeriksaan Hari Ini</span>
-                    <span class="sidebar-menu__count" aria-label="4 pemeriksaan">4</span>
+                    <span class="sidebar-menu__count" aria-label="{{ $dailyProgress['total'] ?? 0 }} pemeriksaan">{{ $dailyProgress['total'] ?? 0 }}</span>
                 </a>
             </div>
         </section>
@@ -30,14 +30,16 @@
         <section class="sidebar-menu" aria-labelledby="menu-master-data">
             <h2 class="sidebar-menu__label" id="menu-master-data">Master Data</h2>
             <div class="sidebar-menu__items">
-                <a href="{{ route('machines.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'data-mesin']) @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
-                    <i data-lucide="scan-line" aria-hidden="true"></i>
-                    <span>Data Mesin</span>
-                </a>
-                <a href="{{ route('checklists.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'master-checklist']) @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
-                    <i data-lucide="clipboard-list" aria-hidden="true"></i>
-                    <span>Master Checklist</span>
-                </a>
+                @if ($userRole === 'Admin')
+                    <a href="{{ route('machines.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'data-mesin']) @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
+                        <i data-lucide="scan-line" aria-hidden="true"></i>
+                        <span>Data Mesin</span>
+                    </a>
+                    <a href="{{ route('checklists.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'master-checklist']) @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
+                        <i data-lucide="clipboard-list" aria-hidden="true"></i>
+                        <span>Master Checklist</span>
+                    </a>
+                @endif
                 <a href="{{ route('schedules.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'jadwal-maintenance']) @if ($activeMenu === 'jadwal-maintenance') aria-current="page" @endif>
                     <i data-lucide="calendar-days" aria-hidden="true"></i>
                     <span>Jadwal Maintenance</span>
@@ -57,7 +59,7 @@
                 <a href="{{ route('findings.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'temuan']) @if ($activeMenu === 'temuan') aria-current="page" @endif>
                     <i data-lucide="triangle-alert" aria-hidden="true"></i>
                     <span>Temuan</span>
-                    <span class="sidebar-menu__count sidebar-menu__count--danger" aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</span>
+                    <span class="sidebar-menu__count sidebar-menu__count--danger" aria-label="{{ $findingActiveCount ?? 0 }} temuan aktif">{{ $findingActiveCount ?? 0 }}</span>
                 </a>
                 @if ($userRole !== 'Petugas')
                     <a href="{{ route('verifications.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'verifikasi-pemeriksaan']) @if ($activeMenu === 'verifikasi-pemeriksaan') aria-current="page" @endif>
@@ -69,10 +71,12 @@
                     <i data-lucide="history" aria-hidden="true"></i>
                     <span>Riwayat Pemeriksaan</span>
                 </a>
-                <a href="{{ route('reports.monthly') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'laporan']) @if ($activeMenu === 'laporan') aria-current="page" @endif>
-                    <i data-lucide="file-chart-column" aria-hidden="true"></i>
-                    <span>Laporan</span>
-                </a>
+                @if ($userRole !== 'Petugas')
+                    <a href="{{ route('reports.monthly') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'laporan']) @if ($activeMenu === 'laporan') aria-current="page" @endif>
+                        <i data-lucide="file-chart-column" aria-hidden="true"></i>
+                        <span>Laporan</span>
+                    </a>
+                @endif
             </div>
         </section>
     </nav>
@@ -82,12 +86,12 @@
             <div class="daily-progress__header">
                 <div>
                     <p id="daily-progress-title">Progress hari ini</p>
-                    <span>20 dari 24 checklist selesai</span>
+                    <span>{{ $dailyProgress['completed'] ?? 0 }} dari {{ $dailyProgress['total'] ?? 0 }} pemeriksaan selesai</span>
                 </div>
-                <strong>83%</strong>
+                <strong>{{ $dailyProgress['percentage'] ?? 0 }}%</strong>
             </div>
-            <div class="daily-progress__track" role="progressbar" aria-label="Progress checklist hari ini" aria-valuemin="0" aria-valuemax="24" aria-valuenow="20">
-                <span style="width: 83.33%"></span>
+            <div class="daily-progress__track" role="progressbar" aria-label="Progress pemeriksaan hari ini" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $dailyProgress['percentage'] ?? 0 }}">
+                <span style="width: {{ $dailyProgress['percentage'] ?? 0 }}%"></span>
             </div>
         </section>
 

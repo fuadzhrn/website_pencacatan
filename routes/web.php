@@ -25,7 +25,8 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/dashboard', DashboardController::class)->middleware('role:admin,supervisor')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/mobile/dashboard', [DashboardController::class, 'index'])->name('mobile.dashboard');
 
     Route::get('/schedules', [MaintenanceScheduleController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')
@@ -146,14 +147,6 @@ Route::middleware('auth')->group(function (): void {
     });
 
     $mobilePages = [
-        'dashboard' => [
-            'path' => 'dashboard',
-            'roles' => 'admin,petugas,supervisor',
-            'view' => 'dashboard',
-            'activeMenu' => 'dashboard',
-            'pageTitle' => 'Dashboard',
-            'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
-        ],
         'report' => [
             'path' => 'report',
             'roles' => 'admin,supervisor',

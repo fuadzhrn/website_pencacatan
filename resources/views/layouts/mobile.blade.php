@@ -42,12 +42,14 @@
             <a href="{{ route('mobile.dashboard') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'dashboard']) data-mobile-nav-link data-mobile-route="dashboard" @if ($activeMenu === 'dashboard') aria-current="page" @endif>
                 <i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Dashboard</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
-            <a href="{{ route('mobile.machines') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'data-mesin']) data-mobile-nav-link data-mobile-route="machines" @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
-                <i data-lucide="scan-line" aria-hidden="true"></i><span>Data Mesin</span><i data-lucide="chevron-right" aria-hidden="true"></i>
-            </a>
-            <a href="{{ route('mobile.checklists') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'master-checklist']) data-mobile-nav-link data-mobile-route="checklists" @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
-                <i data-lucide="list-checks" aria-hidden="true"></i><span>Master Checklist</span><i data-lucide="chevron-right" aria-hidden="true"></i>
-            </a>
+            @if ($userRole === 'Admin')
+                <a href="{{ route('mobile.machines') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'data-mesin']) data-mobile-nav-link data-mobile-route="machines" @if ($activeMenu === 'data-mesin') aria-current="page" @endif>
+                    <i data-lucide="scan-line" aria-hidden="true"></i><span>Data Mesin</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+                </a>
+                <a href="{{ route('mobile.checklists') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'master-checklist']) data-mobile-nav-link data-mobile-route="checklists" @if ($activeMenu === 'master-checklist') aria-current="page" @endif>
+                    <i data-lucide="list-checks" aria-hidden="true"></i><span>Master Checklist</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+                </a>
+            @endif
             <a href="{{ route('mobile.schedules') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'jadwal-maintenance']) data-mobile-nav-link data-mobile-route="schedules" @if ($activeMenu === 'jadwal-maintenance') aria-current="page" @endif>
                 <i data-lucide="calendar-clock" aria-hidden="true"></i><span>Jadwal Maintenance</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
@@ -65,9 +67,11 @@
             <a href="{{ route('mobile.history') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-route="history" @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                 <i data-lucide="history" aria-hidden="true"></i><span>Riwayat Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
-            <a href="{{ route('mobile.report') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
-                <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
-            </a>
+            @if ($userRole !== 'Petugas')
+                <a href="{{ route('mobile.report') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
+                    <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+                </a>
+            @endif
             @if ($userRole === 'Admin')
                 <a href="{{ route('mobile.users') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'user-management']) data-mobile-nav-link data-mobile-route="users" data-user-management-navigation="mobile" @if ($activeMenu === 'user-management') aria-current="page" @endif>
                     <i data-lucide="users-round" aria-hidden="true"></i><span>User Management</span><i data-lucide="chevron-right" aria-hidden="true"></i>
@@ -94,9 +98,15 @@
         <a href="{{ route('mobile.findings') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'temuan']) data-mobile-nav-link data-mobile-route="findings" @if ($activeMenu === 'temuan') aria-current="page" @endif>
             <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</small>
         </a>
-        <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
-            <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
-        </a>
+        @if ($userRole !== 'Petugas')
+            <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
+                <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
+            </a>
+        @else
+            <a href="{{ route('mobile.history') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-route="history" @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
+                <i data-lucide="history" aria-hidden="true"></i><span>Riwayat</span>
+            </a>
+        @endif
     </nav>
 
     <div class="mobile-navigation-toast" data-mobile-navigation-toast role="status" aria-live="polite" hidden>

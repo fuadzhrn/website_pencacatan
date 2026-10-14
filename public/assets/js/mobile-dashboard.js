@@ -58,6 +58,12 @@ if (typeof document !== 'undefined') {
 
         dashboard.querySelectorAll('[data-mobile-dashboard-action]').forEach((button) => {
             button.addEventListener('click', () => {
+                if (button.dataset.url) {
+                    window.location.assign(button.dataset.url);
+
+                    return;
+                }
+
                 const message = button.dataset.feedback
                     || getMobileDashboardActionMessage(button.dataset.mobileDashboardAction);
 

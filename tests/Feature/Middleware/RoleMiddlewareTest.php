@@ -94,7 +94,7 @@ final class RoleMiddlewareTest extends TestCase
     private static function routePermissions(): array
     {
         return [
-            'desktop dashboard' => ['/dashboard', [UserRole::Admin, UserRole::Supervisor]],
+            'desktop dashboard' => ['/dashboard', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'desktop machines' => ['/machines', [UserRole::Admin]],
             'desktop checklists' => ['/checklists', [UserRole::Admin]],
             'desktop schedules' => ['/schedules', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
