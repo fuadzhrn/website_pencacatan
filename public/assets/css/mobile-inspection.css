@@ -1080,3 +1080,155 @@
         transition: none;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .mobile-inspection-notice,
+    .mobile-inspection-empty {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fff;
+        color: #374151;
+        font-size: 12px;
+    }
+
+    .mobile-inspection-notice svg,
+    .mobile-inspection-empty svg {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+    }
+
+    .mobile-inspection-notice--success {
+        border-color: #a7f3d0;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .mobile-inspection-notice--error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .mobile-inspection-notice--info {
+        border-color: #d1fae5;
+        background: #f0fdf4;
+        color: #047857;
+    }
+
+    .mobile-inspection-empty {
+        justify-content: center;
+        min-height: 74px;
+        text-align: center;
+    }
+
+    .mobile-inspection-badge--overdue {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .mobile-inspection-link,
+    .mobile-machine-card form button {
+        display: inline-flex;
+        width: 100%;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        box-sizing: border-box;
+        border: 0;
+        border-radius: 8px;
+        background: #047857;
+        color: #fff;
+        font: 600 12px Poppins, sans-serif;
+        text-decoration: none;
+    }
+
+    .mobile-machine-card form {
+        margin: 0;
+    }
+
+    .mobile-checklist-item__results {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .mobile-checklist-item__results button.is-active {
+        border-color: #047857;
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .mobile-checklist-item__results button[data-inspection-result='tidak_sesuai'].is-active {
+        border-color: #dc2626;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .mobile-checklist-item label {
+        display: grid;
+        gap: 6px;
+        color: #4b5563;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .mobile-checklist-item input,
+    .mobile-checklist-item textarea,
+    .mobile-inspection-notes textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        color: #111827;
+        font: 400 12px Poppins, sans-serif;
+        padding: 10px;
+    }
+
+    .mobile-inspection-notes {
+        display: grid;
+        gap: 7px;
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .mobile-inspection-notes label {
+        color: #111827;
+        font-size: 12px;
+        font-weight: 600;
+    }
+}
+.mobile-finding-fields {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fff7ed;
+}
+
+.mobile-finding-fields[hidden] {
+    display: none;
+}
+
+.mobile-finding-fields > strong {
+    color: #991b1b;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.mobile-finding-fields > p {
+    margin: 0;
+    color: #9a3412;
+    font-size: 0.8rem;
+}

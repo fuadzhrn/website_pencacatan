@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\MaintenanceCategoryController;
+use App\Http\Controllers\MaintenanceFindingController;
 use App\Http\Controllers\MaintenanceItemController;
 use App\Http\Controllers\MaintenanceScheduleController;
 use App\Http\Controllers\UserController;
@@ -35,25 +37,21 @@ Route::middleware('auth')->group(function (): void {
         ->whereNumber('schedule')
         ->name('schedules.show');
 
-    Route::get('/inspections/today', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('inspections.today', [
-            'activeMenu' => 'pemeriksaan-hari-ini',
-            'pageTitle' => 'Pemeriksaan Hari Ini',
-            'pageDescription' => 'Isi checklist preventive maintenance berdasarkan jadwal hari ini.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin,petugas')->name('inspections.today');
+    Route::get('/inspections/today', [InspectionController::class, 'today'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('inspections.today');
+    Route::get('/inspections/schedules/{schedule}', [InspectionController::class, 'showSchedule'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('schedule')
+        ->name('inspections.schedules.show');
+    Route::post('/inspections/schedules/{schedule}/start', [InspectionController::class, 'start'])
+        ->middleware('role:petugas')
+        ->whereNumber('schedule')
+        ->name('inspections.start');
+    Route::post('/inspections/schedules/{schedule}', [InspectionController::class, 'store'])
+        ->middleware('role:petugas')
+        ->whereNumber('schedule')
+        ->name('inspections.store');
 
     Route::get('/inspections/history', function (Request $request): View {
         $user = $request->user();
@@ -75,25 +73,24 @@ Route::middleware('auth')->group(function (): void {
         ]);
     })->middleware('role:admin,petugas,supervisor')->name('inspections.history');
 
-    Route::get('/findings', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('findings.index', [
-            'activeMenu' => 'temuan',
-            'pageTitle' => 'Temuan Pemeriksaan',
-            'pageDescription' => 'Kelola temuan dari hasil preventive maintenance mesin X-Ray.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin,petugas,supervisor')->name('findings.index');
+    Route::get('/findings', [MaintenanceFindingController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('findings.index');
+    Route::post('/findings', [MaintenanceFindingController::class, 'store'])
+        ->middleware('role:petugas')
+        ->name('findings.store');
+    Route::patch('/findings/{finding}/status', [MaintenanceFindingController::class, 'updateStatus'])
+        ->middleware('role:supervisor')
+        ->whereNumber('finding')
+        ->name('findings.update-status');
+    Route::match(['put', 'patch'], '/findings/{finding}', [MaintenanceFindingController::class, 'update'])
+        ->middleware('role:petugas')
+        ->whereNumber('finding')
+        ->name('findings.update');
+    Route::get('/findings/{finding}', [MaintenanceFindingController::class, 'show'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('finding')
+        ->name('findings.show');
 
     Route::get('/reports/monthly', function (Request $request): View {
         $user = $request->user();
@@ -156,22 +153,6 @@ Route::middleware('auth')->group(function (): void {
             'pageTitle' => 'Dashboard',
             'pageDescription' => 'Pantau aktivitas preventive maintenance hari ini.',
         ],
-        'inspection-today' => [
-            'path' => 'inspection-today',
-            'roles' => 'admin,petugas',
-            'view' => 'inspections.today',
-            'activeMenu' => 'pemeriksaan-hari-ini',
-            'pageTitle' => 'Pemeriksaan Hari Ini',
-            'pageDescription' => 'Isi checklist preventive maintenance berdasarkan jadwal hari ini.',
-        ],
-        'findings' => [
-            'path' => 'findings',
-            'roles' => 'admin,petugas,supervisor',
-            'view' => 'findings.index',
-            'activeMenu' => 'temuan',
-            'pageTitle' => 'Temuan Pemeriksaan',
-            'pageDescription' => 'Kelola temuan dari hasil preventive maintenance mesin X-Ray.',
-        ],
         'history' => [
             'path' => 'history',
             'roles' => 'admin,petugas,supervisor',
@@ -217,6 +198,14 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('role:admin,petugas,supervisor')
         ->name('mobile.schedules');
 
+    Route::get('/mobile/findings', [MaintenanceFindingController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('mobile.findings');
+
+    Route::get('/mobile/inspection-today', [InspectionController::class, 'today'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('mobile.inspection-today');
+
     Route::get('/mobile/users', [UserController::class, 'index'])
         ->middleware('role:admin')
         ->name('mobile.users');
@@ -228,6 +217,11 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/mobile/checklists', [MaintenanceCategoryController::class, 'index'])
         ->middleware('role:admin')
         ->name('mobile.checklists');
+
+    Route::get('/inspections/{check}', [InspectionController::class, 'show'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('check')
+        ->name('inspections.show');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

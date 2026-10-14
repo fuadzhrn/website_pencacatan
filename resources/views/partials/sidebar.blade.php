@@ -57,7 +57,7 @@
                 <a href="{{ route('findings.index') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'temuan']) @if ($activeMenu === 'temuan') aria-current="page" @endif>
                     <i data-lucide="triangle-alert" aria-hidden="true"></i>
                     <span>Temuan</span>
-                    <span class="sidebar-menu__count sidebar-menu__count--danger" aria-label="4 temuan aktif">4</span>
+                    <span class="sidebar-menu__count sidebar-menu__count--danger" aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</span>
                 </a>
                 <a href="{{ route('inspections.history') }}" @class(['sidebar-menu__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                     <i data-lucide="history" aria-hidden="true"></i>

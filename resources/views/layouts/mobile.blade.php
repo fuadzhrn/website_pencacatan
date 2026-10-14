@@ -87,7 +87,7 @@
             <span class="mobile-bottom-navigation__primary-icon"><i data-lucide="clipboard-check" aria-hidden="true"></i></span><span>Periksa</span>
         </a>
         <a href="{{ route('mobile.findings') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'temuan']) data-mobile-nav-link data-mobile-route="findings" @if ($activeMenu === 'temuan') aria-current="page" @endif>
-            <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="4 temuan aktif">4</small>
+            <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</small>
         </a>
         <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
             <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
@@ -126,8 +126,8 @@
         <script type="module" src="{{ asset('assets/js/mobile-schedules.js') }}"></script>
     @elseif ($activeMenu === 'temuan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
-        @include('mobile.findings')
-        <script type="module" src="{{ asset('assets/js/mobile-findings.js') }}"></script>
+        @include('mobile.findings-data-partial')
+        <script src="{{ asset('assets/js/findings-database.js') }}" defer></script>
     @elseif ($activeMenu === 'riwayat-pemeriksaan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-history.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.history')
