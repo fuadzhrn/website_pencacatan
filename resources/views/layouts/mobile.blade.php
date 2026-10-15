@@ -67,11 +67,9 @@
             <a href="{{ route('mobile.history') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-route="history" @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
                 <i data-lucide="history" aria-hidden="true"></i><span>Riwayat Pemeriksaan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
             </a>
-            @if ($userRole !== 'Petugas')
-                <a href="{{ route('mobile.report') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
-                    <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
-                </a>
-            @endif
+            <a href="{{ route('mobile.report') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
+                <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span><i data-lucide="chevron-right" aria-hidden="true"></i>
+            </a>
             @if ($userRole === 'Admin')
                 <a href="{{ route('mobile.users') }}" @class(['mobile-drawer__link', 'is-active' => $activeMenu === 'user-management']) data-mobile-nav-link data-mobile-route="users" data-user-management-navigation="mobile" @if ($activeMenu === 'user-management') aria-current="page" @endif>
                     <i data-lucide="users-round" aria-hidden="true"></i><span>User Management</span><i data-lucide="chevron-right" aria-hidden="true"></i>
@@ -98,15 +96,9 @@
         <a href="{{ route('mobile.findings') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'temuan']) data-mobile-nav-link data-mobile-route="findings" @if ($activeMenu === 'temuan') aria-current="page" @endif>
             <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</small>
         </a>
-        @if ($userRole !== 'Petugas')
-            <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
-                <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
-            </a>
-        @else
-            <a href="{{ route('mobile.history') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'riwayat-pemeriksaan']) data-mobile-nav-link data-mobile-route="history" @if ($activeMenu === 'riwayat-pemeriksaan') aria-current="page" @endif>
-                <i data-lucide="history" aria-hidden="true"></i><span>Riwayat</span>
-            </a>
-        @endif
+        <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
+            <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
+        </a>
     </nav>
 
     <div class="mobile-navigation-toast" data-mobile-navigation-toast role="status" aria-live="polite" hidden>
@@ -152,7 +144,6 @@
         <script type="module" src="{{ asset('assets/js/mobile-users.js') }}"></script>
     @elseif ($activeMenu === 'laporan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
-        @include('mobile.report')
-        <script type="module" src="{{ asset('assets/js/mobile-report.js') }}"></script>
+        @include('mobile.report-database')
     @endif
 </section>

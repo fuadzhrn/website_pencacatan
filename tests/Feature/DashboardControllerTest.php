@@ -172,7 +172,7 @@ final class DashboardControllerTest extends TestCase
             ->assertSee('aria-valuenow="25"', false);
     }
 
-    public function test_petugas_dashboard_navigation_hides_restricted_management_and_report_links(): void
+    public function test_petugas_dashboard_navigation_hides_management_links_but_shows_authorized_report_links(): void
     {
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
 
@@ -182,8 +182,8 @@ final class DashboardControllerTest extends TestCase
             ->assertDontSee('href="'.route('mobile.machines').'"', false)
             ->assertDontSee('href="'.route('checklists.index').'"', false)
             ->assertDontSee('href="'.route('mobile.checklists').'"', false)
-            ->assertDontSee('href="'.route('reports.monthly').'"', false)
-            ->assertDontSee('href="'.route('mobile.report').'"', false)
+            ->assertSee('href="'.route('reports.monthly').'"', false)
+            ->assertSee('href="'.route('mobile.report').'"', false)
             ->assertSee('href="'.route('mobile.history').'"', false);
     }
 

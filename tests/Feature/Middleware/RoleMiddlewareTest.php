@@ -101,7 +101,7 @@ final class RoleMiddlewareTest extends TestCase
             'desktop inspection today' => ['/inspections/today', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'desktop findings' => ['/findings', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'desktop history' => ['/inspections/history', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
-            'desktop reports' => ['/reports/monthly', [UserRole::Admin, UserRole::Supervisor]],
+            'desktop reports' => ['/reports/monthly', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'desktop users' => ['/users', [UserRole::Admin]],
             'mobile dashboard' => ['/mobile/dashboard', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'mobile machines' => ['/mobile/machines', [UserRole::Admin]],
@@ -110,7 +110,7 @@ final class RoleMiddlewareTest extends TestCase
             'mobile inspection today' => ['/mobile/inspection-today', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'mobile findings' => ['/mobile/findings', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'mobile history' => ['/mobile/history', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
-            'mobile reports' => ['/mobile/report', [UserRole::Admin, UserRole::Supervisor]],
+            'mobile reports' => ['/mobile/report', [UserRole::Admin, UserRole::Petugas, UserRole::Supervisor]],
             'mobile users' => ['/mobile/users', [UserRole::Admin]],
         ];
     }

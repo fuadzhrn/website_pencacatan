@@ -8,12 +8,10 @@ use App\Http\Controllers\MaintenanceCategoryController;
 use App\Http\Controllers\MaintenanceFindingController;
 use App\Http\Controllers\MaintenanceItemController;
 use App\Http\Controllers\MaintenanceScheduleController;
+use App\Http\Controllers\MonthlyReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 Route::redirect('/', '/login');
 
@@ -110,25 +108,15 @@ Route::middleware('auth')->group(function (): void {
         ->whereNumber('finding')
         ->name('findings.photo');
 
-    Route::get('/reports/monthly', function (Request $request): View {
-        $user = $request->user();
-        $initials = Str::of($user->name)
-            ->trim()
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-            ->implode('');
-
-        return view('reports.monthly', [
-            'activeMenu' => 'laporan',
-            'pageTitle' => 'Laporan Bulanan',
-            'pageDescription' => 'Rekap hasil preventive maintenance mesin X-Ray berdasarkan bulan dan tahun.',
-            'userName' => $user->name,
-            'userRole' => $user->role->label(),
-            'userInitials' => $initials,
-        ]);
-    })->middleware('role:admin,supervisor')->name('reports.monthly');
+    Route::get('/reports/monthly', [MonthlyReportController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('reports.monthly');
+    Route::get('/reports/monthly/pdf', [MonthlyReportController::class, 'pdf'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('reports.monthly.pdf');
+    Route::get('/reports/monthly/excel', [MonthlyReportController::class, 'excel'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('reports.monthly.excel');
 
     Route::middleware('role:admin')->group(function (): void {
         Route::post('/schedules/generate', [MaintenanceScheduleController::class, 'generate'])
@@ -162,39 +150,9 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('users', UserController::class);
     });
 
-    $mobilePages = [
-        'report' => [
-            'path' => 'report',
-            'roles' => 'admin,supervisor',
-            'view' => 'reports.monthly',
-            'activeMenu' => 'laporan',
-            'pageTitle' => 'Laporan Bulanan',
-            'pageDescription' => 'Rekap hasil preventive maintenance berdasarkan periode.',
-        ],
-    ];
-
-    foreach ($mobilePages as $routeName => $mobilePage) {
-        Route::get('/mobile/'.$mobilePage['path'], function (Request $request) use ($mobilePage): View {
-            $user = $request->user();
-
-            $initials = Str::of($user->name)
-                ->trim()
-                ->explode(' ')
-                ->filter()
-                ->take(2)
-                ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
-                ->implode('');
-
-            return view($mobilePage['view'], [
-                'activeMenu' => $mobilePage['activeMenu'],
-                'pageTitle' => $mobilePage['pageTitle'],
-                'pageDescription' => $mobilePage['pageDescription'],
-                'userName' => $user->name,
-                'userRole' => $user->role->label(),
-                'userInitials' => $initials,
-            ]);
-        })->middleware('role:'.$mobilePage['roles'])->name('mobile.'.$routeName);
-    }
+    Route::get('/mobile/report', [MonthlyReportController::class, 'index'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->name('mobile.report');
 
     Route::get('/mobile/schedules', [MaintenanceScheduleController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')
