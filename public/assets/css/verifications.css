@@ -112,6 +112,32 @@
 .verification-table td strong, .verification-table td small { display: block; }
 .verification-table td small { margin-top: 3px; color: #6b7280; }
 
+.verification-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+}
+
+.verification-pagination a,
+.verification-pagination span {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.verification-pagination a:hover { border-color: #047857; background: #ecfdf5; color: #065f46; }
+.verification-pagination span { cursor: not-allowed; opacity: .55; }
+.verification-pagination small { color: #6b7280; font-size: 11px; }
+
 .verification-badge { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: 999px; font-size: 10px; font-weight: 600; white-space: nowrap; }
 .verification-badge--waiting { background: #fef3c7; color: #92400e; }
 .verification-badge--verified, .verification-badge--normal { background: #d1fae5; color: #065f46; }
@@ -140,6 +166,8 @@
 .verification-findings h3 { margin: 0; font: 600 13px Montserrat, sans-serif; }
 .verification-findings p { margin: 10px 0 5px; font-size: 13px; }
 .verification-findings small, .verification-findings a { display: block; margin-top: 6px; color: #6b7280; font-size: 11px; }
+.verification-photo-link { color: #047857 !important; font-weight: 600; text-decoration: none; }
+.verification-photo-link:hover { color: #065f46 !important; text-decoration: underline; }
 .verification-decision__form { display: grid; gap: 14px; }
 .verification-decision textarea { min-height: 110px; resize: vertical; }
 .verification-decision__form > div { display: flex; justify-content: flex-end; gap: 10px; }
@@ -196,6 +224,10 @@
     .mobile-history-database__empty { padding: 30px 16px; border: 1px dashed #d1d5db; border-radius: 12px; color: #6b7280; text-align: center; }
     .mobile-history-database__empty h2 { color: #374151; font: 600 14px Montserrat, sans-serif; }
     .mobile-history-database__empty p { margin: 0; font-size: 11px; }
+    .mobile-history-database__pagination { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+    .mobile-history-database__pagination a, .mobile-history-database__pagination span { display: grid; min-height: 42px; place-items: center; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #065f46; font-size: 10px; font-weight: 600; text-decoration: none; }
+    .mobile-history-database__pagination span { color: #9ca3af; }
+    .mobile-history-database__pagination small { color: #6b7280; font-size: 10px; text-align: center; }
     .mobile-verification-detail__back { display: flex; min-height: 42px; align-items: center; gap: 7px; color: #065f46; font-size: 12px; font-weight: 600; text-decoration: none; }
     .mobile-verification-detail__back svg { width: 16px; }
     .mobile-verification-detail { padding: 15px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
@@ -218,6 +250,8 @@
     .mobile-verification-detail__items strong { color: #374151; font-size: 11px; }
     .mobile-verification-detail__items small { display: block; margin-top: 5px; color: #6b7280; font-size: 9px; }
     .mobile-verification-detail__items p { margin: 6px 0 0; color: #4b5563; font-size: 10px; }
+    .mobile-verification-detail > small { display: block; margin-top: 7px; color: #6b7280; font-size: 9px; }
+    .mobile-verification-detail > .verification-button { width: 100%; margin-top: 12px; }
     .mobile-verification-detail__decision { display: grid; gap: 10px; margin-top: 12px; }
     .mobile-verification-detail__decision textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font: 400 11px Poppins, sans-serif; resize: vertical; }
     .mobile-verification-detail__decision textarea:focus { border-color: #047857; outline: 0; box-shadow: 0 0 0 3px #d1fae5; }

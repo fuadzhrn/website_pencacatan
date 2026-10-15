@@ -36,7 +36,7 @@ final class MaintenanceFindingManagementTest extends TestCase
 
     public function test_nonconform_inspection_item_creates_one_open_finding_with_photo(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $this->travelTo(CarbonImmutable::parse('2026-10-13 09:15:00'));
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
         $context = $this->createInspectionContext($petugas);
@@ -64,7 +64,7 @@ final class MaintenanceFindingManagementTest extends TestCase
         $this->assertSame('Conveyor tersendat saat dijalankan.', $finding->finding_description);
         $this->assertSame('Periksa motor dan ketegangan belt.', $finding->follow_up);
         $this->assertSame('open', $finding->status);
-        Storage::disk('public')->assertExists($finding->photo);
+        Storage::disk('local')->assertExists($finding->photo);
     }
 
     public function test_nonconform_item_requires_description_before_writing_details(): void
@@ -120,7 +120,7 @@ final class MaintenanceFindingManagementTest extends TestCase
 
     public function test_correcting_draft_removes_only_unreviewed_open_finding_and_photo(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $this->travelTo(CarbonImmutable::parse('2026-10-13 09:15:00'));
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
         $context = $this->createInspectionContext($petugas);
@@ -134,7 +134,7 @@ final class MaintenanceFindingManagementTest extends TestCase
         ])->assertSessionHas('success');
 
         $this->assertDatabaseCount('maintenance_findings', 0);
-        Storage::disk('public')->assertMissing($photoPath);
+        Storage::disk('local')->assertMissing($photoPath);
     }
 
     public function test_reviewed_finding_prevents_petugas_from_correcting_its_item(): void
@@ -184,8 +184,8 @@ final class MaintenanceFindingManagementTest extends TestCase
 
     public function test_petugas_can_create_and_update_an_own_manual_open_finding(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('findings/foto-lama.jpg', 'lama');
+        Storage::fake('local');
+        Storage::disk('local')->put('findings/foto-lama.jpg', 'lama');
         $this->travelTo(CarbonImmutable::parse('2026-10-13 10:00:00'));
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
         $context = $this->createInspectionContext($petugas);
@@ -204,8 +204,8 @@ final class MaintenanceFindingManagementTest extends TestCase
         $finding->refresh();
         $this->assertSame('Keterangan terbaru.', $finding->finding_description);
         $this->assertSame('open', $finding->status);
-        Storage::disk('public')->assertMissing('findings/foto-lama.jpg');
-        Storage::disk('public')->assertExists($finding->photo);
+        Storage::disk('local')->assertMissing('findings/foto-lama.jpg');
+        Storage::disk('local')->assertExists($finding->photo);
     }
 
     public function test_petugas_cannot_create_or_view_another_officers_finding(): void
@@ -218,6 +218,24 @@ final class MaintenanceFindingManagementTest extends TestCase
         $this->actingAs($petugas)->post('/findings', $this->findingPayload($context, $detail))->assertForbidden();
         $finding = $this->createFinding($context, $other, $detail);
         $this->actingAs($petugas)->get('/findings/'.$finding->id)->assertNotFound();
+    }
+
+    public function test_private_finding_photo_is_only_available_to_users_who_can_view_the_finding(): void
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('findings/private-photo.jpg', 'private-photo');
+        $owner = User::factory()->create(['role' => UserRole::Petugas]);
+        $otherPetugas = User::factory()->create(['role' => UserRole::Petugas]);
+        $admin = User::factory()->create(['role' => UserRole::Admin]);
+        $context = $this->createInspectionContext($owner);
+        $detail = $this->createDetail($context, 'tidak_sesuai');
+        $finding = $this->createFinding($context, $owner, $detail, [
+            'photo' => 'findings/private-photo.jpg',
+        ]);
+
+        $this->actingAs($owner)->get(route('findings.photo', $finding))->assertOk();
+        $this->actingAs($admin)->get(route('findings.photo', $finding))->assertOk();
+        $this->actingAs($otherPetugas)->get(route('findings.photo', $finding))->assertNotFound();
     }
 
     public function test_manual_create_cannot_reset_an_existing_reviewed_finding(): void

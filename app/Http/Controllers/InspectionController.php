@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InspectionController extends Controller
 {
@@ -190,7 +191,7 @@ class InspectionController extends Controller
 
                     if (isset($itemData['photo'])) {
                         $previousPhotoPath = $detail->photo;
-                        $detail->photo = $itemData['photo']->store('inspection-photos', 'public');
+                        $detail->photo = $itemData['photo']->store('inspection-photos', 'local');
                         $newPhotoPaths[] = $detail->photo;
 
                         if ($previousPhotoPath) {
@@ -231,7 +232,7 @@ class InspectionController extends Controller
 
                             if (isset($itemData['finding_photo'])) {
                                 $previousFindingPhoto = $finding->photo;
-                                $finding->photo = $itemData['finding_photo']->store('findings', 'public');
+                                $finding->photo = $itemData['finding_photo']->store('findings', 'local');
                                 $newPhotoPaths[] = $finding->photo;
 
                                 if ($previousFindingPhoto) {
@@ -269,12 +270,12 @@ class InspectionController extends Controller
                 $lockedSchedule->update(['status' => $isFinalSubmission ? 'completed' : 'in_progress']);
             });
         } catch (\Throwable $exception) {
-            Storage::disk('public')->delete($newPhotoPaths);
+            Storage::disk('local')->delete($newPhotoPaths);
 
             throw $exception;
         }
 
-        Storage::disk('public')->delete($replacedPhotoPaths);
+        Storage::disk('local')->delete($replacedPhotoPaths);
 
         $message = $isFinalSubmission
             ? 'Pemeriksaan berhasil disimpan.'
@@ -288,6 +289,10 @@ class InspectionController extends Controller
     public function show(Request $request, MaintenanceCheck $check): View
     {
         $user = $request->user();
+
+        if ($check->end_time === null) {
+            abort(404);
+        }
 
         if ($user->role === UserRole::Petugas && $check->checked_by !== $user->id) {
             abort(404);
@@ -311,6 +316,8 @@ class InspectionController extends Controller
             'schedules' => collect(),
             'selectedSchedule' => $selectedSchedule,
             'check' => $check,
+            'isHistoryDetail' => true,
+            'isVerificationQueue' => false,
             'checklistItems' => $check->details->pluck('item')->filter()->values(),
             'checkDetails' => $check->details->keyBy('maintenance_item_id'),
             'canEditInspection' => false,
@@ -319,6 +326,46 @@ class InspectionController extends Controller
             'resultStatusLabels' => $this->resultStatusLabels(),
             'inputTypeLabels' => $this->inputTypeLabels(),
         ]);
+    }
+
+    public function detailPhoto(
+        Request $request,
+        MaintenanceCheck $check,
+        MaintenanceCheckDetail $detail,
+    ): StreamedResponse {
+        $this->ensureCheckIsVisible($request->user(), $check);
+
+        abort_unless($detail->maintenance_check_id === $check->id && filled($detail->photo), 404);
+
+        return $this->privatePhotoResponse($detail->photo);
+    }
+
+    public function findingPhoto(
+        Request $request,
+        MaintenanceCheck $check,
+        MaintenanceFinding $finding,
+    ): StreamedResponse {
+        $this->ensureCheckIsVisible($request->user(), $check);
+
+        abort_unless($finding->maintenance_check_id === $check->id && filled($finding->photo), 404);
+
+        return $this->privatePhotoResponse($finding->photo);
+    }
+
+    private function ensureCheckIsVisible(User $user, MaintenanceCheck $check): void
+    {
+        if ($user->role === UserRole::Petugas && $check->checked_by !== $user->id) {
+            abort(404);
+        }
+    }
+
+    private function privatePhotoResponse(string $path): StreamedResponse
+    {
+        $disk = Storage::disk('local');
+
+        abort_unless($disk->exists($path), 404);
+
+        return $disk->response($path);
     }
 
     /** @return Builder<MaintenanceSchedule> */

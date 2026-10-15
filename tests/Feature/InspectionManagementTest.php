@@ -165,7 +165,7 @@ final class InspectionManagementTest extends TestCase
 
     public function test_draft_stores_details_actual_value_note_and_photo_as_incomplete(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $this->travelTo(CarbonImmutable::parse('2026-10-13 09:00:00'));
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
         $category = $this->createCategory();
@@ -208,7 +208,7 @@ final class InspectionManagementTest extends TestCase
         $measurementDetail = MaintenanceCheckDetail::query()->where('maintenance_item_id', $measurementItem->id)->firstOrFail();
         $this->assertSame('27.5', $measurementDetail->actual_value);
         $this->assertNotNull($measurementDetail->photo);
-        Storage::disk('public')->assertExists($measurementDetail->photo);
+        Storage::disk('local')->assertExists($measurementDetail->photo);
     }
 
     public function test_final_submission_marks_a_complete_normal_inspection_and_schedule_completed(): void
@@ -476,10 +476,33 @@ final class InspectionManagementTest extends TestCase
         $this->actingAs($newAssignee)->get('/inspections/'.$check->id)->assertNotFound();
     }
 
+    public function test_private_check_photo_is_only_available_to_users_who_can_view_the_check(): void
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('inspection-photos/private-photo.jpg', 'private-photo');
+        $owner = User::factory()->create(['role' => UserRole::Petugas]);
+        $otherPetugas = User::factory()->create(['role' => UserRole::Petugas]);
+        $admin = User::factory()->create(['role' => UserRole::Admin]);
+        $category = $this->createCategory();
+        $item = $this->createItem($category);
+        $schedule = $this->createSchedule($this->createMachine(), $category, $owner, ['status' => 'completed']);
+        $check = $this->createCheck($schedule, $owner);
+        $detail = MaintenanceCheckDetail::query()->create([
+            'maintenance_check_id' => $check->id,
+            'maintenance_item_id' => $item->id,
+            'result_status' => 'sesuai',
+            'photo' => 'inspection-photos/private-photo.jpg',
+        ]);
+
+        $this->actingAs($owner)->get(route('inspections.details.photo', [$check, $detail]))->assertOk();
+        $this->actingAs($admin)->get(route('inspections.details.photo', [$check, $detail]))->assertOk();
+        $this->actingAs($otherPetugas)->get(route('inspections.details.photo', [$check, $detail]))->assertNotFound();
+    }
+
     public function test_uploading_a_replacement_photo_removes_the_previous_file(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('inspection-photos/foto-lama.jpg', 'foto-lama');
+        Storage::fake('local');
+        Storage::disk('local')->put('inspection-photos/foto-lama.jpg', 'foto-lama');
         $this->travelTo(CarbonImmutable::parse('2026-10-13 11:00:00'));
         $petugas = User::factory()->create(['role' => UserRole::Petugas]);
         $category = $this->createCategory();
@@ -508,8 +531,8 @@ final class InspectionManagementTest extends TestCase
         ])->assertSessionHas('success');
 
         $detail = MaintenanceCheckDetail::query()->where('maintenance_item_id', $item->id)->firstOrFail();
-        Storage::disk('public')->assertMissing('inspection-photos/foto-lama.jpg');
-        Storage::disk('public')->assertExists($detail->photo);
+        Storage::disk('local')->assertMissing('inspection-photos/foto-lama.jpg');
+        Storage::disk('local')->assertExists($detail->photo);
     }
 
     public function test_final_status_preserves_a_nonconformity_from_an_item_deactivated_after_a_draft(): void

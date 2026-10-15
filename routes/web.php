@@ -58,6 +58,18 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/inspections/history', [VerificationController::class, 'index'])
         ->middleware('role:admin,petugas,supervisor')
         ->name('inspections.history');
+    Route::get('/inspections/history/{check}', [VerificationController::class, 'historyShow'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('check')
+        ->name('inspections.history.show');
+    Route::get('/inspections/history/{check}/details/{detail}/photo', [VerificationController::class, 'detailPhoto'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber(['check', 'detail'])
+        ->name('inspections.history.details.photo');
+    Route::get('/inspections/history/{check}/findings/{finding}/photo', [VerificationController::class, 'findingPhoto'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber(['check', 'finding'])
+        ->name('inspections.history.findings.photo');
 
     Route::get('/verifications', [VerificationController::class, 'index'])
         ->middleware('role:admin,supervisor')
@@ -93,6 +105,10 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('role:admin,petugas,supervisor')
         ->whereNumber('finding')
         ->name('findings.show');
+    Route::get('/findings/{finding}/photo', [MaintenanceFindingController::class, 'photo'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber('finding')
+        ->name('findings.photo');
 
     Route::get('/reports/monthly', function (Request $request): View {
         $user = $request->user();
@@ -212,6 +228,14 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('role:admin,petugas,supervisor')
         ->whereNumber('check')
         ->name('inspections.show');
+    Route::get('/inspections/{check}/details/{detail}/photo', [InspectionController::class, 'detailPhoto'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber(['check', 'detail'])
+        ->name('inspections.details.photo');
+    Route::get('/inspections/{check}/findings/{finding}/photo', [InspectionController::class, 'findingPhoto'])
+        ->middleware('role:admin,petugas,supervisor')
+        ->whereNumber(['check', 'finding'])
+        ->name('inspections.findings.photo');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });

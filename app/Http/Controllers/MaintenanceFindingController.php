@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MaintenanceFindingController extends Controller
 {
@@ -90,6 +91,18 @@ class MaintenanceFindingController extends Controller
         ]);
     }
 
+    public function photo(Request $request, MaintenanceFinding $finding): StreamedResponse
+    {
+        $this->ensureVisible($request->user(), $finding);
+
+        abort_unless(filled($finding->photo), 404);
+
+        $disk = Storage::disk('local');
+        abort_unless($disk->exists($finding->photo), 404);
+
+        return $disk->response($finding->photo);
+    }
+
     public function store(StoreMaintenanceFindingRequest $request): RedirectResponse
     {
         $validated = $request->validated();
@@ -109,7 +122,7 @@ class MaintenanceFindingController extends Controller
                 }
 
                 if ($request->hasFile('photo')) {
-                    $newPhotoPath = $request->file('photo')->store('findings', 'public');
+                    $newPhotoPath = $request->file('photo')->store('findings', 'local');
                 }
 
                 if (MaintenanceFinding::query()->where('maintenance_check_detail_id', $detail->id)->lockForUpdate()->exists()) {
@@ -131,7 +144,7 @@ class MaintenanceFindingController extends Controller
             });
         } catch (\Throwable $exception) {
             if ($newPhotoPath) {
-                Storage::disk('public')->delete($newPhotoPath);
+                Storage::disk('local')->delete($newPhotoPath);
             }
 
             throw $exception;
@@ -163,7 +176,7 @@ class MaintenanceFindingController extends Controller
 
                 if ($request->hasFile('photo')) {
                     $oldPhotoPath = $lockedFinding->photo;
-                    $newPhotoPath = $request->file('photo')->store('findings', 'public');
+                    $newPhotoPath = $request->file('photo')->store('findings', 'local');
                     $attributes['photo'] = $newPhotoPath;
                 }
 
@@ -171,14 +184,14 @@ class MaintenanceFindingController extends Controller
             });
         } catch (\Throwable $exception) {
             if ($newPhotoPath) {
-                Storage::disk('public')->delete($newPhotoPath);
+                Storage::disk('local')->delete($newPhotoPath);
             }
 
             throw $exception;
         }
 
         if ($oldPhotoPath) {
-            Storage::disk('public')->delete($oldPhotoPath);
+            Storage::disk('local')->delete($oldPhotoPath);
         }
 
         return back()->with('success', 'Temuan berhasil diperbarui.');

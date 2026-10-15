@@ -12,7 +12,7 @@
         <div><dt>Kriteria</dt><dd>{{ $finding->item?->criteria ?? '-' }}</dd></div><div><dt>Keterangan</dt><dd>{{ $finding->finding_description }}</dd></div>
         <div><dt>Tindak lanjut</dt><dd>{{ $finding->follow_up ?: '-' }}</dd></div><div><dt>Ditinjau oleh</dt><dd>{{ $finding->reviewedBy?->name ?? '-' }}</dd></div>
     </dl>
-    @if ($finding->photo)<img src="{{ asset('storage/'.$finding->photo) }}" alt="Foto temuan {{ $finding->item?->item_name }}" class="finding-detail-photo">@endif
+    @if ($finding->photo)<img src="{{ route('findings.photo', $finding) }}" alt="Foto temuan {{ $finding->item?->item_name }}" class="finding-detail-photo">@endif
     @if (auth()->user()->role === \App\UserRole::Petugas && $finding->reported_by === auth()->id() && $finding->status === 'open' && $finding->reviewed_by === null)
         <form method="POST" action="{{ route('findings.update', $finding) }}" enctype="multipart/form-data" class="findings-form">
             @csrf @method('PUT')

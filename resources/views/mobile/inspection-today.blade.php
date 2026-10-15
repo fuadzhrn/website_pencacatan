@@ -135,14 +135,14 @@
                                 @if ($canEditInspection)
                                     <label><span>Foto opsional</span><input type="file" name="items[{{ $item->id }}][photo]" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>
                                 @elseif ($detail?->photo)
-                                    <a href="{{ asset('storage/'.$detail->photo) }}" target="_blank" rel="noopener">Lihat foto pemeriksaan</a>
+                                    <a href="{{ route('inspections.details.photo', [$mobileCheck, $detail]) }}" target="_blank" rel="noopener">Lihat foto pemeriksaan</a>
                                 @endif
                                 <section class="mobile-finding-fields" data-finding-fields @if ($selectedResult !== 'tidak_sesuai') hidden @endif>
                                     <strong>Data temuan</strong>
                                     @if ($finding && ! $canEditFinding)<p>Temuan sudah {{ $finding->status === 'resolved' ? 'diselesaikan' : 'ditinjau' }} dan dikunci.</p>@endif
                                     <label><span>Keterangan temuan</span><textarea name="items[{{ $item->id }}][finding_description]" rows="3" data-finding-description @disabled(! $canEditFinding)>{{ old("items.{$item->id}.finding_description", $finding?->finding_description) }}</textarea></label>
                                     <label><span>Tindak lanjut</span><textarea name="items[{{ $item->id }}][follow_up]" rows="2" @disabled(! $canEditFinding)>{{ old("items.{$item->id}.follow_up", $finding?->follow_up) }}</textarea></label>
-                                    @if ($canEditFinding)<label><span>Foto temuan (opsional)</span><input type="file" name="items[{{ $item->id }}][finding_photo]" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>@elseif ($finding?->photo)<a href="{{ asset('storage/'.$finding->photo) }}" target="_blank" rel="noopener">Lihat foto temuan</a>@endif
+                                    @if ($canEditFinding)<label><span>Foto temuan (opsional)</span><input type="file" name="items[{{ $item->id }}][finding_photo]" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>@elseif ($finding?->photo)<a href="{{ route('inspections.findings.photo', [$mobileCheck, $finding]) }}" target="_blank" rel="noopener">Lihat foto temuan</a>@endif
                                 </section>
                             </article>
                         @endforeach

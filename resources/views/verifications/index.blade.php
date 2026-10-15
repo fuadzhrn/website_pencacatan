@@ -43,11 +43,12 @@
         </header>
 
         <form method="GET" action="{{ $indexRoute }}" class="verification-filter">
-            <label><span>Cari</span><input type="search" name="search" value="{{ request('search') }}" placeholder="Mesin, serial, atau petugas"></label>
+            <label><span>Cari</span><input type="search" name="search" value="{{ request('search') }}" placeholder="Nama mesin atau serial number"></label>
             <label><span>Tanggal mulai</span><input type="date" name="start_date" value="{{ request('start_date') }}"></label>
             <label><span>Tanggal akhir</span><input type="date" name="end_date" value="{{ request('end_date') }}"></label>
             <label><span>Mesin</span><select name="machine_id"><option value="">Semua mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected((string) request('machine_id') === (string) $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
             <label><span>Petugas</span><select name="officer_id"><option value="">Semua petugas</option>@foreach ($officers as $officer)<option value="{{ $officer->id }}" @selected((string) request('officer_id') === (string) $officer->id)>{{ $officer->name }}</option>@endforeach</select></label>
+            <label><span>Kategori</span><select name="category_id"><option value="">Semua kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>@endforeach</select></label>
             <label><span>Status verifikasi</span><select name="verification_status"><option value="">{{ $isVerificationQueue ? 'Menunggu (default)' : 'Semua status' }}</option>@foreach ($verificationLabels as $value => $label)<option value="{{ $value }}" @selected(request('verification_status') === $value)>{{ $label }}</option>@endforeach</select></label>
             <label><span>Hasil</span><select name="overall_status"><option value="">Semua hasil</option>@foreach ($overallLabels as $value => $label)<option value="{{ $value }}" @selected(request('overall_status') === $value)>{{ $label }}</option>@endforeach</select></label>
             <div class="verification-filter__actions"><a href="{{ $indexRoute }}" class="verification-button verification-button--soft">Reset</a><button class="verification-button verification-button--primary" type="submit">Terapkan</button></div>
@@ -61,15 +62,15 @@
                         <tr>
                             <td><strong>{{ $check->machine->equipment_name }}</strong><small>{{ $check->machine->location }} · {{ $check->machine->serial_number }}</small></td>
                             <td>{{ $check->check_date->translatedFormat('d M Y') }}<small>{{ $check->start_time }} - {{ $check->end_time }}</small></td>
-                            <td>{{ $check->schedule?->maintenanceCategory?->name ?? '-' }}</td>
+                            <td><strong>{{ $check->schedule?->maintenanceCategory?->name ?? '-' }}</strong><small>{{ $frequencyLabels[$check->schedule?->maintenanceCategory?->frequency] ?? ucfirst($check->schedule?->maintenanceCategory?->frequency ?? '-') }}</small></td>
                             <td>{{ $check->checkedBy->name }}</td>
                             <td><span class="verification-badge verification-badge--{{ $check->overall_status }}">{{ $overallLabels[$check->overall_status] ?? $check->overall_status }}</span></td>
                             <td><span class="verification-badge verification-badge--{{ $check->verification_status }}">{{ $verificationLabels[$check->verification_status] ?? $check->verification_status }}</span></td>
                             <td>
-                                @if (auth()->user()->role === \App\UserRole::Petugas)
-                                    <a class="verification-button verification-button--soft" href="{{ route('inspections.show', $check) }}">Detail</a>
-                                @else
+                                @if ($isVerificationQueue)
                                     <a class="verification-button verification-button--soft" href="{{ route('verifications.show', $check) }}">Detail</a>
+                                @else
+                                    <a class="verification-button verification-button--soft" href="{{ route('inspections.history.show', $check) }}">Detail</a>
                                 @endif
                             </td>
                         </tr>
@@ -79,6 +80,21 @@
                 </tbody>
             </table>
         </div>
+        @if ($checks->hasPages())
+            <nav class="verification-pagination" aria-label="Navigasi halaman riwayat">
+                @if ($checks->onFirstPage())
+                    <span aria-disabled="true">Sebelumnya</span>
+                @else
+                    <a href="{{ $checks->previousPageUrl() }}" rel="prev">Sebelumnya</a>
+                @endif
+                <small>Halaman {{ $checks->currentPage() }} dari {{ $checks->lastPage() }} &middot; {{ $checks->total() }} data</small>
+                @if ($checks->hasMorePages())
+                    <a href="{{ $checks->nextPageUrl() }}" rel="next">Berikutnya</a>
+                @else
+                    <span aria-disabled="true">Berikutnya</span>
+                @endif
+            </nav>
+        @endif
     </section>
 </div>
 @endsection

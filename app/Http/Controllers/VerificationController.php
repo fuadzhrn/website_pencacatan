@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FilterInspectionHistoryRequest;
 use App\Http\Requests\RejectInspectionRequest;
 use App\Http\Requests\VerifyInspectionRequest;
 use App\Models\Machine;
+use App\Models\MaintenanceCategory;
 use App\Models\MaintenanceCheck;
+use App\Models\MaintenanceCheckDetail;
+use App\Models\MaintenanceFinding;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
 use App\UserRole;
@@ -13,27 +17,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VerificationController extends Controller
 {
-    public function index(Request $request): View
+    public function index(FilterInspectionHistoryRequest $request): View
     {
-        $validated = $request->validate([
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-            'machine_id' => ['nullable', 'integer', 'exists:machines,id'],
-            'officer_id' => ['nullable', 'integer', 'exists:users,id'],
-            'verification_status' => ['nullable', Rule::in(['waiting', 'verified', 'rejected'])],
-            'overall_status' => ['nullable', Rule::in(['normal', 'has_finding', 'incomplete'])],
-            'search' => ['nullable', 'string', 'max:100'],
-        ]);
-
+        $validated = $request->validated();
         $user = $request->user();
         $isVerificationQueue = $request->routeIs('verifications.*');
-        $visibleChecks = $this->visibleCompletedChecks($user);
+        $visibleChecks = $this->visibleSubmittedChecks($user);
         $summary = [
             'total' => (clone $visibleChecks)->count(),
             'waiting' => (clone $visibleChecks)->where('verification_status', 'waiting')->count(),
@@ -46,9 +42,6 @@ class VerificationController extends Controller
                 'machine',
                 'schedule.maintenanceCategory',
                 'checkedBy',
-                'verifiedBy',
-                'details.item',
-                'findings.item',
             ])
             ->when(
                 $isVerificationQueue && ! isset($validated['verification_status']),
@@ -58,59 +51,107 @@ class VerificationController extends Controller
             ->when(isset($validated['end_date']), fn (Builder $query): Builder => $query->whereDate('check_date', '<=', $validated['end_date']))
             ->when(isset($validated['machine_id']), fn (Builder $query): Builder => $query->where('machine_id', $validated['machine_id']))
             ->when(isset($validated['officer_id']), fn (Builder $query): Builder => $query->where('checked_by', $validated['officer_id']))
+            ->when(isset($validated['category_id']), function (Builder $query) use ($validated): void {
+                $query->whereHas(
+                    'schedule',
+                    fn (Builder $scheduleQuery): Builder => $scheduleQuery->where('maintenance_category_id', $validated['category_id']),
+                );
+            })
             ->when(isset($validated['verification_status']), fn (Builder $query): Builder => $query->where('verification_status', $validated['verification_status']))
             ->when(isset($validated['overall_status']), fn (Builder $query): Builder => $query->where('overall_status', $validated['overall_status']))
             ->when(isset($validated['search']), function (Builder $query) use ($validated): void {
                 $search = '%'.str_replace(['%', '_'], ['\\%', '\\_'], trim($validated['search'])).'%';
-                $query->where(function (Builder $query) use ($search): void {
-                    $query->whereHas('machine', function (Builder $machineQuery) use ($search): void {
-                        $machineQuery->where('equipment_name', 'like', $search)
-                            ->orWhere('serial_number', 'like', $search);
-                    })->orWhereHas('checkedBy', fn (Builder $officerQuery): Builder => $officerQuery->where('name', 'like', $search));
+                $query->whereHas('machine', function (Builder $machineQuery) use ($search): void {
+                    $machineQuery->where('equipment_name', 'like', $search)
+                        ->orWhere('serial_number', 'like', $search);
                 });
             })
             ->latest('check_date')
             ->latest('id')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('verifications.index', [
             ...$this->layoutData($user, $isVerificationQueue),
             'checks' => $checks,
             'machines' => Machine::query()
-                ->whereIn('id', $this->visibleCompletedChecks($user)->select('machine_id'))
+                ->whereIn('id', $this->visibleSubmittedChecks($user)->select('machine_id'))
                 ->orderBy('equipment_name')
                 ->get(),
             'officers' => User::query()
-                ->whereIn('id', $this->visibleCompletedChecks($user)->select('checked_by'))
+                ->whereIn('id', $this->visibleSubmittedChecks($user)->select('checked_by'))
+                ->orderBy('name')
+                ->get(),
+            'categories' => MaintenanceCategory::query()
+                ->whereIn(
+                    'id',
+                    MaintenanceSchedule::query()
+                        ->whereIn('id', $this->visibleSubmittedChecks($user)->select('maintenance_schedule_id'))
+                        ->select('maintenance_category_id'),
+                )
                 ->orderBy('name')
                 ->get(),
             'summary' => $summary,
             'isVerificationQueue' => $isVerificationQueue,
+            'isHistoryDetail' => false,
             'verificationLabels' => $this->verificationLabels(),
             'overallLabels' => $this->overallLabels(),
+            'frequencyLabels' => $this->frequencyLabels(),
         ]);
     }
 
     public function show(Request $request, MaintenanceCheck $check): View
     {
-        $check->load([
-            'machine',
-            'schedule.maintenanceCategory',
-            'checkedBy',
-            'verifiedBy',
-            'details.item.category',
-            'details.finding',
-            'findings.item',
-            'findings.reportedBy',
-        ]);
+        $check = $this->submittedCheckFor($request->user(), $check);
 
         return view('verifications.show', [
             ...$this->layoutData($request->user(), true),
             'check' => $check,
             'isVerificationQueue' => true,
+            'isHistoryDetail' => true,
             'verificationLabels' => $this->verificationLabels(),
             'overallLabels' => $this->overallLabels(),
+            'frequencyLabels' => $this->frequencyLabels(),
         ]);
+    }
+
+    public function historyShow(Request $request, MaintenanceCheck $check): View
+    {
+        $check = $this->submittedCheckFor($request->user(), $check);
+
+        return view('verifications.show', [
+            ...$this->layoutData($request->user(), false),
+            'check' => $check,
+            'isVerificationQueue' => false,
+            'isHistoryDetail' => true,
+            'verificationLabels' => $this->verificationLabels(),
+            'overallLabels' => $this->overallLabels(),
+            'frequencyLabels' => $this->frequencyLabels(),
+        ]);
+    }
+
+    public function detailPhoto(
+        Request $request,
+        MaintenanceCheck $check,
+        MaintenanceCheckDetail $detail,
+    ): StreamedResponse {
+        $visibleCheck = $this->submittedCheckFor($request->user(), $check);
+
+        abort_unless($detail->maintenance_check_id === $visibleCheck->id && filled($detail->photo), 404);
+
+        return $this->photoResponse($detail->photo);
+    }
+
+    public function findingPhoto(
+        Request $request,
+        MaintenanceCheck $check,
+        MaintenanceFinding $finding,
+    ): StreamedResponse {
+        $visibleCheck = $this->submittedCheckFor($request->user(), $check);
+
+        abort_unless($finding->maintenance_check_id === $visibleCheck->id && filled($finding->photo), 404);
+
+        return $this->photoResponse($finding->photo);
     }
 
     public function verify(VerifyInspectionRequest $request, MaintenanceCheck $check): RedirectResponse
@@ -161,7 +202,7 @@ class VerificationController extends Controller
     }
 
     /** @return Builder<MaintenanceCheck> */
-    private function visibleCompletedChecks(User $user): Builder
+    private function visibleSubmittedChecks(User $user): Builder
     {
         return MaintenanceCheck::query()
             ->whereNotNull('end_time')
@@ -169,6 +210,34 @@ class VerificationController extends Controller
                 $user->role === UserRole::Petugas,
                 fn (Builder $query): Builder => $query->where('checked_by', $user->id),
             );
+    }
+
+    private function submittedCheckFor(User $user, MaintenanceCheck $check): MaintenanceCheck
+    {
+        return $this->visibleSubmittedChecks($user)
+            ->with([
+                'machine',
+                'schedule.maintenanceCategory',
+                'schedule.assignedUser',
+                'checkedBy',
+                'verifiedBy',
+                'details.item.category',
+                'details.findings',
+                'findings.item',
+                'findings.reportedBy',
+                'findings.reviewedBy',
+            ])
+            ->whereKey($check->getKey())
+            ->firstOrFail();
+    }
+
+    private function photoResponse(string $path): StreamedResponse
+    {
+        $disk = Storage::disk('local');
+
+        abort_unless($disk->exists($path), 404);
+
+        return $disk->response($path);
     }
 
     /** @return array<string, string> */
@@ -187,7 +256,19 @@ class VerificationController extends Controller
         return [
             'normal' => 'Normal',
             'has_finding' => 'Terdapat Temuan',
-            'incomplete' => 'Belum Lengkap',
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function frequencyLabels(): array
+    {
+        return [
+            'daily' => 'Harian',
+            'weekly' => 'Mingguan',
+            'monthly' => 'Bulanan',
+            'quarterly' => 'Triwulan',
+            'semester' => 'Semesteran',
+            'yearly' => 'Tahunan',
         ];
     }
 

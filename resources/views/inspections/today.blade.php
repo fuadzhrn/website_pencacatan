@@ -163,7 +163,7 @@
                                                 @if ($canEditInspection)
                                                     <label class="inspection-item-note"><span>Foto opsional</span><input type="file" name="items[{{ $item->id }}][photo]" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>
                                                 @elseif ($detail?->photo)
-                                                    <a class="inspection-photo-link" href="{{ asset('storage/'.$detail->photo) }}" target="_blank" rel="noopener">Lihat foto pemeriksaan</a>
+                                                    <a class="inspection-photo-link" href="{{ route('inspections.details.photo', [$check, $detail]) }}" target="_blank" rel="noopener">Lihat foto pemeriksaan</a>
                                                 @endif
                                                 <section class="inspection-finding-fields" data-finding-fields @if ($selectedResult !== 'tidak_sesuai') hidden @endif>
                                                     <strong>Data temuan</strong>
@@ -175,7 +175,7 @@
                                                     @if ($canEditFinding)
                                                         <label class="inspection-item-note"><span>Foto temuan (opsional, maks. 2 MB)</span><input type="file" name="items[{{ $item->id }}][finding_photo]" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>
                                                     @elseif ($finding?->photo)
-                                                        <a class="inspection-photo-link" href="{{ asset('storage/'.$finding->photo) }}" target="_blank" rel="noopener">Lihat foto temuan</a>
+                                                        <a class="inspection-photo-link" href="{{ route('inspections.findings.photo', [$check, $finding]) }}" target="_blank" rel="noopener">Lihat foto temuan</a>
                                                     @endif
                                                 </section>
                                             </article>
