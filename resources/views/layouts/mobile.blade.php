@@ -108,7 +108,7 @@
 
     <div class="mobile-navigation-toast" data-mobile-navigation-toast role="status" aria-live="polite" hidden>
         <i data-lucide="info" aria-hidden="true"></i>
-        <span data-mobile-navigation-toast-message>Fitur ini masih berupa simulasi.</span>
+        <span data-mobile-navigation-toast-message></span>
         <button type="button" data-mobile-navigation-toast-close aria-label="Tutup notifikasi"><i data-lucide="x" aria-hidden="true"></i></button>
     </div>
 
@@ -140,6 +140,10 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.findings-data-partial')
         <script src="{{ asset('assets/js/findings-database.js') }}" defer></script>
+    @elseif ($activeMenu === 'temuan' && isset($finding))
+        <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
+        @include('mobile.finding-sheet', ['selectedFinding' => $finding, 'mobileCloseUrl' => route('mobile.findings')])
+        <script src="{{ asset('assets/js/findings-database.js') }}" defer></script>
     @elseif (in_array($activeMenu, ['riwayat-pemeriksaan', 'verifikasi-pemeriksaan'], true))
         <link rel="stylesheet" href="{{ asset('assets/css/verifications.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.history-database')
@@ -150,5 +154,6 @@
     @elseif ($activeMenu === 'laporan')
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-report.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.report-database')
+        <script type="module" src="{{ asset('assets/js/mobile-report-database.js') }}"></script>
     @endif
 </section>

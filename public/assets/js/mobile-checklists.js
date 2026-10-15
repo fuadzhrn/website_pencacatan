@@ -89,9 +89,10 @@ function initializeMobileChecklists() {
         }
     };
 
-    const configureForm = (form, action, method) => {
+    const configureForm = (form, action, method, recordId = '') => {
         form.action = action;
         setValue(form, '_method', method);
+        setValue(form, 'record_id', recordId);
     };
 
     const openSheet = (name, trigger) => {
@@ -156,7 +157,7 @@ function initializeMobileChecklists() {
         }
 
         if (editCategoryButton) {
-            configureForm(categoryForm, editCategoryButton.dataset.action, 'PUT');
+            configureForm(categoryForm, editCategoryButton.dataset.action, 'PUT', editCategoryButton.dataset.id);
             setValue(categoryForm, 'name', editCategoryButton.dataset.name);
             setValue(categoryForm, 'frequency', editCategoryButton.dataset.frequency);
             setValue(categoryForm, 'description', editCategoryButton.dataset.description);
@@ -174,7 +175,7 @@ function initializeMobileChecklists() {
         }
 
         if (editItemButton) {
-            configureForm(itemForm, editItemButton.dataset.action, 'PUT');
+            configureForm(itemForm, editItemButton.dataset.action, 'PUT', editItemButton.dataset.id);
             setValue(itemForm, 'maintenance_category_id', editItemButton.dataset.categoryId);
             setValue(itemForm, 'item_name', editItemButton.dataset.itemName);
             setValue(itemForm, 'criteria', editItemButton.dataset.criteria);

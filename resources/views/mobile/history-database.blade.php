@@ -9,6 +9,8 @@
     $mobileIndexRoute = ($isVerificationQueue ?? false)
         ? route('verifications.index')
         : ((request()->routeIs('mobile.history') || request('context') === 'mobile') ? route('mobile.history') : route('inspections.history'));
+    $mobilePreviousUrl = url()->previous();
+    $mobileBackUrl = str_starts_with($mobilePreviousUrl, $mobileIndexRoute) ? $mobilePreviousUrl : $mobileIndexRoute;
 @endphp
 <div class="mobile-history-database">
     <header class="mobile-history-database__header"><span><i data-lucide="{{ ($isVerificationQueue ?? false) ? 'badge-check' : 'history' }}" aria-hidden="true"></i></span><div><h1>{{ ($isVerificationQueue ?? false) ? 'Verifikasi Pemeriksaan' : 'Riwayat Pemeriksaan' }}</h1><p>{{ ($isVerificationQueue ?? false) ? 'Tinjau hasil pemeriksaan petugas' : 'Lihat pemeriksaan yang sudah dilakukan' }}</p></div></header>
@@ -18,7 +20,7 @@
     @if ($errors->any())<div class="mobile-history-database__alert mobile-history-database__alert--error" role="alert"><strong>{{ ($isHistoryDetail ?? false) ? 'Keputusan belum dapat disimpan.' : 'Filter belum dapat diterapkan.' }}</strong><ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 
     @if ($isHistoryDetail ?? false)
-        <a class="mobile-verification-detail__back" href="{{ $mobileIndexRoute }}"><i data-lucide="arrow-left" aria-hidden="true"></i>Kembali ke daftar</a>
+        <a class="mobile-verification-detail__back" href="{{ $mobileBackUrl }}"><i data-lucide="arrow-left" aria-hidden="true"></i>Kembali ke daftar</a>
         <section class="mobile-verification-detail">
             <header><div><small>Mesin X-Ray</small><h2>{{ $check->machine->equipment_name }}</h2><p><i data-lucide="map-pin" aria-hidden="true"></i>{{ $check->machine->location }}</p></div><span class="verification-badge verification-badge--{{ $check->verification_status }}">{{ ($verificationLabels ?? [])[$check->verification_status] ?? $check->verification_status }}</span></header>
             <dl>
@@ -33,18 +35,18 @@
 
         <section class="mobile-verification-detail">
             <h2>Detail Checklist</h2>
-            <div class="mobile-verification-detail__items">@forelse ($check->details as $detail)<article><div><strong>{{ $detail->item?->item_name ?? '-' }}</strong><span class="verification-badge verification-badge--{{ $detail->result_status === 'sesuai' ? 'verified' : 'rejected' }}">{{ $detail->result_status === 'sesuai' ? 'Sesuai' : 'Tidak Sesuai' }}</span></div><small>Kategori: {{ $detail->item?->category?->name ?? '-' }}</small><small>Kriteria: {{ $detail->item?->criteria ?? '-' }}</small><p>Nilai aktual: {{ $detail->actual_value ?: '-' }}</p><p>Catatan: {{ $detail->note ?: '-' }}</p>@if ($detail->photo)<a class="verification-photo-link" href="{{ route('inspections.history.details.photo', [$check, $detail]) }}" target="_blank" rel="noopener">Lihat foto checklist</a>@endif</article>@empty<p>Belum ada detail checklist.</p>@endforelse</div>
+            <div class="mobile-verification-detail__items">@forelse ($check->details as $detail)<article><div><strong>{{ $detail->item?->item_name ?? '-' }}</strong><span class="verification-badge verification-badge--{{ match ($detail->result_status) { 'sesuai' => 'verified', 'tidak_sesuai' => 'rejected', default => 'waiting' } }}">{{ ($itemResultLabels ?? [])[$detail->result_status] ?? $detail->result_status }}</span></div><small>Kategori: {{ $detail->item?->category?->name ?? '-' }}</small><small>Kriteria: {{ $detail->item?->criteria ?? '-' }}</small><p>Nilai aktual: {{ $detail->actual_value ?: '-' }}</p><p>Catatan: {{ $detail->note ?: '-' }}</p>@if ($detail->photo)<a class="verification-photo-link" href="{{ route('inspections.history.details.photo', [$check, $detail]) }}" target="_blank" rel="noopener">Lihat foto checklist</a>@endif</article>@empty<p>Belum ada detail checklist.</p>@endforelse</div>
         </section>
 
         <section class="mobile-verification-detail">
             <h2>Temuan Pemeriksaan</h2>
-            <div class="mobile-verification-detail__items">@forelse ($check->findings as $finding)<article><div><strong>{{ $finding->item?->item_name ?? 'Item pemeriksaan' }}</strong><span class="verification-badge verification-badge--{{ $finding->status === 'resolved' ? 'verified' : ($finding->status === 'review' ? 'waiting' : 'rejected') }}">{{ ucfirst($finding->status) }}</span></div><p>{{ $finding->finding_description }}</p><small>Tindak lanjut: {{ $finding->follow_up ?: 'Belum ada.' }}</small><small>Pelapor: {{ $finding->reportedBy?->name ?? '-' }} · {{ $finding->finding_date?->translatedFormat('d M Y') ?? '-' }}</small>@if ($finding->photo)<a class="verification-photo-link" href="{{ route('inspections.history.findings.photo', [$check, $finding]) }}" target="_blank" rel="noopener">Lihat foto temuan</a>@endif</article>@empty<p>Tidak ada temuan pada pemeriksaan ini.</p>@endforelse</div>
+            <div class="mobile-verification-detail__items">@forelse ($check->findings as $finding)<article><div><strong>{{ $finding->item?->item_name ?? 'Item pemeriksaan' }}</strong><span class="verification-badge verification-badge--{{ $finding->status === 'resolved' ? 'verified' : ($finding->status === 'review' ? 'waiting' : 'rejected') }}">{{ ($findingStatusLabels ?? [])[$finding->status] ?? $finding->status }}</span></div><p>{{ $finding->finding_description }}</p><small>Tindak lanjut: {{ $finding->follow_up ?: 'Belum ada.' }}</small><small>Pelapor: {{ $finding->reportedBy?->name ?? '-' }} · {{ $finding->finding_date?->translatedFormat('d M Y') ?? '-' }}</small>@if ($finding->photo)<a class="verification-photo-link" href="{{ route('inspections.history.findings.photo', [$check, $finding]) }}" target="_blank" rel="noopener">Lihat foto temuan</a>@endif</article>@empty<p>Tidak ada temuan pada pemeriksaan ini.</p>@endforelse</div>
         </section>
 
         @if (($isVerificationQueue ?? false) && $check->verification_status === 'waiting' && auth()->user()->role === \App\UserRole::Supervisor)
             <section class="mobile-verification-detail">
                 <h2>Keputusan Supervisor</h2><p>Catatan wajib diisi untuk keputusan tolak/revisi.</p>
-                <form method="POST" class="mobile-verification-detail__decision">@csrf @method('PATCH')<textarea name="supervisor_note" rows="4" maxlength="5000" placeholder="Catatan hasil tinjauan...">{{ old('supervisor_note') }}</textarea><div><button type="submit" formaction="{{ route('verifications.reject', $check) }}" class="is-reject">Tolak / Revisi</button><button type="submit" formaction="{{ route('verifications.verify', $check) }}">Verifikasi</button></div></form>
+                <form method="POST" class="mobile-verification-detail__decision">@csrf @method('PATCH')<textarea name="supervisor_note" rows="4" maxlength="5000" placeholder="Catatan hasil tinjauan...">{{ old('supervisor_note') }}</textarea>@error('supervisor_note')<span class="form-error">{{ $message }}</span>@enderror<div><button type="submit" formaction="{{ route('verifications.reject', $check) }}" class="is-reject">Tolak / Revisi</button><button type="submit" formaction="{{ route('verifications.verify', $check) }}">Verifikasi</button></div></form>
             </section>
         @else
             <section class="mobile-verification-detail"><h2>Audit Verifikasi</h2><p>{{ $check->supervisor_note ?: 'Belum ada catatan supervisor.' }}</p>@if ($check->verifiedBy)<small>Diproses oleh {{ $check->verifiedBy->name }} pada {{ $check->verified_at?->translatedFormat('d M Y H:i') }}</small>@else<small>Pemeriksaan masih menunggu verifikasi supervisor.</small>@endif @if (! ($isVerificationQueue ?? false) && $check->verification_status === 'waiting' && auth()->user()->role === \App\UserRole::Supervisor)<a class="verification-button verification-button--primary" href="{{ route('verifications.show', $check) }}">Buka Proses Verifikasi</a>@endif</section>
@@ -64,7 +66,7 @@
     </form>
 
     <section class="mobile-history-database__summary" aria-label="Ringkasan riwayat">
-        @foreach (['total' => 'Total', 'waiting' => 'Menunggu', 'verified' => 'Terverifikasi', 'rejected' => 'Ditolak'] as $key => $label)<article><small>{{ $label }}</small><strong>{{ $mobileSummary[$key] }}</strong></article>@endforeach
+        @foreach (['total' => 'Total', 'waiting' => 'Menunggu', 'verified' => 'Terverifikasi', 'rejected' => 'Ditolak/Revisi'] as $key => $label)<article><small>{{ $label }}</small><strong>{{ $mobileSummary[$key] }}</strong></article>@endforeach
     </section>
 
     <section class="mobile-history-database__list">

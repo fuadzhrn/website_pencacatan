@@ -1203,3 +1203,75 @@
         text-align: center;
     }
 }
+
+@media (max-width: 768px) {
+    .mobile-finding-card__actions a,
+    .mobile-finding-card__actions form button {
+        display: inline-flex;
+        width: 100%;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        box-sizing: border-box;
+        color: var(--mobile-findings-charcoal);
+        background: #f3f4f6;
+        border: 1px solid var(--mobile-findings-border);
+        border-radius: 9px;
+        font-size: 0.67rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .mobile-finding-card__actions > :last-child:not(:first-child),
+    .mobile-finding-card__actions form button {
+        color: var(--mobile-findings-emerald-dark);
+        background: var(--mobile-findings-mint);
+        border-color: #a7f3d0;
+    }
+
+    .mobile-finding-card__actions > :only-child {
+        grid-column: 1 / -1;
+    }
+
+    .mobile-finding-card__actions form {
+        margin: 0;
+    }
+
+    .mobile-finding-sheet__header > a {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        color: var(--mobile-findings-muted);
+        background: #f3f4f6;
+        border: 1px solid var(--mobile-findings-border);
+        border-radius: 9px;
+    }
+
+    a.mobile-findings-fab,
+    a.mobile-finding-button,
+    a.mobile-finding-detail__photo {
+        text-decoration: none;
+    }
+
+    .mobile-finding-detail__photo img {
+        width: 100%;
+        max-height: 240px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .mobile-finding-detail__photo small {
+        color: var(--mobile-findings-muted);
+    }
+
+    .mobile-finding-sheet__single-action {
+        grid-column: 1 / -1;
+    }
+
+    .mobile-finding-form .form-error {
+        font-size: 0.64rem;
+        font-weight: 500;
+    }
+}

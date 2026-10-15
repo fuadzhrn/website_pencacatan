@@ -174,6 +174,26 @@ class MaintenanceCategoryController extends Controller
                 ->with('category')
                 ->find($request->integer('item_detail')),
             'isMobileChecklist' => $request->routeIs('mobile.*'),
+            'categoryForm' => $this->formState($request, 'category', 'maintenance-categories'),
+            'itemForm' => $this->formState($request, 'item', 'maintenance-items'),
+        ];
+    }
+
+    /**
+     * Rebuild the create/edit form target after a failed submission so an edit is never resubmitted as a create.
+     *
+     * @return array{action: string, method: string, recordId: string|null, isEditing: bool}
+     */
+    private function formState(Request $request, string $formType, string $routePrefix): array
+    {
+        $recordId = $request->old('form_type') === $formType ? (string) $request->old('record_id') : '';
+        $isEditing = ctype_digit($recordId);
+
+        return [
+            'action' => $isEditing ? route($routePrefix.'.update', (int) $recordId) : route($routePrefix.'.store'),
+            'method' => $isEditing ? 'PUT' : 'POST',
+            'recordId' => $isEditing ? $recordId : null,
+            'isEditing' => $isEditing,
         ];
     }
 

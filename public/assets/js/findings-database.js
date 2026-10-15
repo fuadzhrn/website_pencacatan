@@ -125,10 +125,42 @@
             openDialog(document.getElementById(pageDialog));
         }
 
+        document.querySelectorAll('[data-mobile-finding-photo-input]').forEach((input) => {
+            input.addEventListener('change', () => {
+                const surface = input.closest('.mobile-finding-upload');
+                const preview = surface?.querySelector('[data-mobile-finding-photo-preview]');
+                const placeholder = surface?.querySelector('[data-mobile-finding-photo-placeholder]');
+                const [file] = input.files ?? [];
+
+                if (!preview) {
+                    return;
+                }
+
+                if (preview.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(preview.src);
+                }
+
+                preview.hidden = !file;
+                placeholder.hidden = Boolean(file);
+                preview.src = file ? URL.createObjectURL(file) : '';
+            });
+        });
+
         const toast = document.querySelector('[data-findings-toast]');
 
         if (toast) {
             setTimeout(() => toast.classList.remove('is-visible'), 5000);
+        }
+
+        const mobileToast = document.querySelector('[data-mobile-findings-toast]');
+
+        if (mobileToast) {
+            const hideMobileToast = () => {
+                mobileToast.hidden = true;
+            };
+
+            mobileToast.querySelector('[data-mobile-findings-toast-close]')?.addEventListener('click', hideMobileToast);
+            setTimeout(hideMobileToast, 6000);
         }
     });
 })();

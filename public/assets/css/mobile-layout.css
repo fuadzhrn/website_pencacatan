@@ -989,3 +989,10 @@
         transition: none;
     }
 }
+
+@media screen and (max-width: 768px) {
+    form[aria-busy="true"] button[data-submit-locked] {
+        cursor: progress;
+        opacity: 0.65;
+    }
+}

@@ -85,14 +85,14 @@
                     data-status="{{ $managedUser->status }}"
                     data-status-label="{{ $managedUser->status === 'active' ? 'Aktif' : 'Nonaktif' }}"
                     data-created-at="{{ $managedUser->created_at->translatedFormat('d M Y') }}"
-                    data-last-activity="Belum tersedia"
+                    data-last-activity="{{ $managedUser->updated_at?->translatedFormat('d M Y H:i') ?? '-' }}"
                     data-update-url="{{ route('users.update', $managedUser) }}"
                     data-toggle-url="{{ route('users.toggle-status', $managedUser) }}"
                     data-reset-url="{{ route('users.reset-password', $managedUser) }}"
                     data-delete-url="{{ route('users.destroy', $managedUser) }}"
                 >
                     <header>
-                        <span class="mobile-user-card__avatar" aria-hidden="true">{{ collect(preg_split('/\s+/', trim($managedUser->name)))->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('') }}</span>
+                        <span class="mobile-user-card__avatar" aria-hidden="true">{{ $managedUser->initials() }}</span>
                         <div><h3>{{ $managedUser->name }}</h3><a href="mailto:{{ $managedUser->email }}">{{ $managedUser->email }}</a></div>
                         <button type="button" data-mobile-users-actions-open data-user-id="{{ $managedUser->id }}" aria-label="Buka aksi untuk {{ $managedUser->name }}"><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
                     </header>
@@ -150,7 +150,7 @@
                 <div><dt>Status</dt><dd><span class="mobile-users-badge" data-mobile-users-detail="status">-</span></dd></div>
                 <div><dt>Nomor HP</dt><dd data-mobile-users-detail="phone">-</dd></div>
                 <div><dt>Tanggal dibuat</dt><dd data-mobile-users-detail="createdAt">-</dd></div>
-                <div class="mobile-users-detail-grid__wide"><dt>Aktivitas terakhir</dt><dd data-mobile-users-detail="lastActivity">-</dd></div>
+                <div class="mobile-users-detail-grid__wide"><dt>Terakhir diperbarui</dt><dd data-mobile-users-detail="lastActivity">-</dd></div>
             </dl>
             <footer class="mobile-users-sheet__footer"><button class="mobile-users-button mobile-users-button--secondary" type="button" data-mobile-users-sheet-close>Tutup</button></footer>
         </article>
@@ -169,15 +169,15 @@
                 <input type="hidden" name="_method" value="PATCH" data-mobile-users-method disabled>
                 <input type="hidden" name="context" value="mobile">
                 <input type="hidden" name="editing_user_id" value="{{ old('editing_user_id') }}">
-                <label class="mobile-users-field"><span>Nama lengkap</span><input type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan nama lengkap" required></label>
-                <label class="mobile-users-field"><span>Email</span><input type="email" name="email" value="{{ old('email') }}" placeholder="nama@contoh.com" required></label>
-                <label class="mobile-users-field"><span>Nomor HP</span><input type="tel" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx"></label>
+                <label class="mobile-users-field"><span>Nama lengkap</span><input type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan nama lengkap" required>@error('name')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label class="mobile-users-field"><span>Email</span><input type="email" name="email" value="{{ old('email') }}" placeholder="nama@contoh.com" required>@error('email')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label class="mobile-users-field"><span>Nomor HP</span><input type="tel" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx">@error('phone')<span class="form-error">{{ $message }}</span>@enderror</label>
                 <div class="mobile-users-form__row">
-                    <label class="mobile-users-field"><span>Role</span><select name="role" required>@foreach ($roles as $role)<option value="{{ $role->value }}" @selected(old('role', 'petugas') === $role->value)>{{ $role->label() }}</option>@endforeach</select></label>
-                    <label class="mobile-users-field"><span>Status</span><select name="status" required><option value="active" @selected(old('status', 'active') === 'active')>Aktif</option><option value="inactive" @selected(old('status') === 'inactive')>Nonaktif</option></select></label>
+                    <label class="mobile-users-field"><span>Role</span><select name="role" required>@foreach ($roles as $role)<option value="{{ $role->value }}" @selected(old('role', 'petugas') === $role->value)>{{ $role->label() }}</option>@endforeach</select>@error('role')<span class="form-error">{{ $message }}</span>@enderror</label>
+                    <label class="mobile-users-field"><span>Status</span><select name="status" required><option value="active" @selected(old('status', 'active') === 'active')>Aktif</option><option value="inactive" @selected(old('status') === 'inactive')>Nonaktif</option></select>@error('status')<span class="form-error">{{ $message }}</span>@enderror</label>
                 </div>
-                <label class="mobile-users-field"><span>Password <small data-mobile-users-password-hint>(wajib)</small></span><span class="mobile-users-password"><input type="password" name="password" minlength="6" autocomplete="new-password"><button type="button" data-mobile-users-password-toggle aria-label="Tampilkan password"><i data-lucide="eye" aria-hidden="true"></i></button></span></label>
-                <label class="mobile-users-field"><span>Konfirmasi password</span><input type="password" name="password_confirmation" minlength="6" autocomplete="new-password"></label>
+                <label class="mobile-users-field"><span>Password <small data-mobile-users-password-hint>(wajib)</small></span><span class="mobile-users-password"><input type="password" name="password" minlength="6" autocomplete="new-password"><button type="button" data-mobile-users-password-toggle aria-label="Tampilkan password"><i data-lucide="eye" aria-hidden="true"></i></button></span>@error('password')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label class="mobile-users-field"><span>Konfirmasi password</span><input type="password" name="password_confirmation" minlength="6" autocomplete="new-password">@error('password_confirmation')<span class="form-error">{{ $message }}</span>@enderror</label>
                 <p class="mobile-users-form__error" data-mobile-users-form-error role="alert" @if (!$errors->any()) hidden @endif>{{ $errors->first() }}</p>
                 <footer class="mobile-users-form__actions">
                     <button class="mobile-users-button mobile-users-button--secondary" type="button" data-mobile-users-sheet-close>Batal</button>

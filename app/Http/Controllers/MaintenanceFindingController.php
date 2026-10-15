@@ -75,9 +75,16 @@ class MaintenanceFindingController extends Controller
                 ->get();
         }
 
+        $selectedFinding = $request->filled('finding_detail')
+            ? $this->visibleFindings($user)
+                ->with(['machine', 'item.category', 'reportedBy', 'reviewedBy'])
+                ->find($request->integer('finding_detail'))
+            : null;
+
         return view('findings.database-index', [
             ...$this->layoutData($user),
             'findings' => $findings,
+            'selectedFinding' => $selectedFinding,
             'machines' => $machines,
             'summary' => $summary,
             'findingActiveCount' => $summary['open'] + $summary['review'],
@@ -87,9 +94,13 @@ class MaintenanceFindingController extends Controller
         ]);
     }
 
-    public function show(Request $request, MaintenanceFinding $finding): View
+    public function show(Request $request, MaintenanceFinding $finding): View|RedirectResponse
     {
         $this->ensureVisible($request->user(), $finding);
+
+        if ($request->input('context') === 'mobile') {
+            return redirect()->route('mobile.findings', ['finding_detail' => $finding->id]);
+        }
         $finding->load(['machine', 'item.category', 'reportedBy', 'reviewedBy', 'checkDetail', 'check']);
 
         return view('findings.show', [

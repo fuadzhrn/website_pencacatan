@@ -65,8 +65,8 @@
                         default => 'scheduled',
                     };
                     $mobileScheduleRoute = auth()->user()->role->value === 'petugas'
-                        ? route('inspections.schedules.show', $schedule)
-                        : route('schedules.show', $schedule);
+                        ? route('mobile.inspection-today', ['schedule' => $schedule->id])
+                        : route('schedules.show', ['schedule' => $schedule, 'context' => 'mobile']);
                 @endphp
                 <article class="mobile-schedule-item" data-mobile-schedule-item>
                     <span class="mobile-schedule-item__time"><strong>{{ substr((string) $schedule->scheduled_time, 0, 5) }}</strong><small>WITA</small></span>
@@ -122,9 +122,7 @@
             <div><small>Menunggu Verifikasi</small><strong>{{ $monthlySummary['waiting_verification'] }}</strong></div>
         </div>
         <div class="mobile-monthly-preview__completion"><span><strong>{{ $monthlySummary['completion_percentage'] }}%</strong> penyelesaian</span><div><i style="width: {{ $monthlySummary['completion_percentage'] }}%"></i></div></div>
-        @if ($userRole !== 'Petugas')
-            <button class="mobile-dashboard-button mobile-dashboard-button--secondary" type="button" data-mobile-dashboard-action="report" data-url="{{ route('mobile.report') }}">Lihat Laporan<i data-lucide="arrow-right" aria-hidden="true"></i></button>
-        @endif
+        <button class="mobile-dashboard-button mobile-dashboard-button--secondary" type="button" data-mobile-dashboard-action="report" data-url="{{ route('mobile.report') }}">Lihat Laporan<i data-lucide="arrow-right" aria-hidden="true"></i></button>
     </section>
 
     <section class="mobile-dashboard-section" aria-labelledby="mobile-quick-actions-title">

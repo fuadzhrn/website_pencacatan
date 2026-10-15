@@ -1179,7 +1179,7 @@
         font-weight: 600;
     }
 
-    .mobile-checklist-item input,
+    .mobile-checklist-item input:not([type="file"]),
     .mobile-checklist-item textarea,
     .mobile-inspection-notes textarea {
         width: 100%;

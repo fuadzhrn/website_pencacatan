@@ -6,7 +6,7 @@ const ACTION_MESSAGES = {
     'schedule-detail': 'Membuka detail jadwal pemeriksaan.',
 };
 
-export const getMobileDashboardActionMessage = (action) => ACTION_MESSAGES[action] ?? 'Aksi berhasil disimulasikan.';
+export const getMobileDashboardActionMessage = (action) => ACTION_MESSAGES[action] ?? 'Membuka halaman terkait.';
 
 export const createMobileDashboardNotifier = ({ show, beginHide, hide, schedule = setTimeout, cancel = clearTimeout }) => {
     let displayTimer = null;

@@ -211,9 +211,17 @@ class MonthlyReportService
             return [$day => $this->resultCell($state, $check, $detail)];
         });
 
+        $cellStates = $cells->pluck('state');
+
         return [
             'item' => $item,
             'cells' => $cells->all(),
+            'counts' => [
+                'conform' => $cellStates->filter(fn (string $state): bool => $state === 'conform')->count(),
+                'nonconform' => $cellStates->filter(fn (string $state): bool => $state === 'nonconform')->count(),
+                'pending' => $cellStates->filter(fn (string $state): bool => $state === 'pending')->count(),
+                'not_scheduled' => $daysInMonth - $cellStates->take($daysInMonth)->filter(fn (string $state): bool => $state !== 'not_scheduled')->count(),
+            ],
             'notes' => $cells
                 ->filter(fn (array $cell): bool => $cell['note'] !== null)
                 ->map(fn (array $cell, int $day): string => sprintf('%02d: %s', $day, $cell['note']))

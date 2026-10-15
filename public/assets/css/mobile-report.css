@@ -1212,3 +1212,20 @@
         transition: none;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .mobile-report-detail [data-mobile-report-detail-item]:not([hidden]) {
+        display: grid;
+        gap: 12px;
+    }
+
+    .mobile-report-detail [data-mobile-report-detail-item] > section {
+        display: grid;
+        gap: 9px;
+    }
+
+    .mobile-report-detail [data-mobile-report-detail-item] > small {
+        color: #6b7280;
+        font-size: 0.62rem;
+    }
+}
