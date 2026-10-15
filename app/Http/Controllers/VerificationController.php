@@ -12,6 +12,7 @@ use App\Models\MaintenanceCheckDetail;
 use App\Models\MaintenanceFinding;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -112,6 +113,8 @@ class VerificationController extends Controller
             'verificationLabels' => $this->verificationLabels(),
             'overallLabels' => $this->overallLabels(),
             'frequencyLabels' => $this->frequencyLabels(),
+            'itemResultLabels' => MaintenanceLabels::itemResults(),
+            'findingStatusLabels' => MaintenanceLabels::findingStatuses(),
         ]);
     }
 
@@ -127,6 +130,8 @@ class VerificationController extends Controller
             'verificationLabels' => $this->verificationLabels(),
             'overallLabels' => $this->overallLabels(),
             'frequencyLabels' => $this->frequencyLabels(),
+            'itemResultLabels' => MaintenanceLabels::itemResults(),
+            'findingStatusLabels' => MaintenanceLabels::findingStatuses(),
         ]);
     }
 
@@ -243,33 +248,19 @@ class VerificationController extends Controller
     /** @return array<string, string> */
     private function verificationLabels(): array
     {
-        return [
-            'waiting' => 'Menunggu Verifikasi',
-            'verified' => 'Terverifikasi',
-            'rejected' => 'Ditolak/Revisi',
-        ];
+        return MaintenanceLabels::verificationStatuses();
     }
 
     /** @return array<string, string> */
     private function overallLabels(): array
     {
-        return [
-            'normal' => 'Normal',
-            'has_finding' => 'Terdapat Temuan',
-        ];
+        return MaintenanceLabels::checkResults();
     }
 
     /** @return array<string, string> */
     private function frequencyLabels(): array
     {
-        return [
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semester' => 'Semesteran',
-            'yearly' => 'Tahunan',
-        ];
+        return MaintenanceLabels::frequencies();
     }
 
     /** @return array<string, string> */

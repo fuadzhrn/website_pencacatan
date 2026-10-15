@@ -140,9 +140,7 @@
                     <span class="dashboard-panel__icon" aria-hidden="true"><i data-lucide="file-chart-column"></i></span>
                     <div><p>{{ $monthLabel }}</p><h2 id="monthly-report-title">Ringkasan Laporan Bulanan</h2></div>
                 </div>
-                @if ($userRole !== 'Petugas')
-                    <a class="button button--primary" href="{{ route('reports.monthly') }}"><i data-lucide="file-text" aria-hidden="true"></i> Lihat Laporan</a>
-                @endif
+                <a class="button button--primary" href="{{ route('reports.monthly') }}"><i data-lucide="file-text" aria-hidden="true"></i> Lihat Laporan</a>
             </header>
             <div class="dashboard-report__table-wrap">
                 <table class="dashboard-report-table">

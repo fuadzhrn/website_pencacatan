@@ -973,3 +973,30 @@
     color: #4b5563;
     background: #f3f4f6;
 }
+
+.schedules-pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.schedules-pagination a,
+.schedules-pagination > span {
+    padding: 6px 9px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-primary-hover);
+    text-decoration: none;
+}
+
+.schedules-pagination > span[aria-disabled="true"] {
+    color: var(--color-text-muted);
+    background: var(--color-neutral-status-soft);
+}
+
+.schedules-page-header__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+}

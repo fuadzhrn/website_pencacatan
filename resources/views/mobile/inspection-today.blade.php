@@ -43,7 +43,7 @@
                             <div><dt>Jam</dt><dd>{{ substr((string) $schedule->scheduled_time, 0, 5) }}</dd></div>
                             <div><dt>Petugas</dt><dd>{{ $schedule->assignedUser->name }}</dd></div>
                         </dl>
-                        @if ($isPetugas && ! $schedule->check && $schedule->status !== 'in_progress')
+                        @if ($isPetugas && ! $schedule->check)
                             <form method="POST" action="{{ route('inspections.start', $schedule) }}">
                                 @csrf
                                 <input type="hidden" name="context" value="mobile">

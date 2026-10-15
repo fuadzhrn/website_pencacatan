@@ -69,7 +69,7 @@
                                 <div><dt>Petugas</dt><dd>{{ $schedule->assignedUser->name }}</dd></div>
                             </dl>
 
-                            @if ($isPetugas && ! $schedule->check && $schedule->status !== 'in_progress')
+                            @if ($isPetugas && ! $schedule->check)
                                 <form method="POST" action="{{ route('inspections.start', $schedule) }}">
                                     @csrf
                                     <button class="inspection-machine-card__button is-primary" type="submit">Mulai Pemeriksaan<i data-lucide="arrow-right" aria-hidden="true"></i></button>

@@ -24,27 +24,27 @@
         <div class="app-shell">
             @include('partials.sidebar', [
                 'activeMenu' => $activeMenu ?? 'dashboard',
-                'userName' => $userName ?? 'Ahmad Fauzi',
-                'userRole' => $userRole ?? 'Admin',
-                'userInitials' => $userInitials ?? 'AF',
+                'userName' => $userName ?? '',
+                'userRole' => $userRole ?? '',
+                'userInitials' => $userInitials ?? '',
             ])
 
             <div class="app-workspace">
                 @include('partials.topbar', [
                     'pageTitle' => $pageTitle ?? 'Dashboard',
                     'pageDescription' => $pageDescription ?? 'Pantau aktivitas preventive maintenance hari ini.',
-                    'userName' => $userName ?? 'Ahmad Fauzi',
-                    'userRole' => $userRole ?? 'Admin',
-                    'userInitials' => $userInitials ?? 'AF',
+                    'userName' => $userName ?? '',
+                    'userRole' => $userRole ?? '',
+                    'userInitials' => $userInitials ?? '',
                 ])
 
                 <main class="app-main" id="main-content" tabindex="-1">
                     @include('layouts.mobile', [
                         'activeMenu' => $activeMenu ?? 'dashboard',
                         'pageTitle' => $pageTitle ?? 'Dashboard',
-                        'userName' => $userName ?? 'Ahmad Fauzi',
-                        'userRole' => $userRole ?? 'Admin',
-                        'userInitials' => $userInitials ?? 'AF',
+                        'userName' => $userName ?? '',
+                        'userRole' => $userRole ?? '',
+                        'userInitials' => $userInitials ?? '',
                     ])
 
                     @hasSection('content')

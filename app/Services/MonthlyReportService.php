@@ -8,6 +8,7 @@ use App\Models\MaintenanceCheckDetail;
 use App\Models\MaintenanceItem;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -67,8 +68,8 @@ class MonthlyReportService
             'weekly' => 2,
             'monthly' => 3,
             'quarterly' => 4,
-            'semiannual' => 5,
-            'annual' => 6,
+            'semester' => 5,
+            'yearly' => 6,
         ];
         $groups = $schedules
             ->groupBy('maintenance_category_id')
@@ -312,23 +313,12 @@ class MonthlyReportService
 
     private function frequencyLabel(string $frequency): string
     {
-        return match ($frequency) {
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semiannual' => 'Semesteran',
-            'annual' => 'Tahunan',
-            default => ucfirst($frequency),
-        };
+        return MaintenanceLabels::frequencies()[$frequency] ?? ucfirst($frequency);
     }
 
     private function verificationLabel(string $status): string
     {
-        return match ($status) {
-            'verified' => 'Terverifikasi',
-            'rejected' => 'Ditolak',
-            default => 'Menunggu verifikasi',
-        };
+        return MaintenanceLabels::verificationStatuses()[$status]
+            ?? MaintenanceLabels::verificationStatuses()['waiting'];
     }
 }

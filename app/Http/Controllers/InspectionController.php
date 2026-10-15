@@ -8,6 +8,7 @@ use App\Models\MaintenanceCheckDetail;
 use App\Models\MaintenanceFinding;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -435,38 +436,19 @@ class InspectionController extends Controller
     /** @return array<string, string> */
     private function frequencyLabels(): array
     {
-        return [
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semiannual' => 'Semesteran',
-            'annual' => 'Tahunan',
-        ];
+        return MaintenanceLabels::frequencies();
     }
 
     /** @return array<string, string> */
     private function scheduleStatusLabels(): array
     {
-        return [
-            'scheduled' => 'Terjadwal',
-            'pending' => 'Belum Dikerjakan',
-            'in_progress' => 'Sedang Dikerjakan',
-            'completed' => 'Selesai',
-            'overdue' => 'Terlambat',
-            'cancelled' => 'Dibatalkan',
-        ];
+        return MaintenanceLabels::scheduleStatuses();
     }
 
     /** @return array<string, string> */
     private function resultStatusLabels(): array
     {
-        return [
-            'sesuai' => 'Sesuai',
-            'tidak_sesuai' => 'Tidak Sesuai',
-            'tidak_dijadwalkan' => 'Tidak Dijadwalkan',
-            'belum_diperiksa' => 'Belum Diperiksa',
-        ];
+        return MaintenanceLabels::itemResults();
     }
 
     /** @return array<string, string> */

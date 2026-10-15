@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 #[Fillable(['name', 'email', 'password', 'role', 'phone', 'status'])]
 #[Hidden(['password', 'remember_token'])]
@@ -31,6 +32,20 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    /**
+     * Get up to two uppercase initials from the user's name for avatars.
+     */
+    public function initials(): string
+    {
+        return Str::of($this->name)
+            ->trim()
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => Str::upper(Str::substr($name, 0, 1)))
+            ->implode('');
     }
 
     public function assignedMaintenanceSchedules(): HasMany

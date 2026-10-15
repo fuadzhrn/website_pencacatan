@@ -11,6 +11,7 @@ use App\Models\MaintenanceCategory;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
 use App\Services\MaintenanceScheduleService;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,7 +29,7 @@ class MaintenanceScheduleController extends Controller
         $this->scheduleService->markOverdue();
 
         $filters = $this->filters($request);
-        $query = $this->visibleScheduleQuery($request)->with(['machine', 'maintenanceCategory', 'assignedUser']);
+        $query = $this->visibleScheduleQuery($request)->with(['machine', 'maintenanceCategory', 'assignedUser', 'check']);
         $this->applyFilters($query, $filters);
 
         $summaryQuery = clone $query;
@@ -246,26 +247,12 @@ class MaintenanceScheduleController extends Controller
     /** @return array<string, string> */
     private function statusOptions(): array
     {
-        return [
-            'scheduled' => 'Terjadwal',
-            'pending' => 'Belum Dikerjakan',
-            'in_progress' => 'Sedang Dikerjakan',
-            'completed' => 'Selesai',
-            'overdue' => 'Terlambat',
-            'cancelled' => 'Dibatalkan',
-        ];
+        return MaintenanceLabels::scheduleStatuses();
     }
 
     /** @return array<string, string> */
     private function frequencyOptions(): array
     {
-        return [
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semester' => 'Semesteran',
-            'yearly' => 'Tahunan',
-        ];
+        return MaintenanceLabels::frequencies();
     }
 }

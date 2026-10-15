@@ -81,11 +81,14 @@
                     <dl class="mobile-schedule-card__meta"><div><dt>Tanggal</dt><dd>{{ $schedule->scheduled_date->translatedFormat('d M Y') }}</dd></div><div><dt>Jam</dt><dd>{{ $schedule->scheduled_time ? substr($schedule->scheduled_time, 0, 5) : '-' }}</dd></div><div><dt>Frekuensi</dt><dd>{{ $frequencyOptions[$schedule->maintenanceCategory->frequency] ?? $schedule->maintenanceCategory->frequency }}</dd></div><div><dt>Petugas</dt><dd>{{ $schedule->assignedUser?->name ?? 'Belum ditentukan' }}</dd></div></dl>
                     <div class="mobile-schedule-card__actions"><a href="{{ route('schedules.show', ['schedule' => $schedule, 'context' => 'mobile']) }}"><i data-lucide="eye"></i> Detail</a>
                         @if($canManage)<a href="{{ route('mobile.schedules', ['form' => 'edit', 'schedule_detail' => $schedule->id]) }}"><i data-lucide="pencil"></i> Edit</a><form method="POST" action="{{ route('schedules.destroy', $schedule) }}" onsubmit="return confirm('Hapus jadwal ini?')">@csrf @method('DELETE')<input type="hidden" name="context" value="mobile"><button type="submit"><i data-lucide="trash-2"></i> Hapus</button></form>@endif
-                        @if(auth()->user()->role === \App\UserRole::Petugas && in_array($schedule->status, ['scheduled', 'pending'], true))<form method="POST" action="{{ route('schedules.update-status', $schedule) }}">@csrf @method('PATCH')<input type="hidden" name="context" value="mobile"><input type="hidden" name="status" value="in_progress"><button type="submit"><i data-lucide="play"></i> Mulai</button></form>@endif
+                        @if(auth()->user()->role === \App\UserRole::Petugas && $schedule->scheduled_date->isToday())
+                            @if(! $schedule->check && in_array($schedule->status, ['scheduled', 'pending', 'in_progress', 'overdue'], true))<form method="POST" action="{{ route('inspections.start', $schedule) }}">@csrf<input type="hidden" name="context" value="mobile"><button type="submit"><i data-lucide="play"></i> Mulai</button></form>
+                            @elseif($schedule->status === 'in_progress')<a href="{{ route('mobile.inspection-today', ['schedule' => $schedule->id]) }}"><i data-lucide="play"></i> Lanjutkan</a>@endif
+                        @endif
                     </div>
                 </article>
             @empty<div class="mobile-schedules-empty"><i data-lucide="calendar-x"></i><strong>Jadwal tidak ditemukan</strong><span>Ubah filter atau tambahkan jadwal baru.</span></div>@endforelse
-        </div>{{ $schedules->links() }}
+        </div>@include('partials.pagination', ['paginator' => $schedules, 'class' => 'mobile-schedules-pagination', 'label' => 'Navigasi halaman jadwal'])
     </section>
 
     @if($selectedSchedule && request('form') !== 'edit')

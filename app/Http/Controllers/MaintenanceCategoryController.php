@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateMaintenanceCategoryRequest;
 use App\Models\MaintenanceCategory;
 use App\Models\MaintenanceItem;
 use App\Models\User;
+use App\Support\MaintenanceLabels;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -179,14 +180,7 @@ class MaintenanceCategoryController extends Controller
     /** @return array<string, string> */
     private function frequencyOptions(): array
     {
-        return [
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semester' => 'Semesteran',
-            'yearly' => 'Tahunan',
-        ];
+        return MaintenanceLabels::frequencies();
     }
 
     /** @return array<string, string> */

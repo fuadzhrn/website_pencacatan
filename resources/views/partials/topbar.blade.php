@@ -24,9 +24,12 @@
                 <strong>{{ $userName }}</strong>
                 <small>{{ $userRole }}</small>
             </span>
-            <button class="icon-button" type="button" aria-label="Buka menu profil">
-                <i data-lucide="chevron-down" aria-hidden="true"></i>
-            </button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="icon-button" type="submit" aria-label="Keluar dari sistem" title="Logout">
+                    <i data-lucide="log-out" aria-hidden="true"></i>
+                </button>
+            </form>
         </div>
     </div>
 </header>

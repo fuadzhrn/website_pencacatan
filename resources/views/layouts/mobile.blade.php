@@ -10,10 +10,12 @@
         </a>
 
         <div class="mobile-topbar__actions">
-            <button class="mobile-icon-button mobile-notification" type="button" data-mobile-notification aria-label="Notifikasi, 2 belum dibaca">
+            <a class="mobile-icon-button mobile-notification" href="{{ route('mobile.findings') }}" data-mobile-notification aria-label="Temuan aktif, {{ $findingActiveCount ?? 0 }} perlu tindak lanjut">
                 <i data-lucide="bell" aria-hidden="true"></i>
-                <span aria-hidden="true">2</span>
-            </button>
+                @if (($findingActiveCount ?? 0) > 0)
+                    <span aria-hidden="true">{{ $findingActiveCount }}</span>
+                @endif
+            </a>
             <span class="mobile-avatar" aria-label="Pengguna {{ $userName }}">{{ $userInitials }}</span>
         </div>
     </header>
@@ -79,7 +81,10 @@
 
         <footer class="mobile-drawer__footer">
             <div><i data-lucide="shield-check" aria-hidden="true"></i><span><strong>Sistem internal</strong><small>UPBU Malikussaleh</small></span></div>
-            <button type="button" data-mobile-logout><i data-lucide="log-out" aria-hidden="true"></i>Logout</button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" data-mobile-logout><i data-lucide="log-out" aria-hidden="true"></i>Logout</button>
+            </form>
         </footer>
     </aside>
 
@@ -94,7 +99,7 @@
             <span class="mobile-bottom-navigation__primary-icon"><i data-lucide="clipboard-check" aria-hidden="true"></i></span><span>Periksa</span>
         </a>
         <a href="{{ route('mobile.findings') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'temuan']) data-mobile-nav-link data-mobile-route="findings" @if ($activeMenu === 'temuan') aria-current="page" @endif>
-            <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="{{ $findingActiveCount ?? 4 }} temuan aktif">{{ $findingActiveCount ?? 4 }}</small>
+            <i data-lucide="triangle-alert" aria-hidden="true"></i><span>Temuan</span><small aria-label="{{ $findingActiveCount ?? 0 }} temuan aktif">{{ $findingActiveCount ?? 0 }}</small>
         </a>
         <a href="{{ route('mobile.report') }}" @class(['mobile-bottom-navigation__item', 'is-active' => $activeMenu === 'laporan']) data-mobile-nav-link data-mobile-route="report" @if ($activeMenu === 'laporan') aria-current="page" @endif>
             <i data-lucide="file-chart-column" aria-hidden="true"></i><span>Laporan</span>
@@ -131,7 +136,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-schedules.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.schedules')
         <script type="module" src="{{ asset('assets/js/mobile-schedules.js') }}"></script>
-    @elseif ($activeMenu === 'temuan')
+    @elseif ($activeMenu === 'temuan' && isset($findings))
         <link rel="stylesheet" href="{{ asset('assets/css/mobile-findings.css') }}" media="screen and (max-width: 768px)">
         @include('mobile.findings-data-partial')
         <script src="{{ asset('assets/js/findings-database.js') }}" defer></script>

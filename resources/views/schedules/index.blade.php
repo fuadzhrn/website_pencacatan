@@ -9,7 +9,3 @@
 @section('content')
     @include('schedules._database-content')
 @endsection
-
-@push('scripts')
-    <script type="module" src="{{ asset('assets/js/schedules.js') }}"></script>
-@endpush

@@ -24,23 +24,23 @@
         </div>
     @endif
 
-    <section class="schedules-hero" aria-labelledby="schedule-page-heading">
+    <header class="schedules-page-header">
         <div>
-            <p class="schedules-hero__eyebrow">Perencanaan preventive maintenance</p>
-            <h2 id="schedule-page-heading">Jadwal Maintenance</h2>
-            <p>Kelola jadwal pemeriksaan mesin X-Ray berdasarkan frekuensi maintenance.</p>
+            <p class="schedules-page-header__eyebrow">Perencanaan Maintenance</p>
+            <h2>Jadwal Maintenance</h2>
+            <p>Pantau jadwal pemeriksaan preventive maintenance mesin X-Ray.</p>
         </div>
         @if ($canManage)
-            <div class="schedules-hero__actions">
+            <div class="schedules-page-header__actions">
                 <a class="button button--secondary" href="{{ route('schedules.index', ['form' => 'generate']) }}">
                     <i data-lucide="calendar-cog" aria-hidden="true"></i> Generate Jadwal
                 </a>
                 <a class="button button--primary" href="{{ route('schedules.create') }}">
-                    <i data-lucide="plus" aria-hidden="true"></i> Tambah Jadwal
+                    <i data-lucide="calendar-plus" aria-hidden="true"></i> Tambah Jadwal
                 </a>
             </div>
         @endif
-    </section>
+    </header>
 
     @if ($canManage && request('form') === 'generate')
         <section class="schedules-filter" aria-labelledby="generate-schedule-title">
@@ -48,13 +48,13 @@
             <form method="POST" action="{{ route('schedules.generate') }}" class="schedules-filter__grid">
                 @csrf
                 <input type="hidden" name="form_type" value="generate">
-                <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id') == $machine->id)>{{ $machine->equipment_name }} — {{ $machine->serial_number }}</option>@endforeach</select></label>
-                <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id') == $category->id)>{{ $category->name }} ({{ $frequencyOptions[$category->frequency] ?? $category->frequency }})</option>@endforeach</select></label>
-                <label>Tanggal Mulai<input type="date" name="start_date" value="{{ old('start_date') }}" required></label>
-                <label>Tanggal Akhir<input type="date" name="end_date" value="{{ old('end_date') }}" required></label>
-                <label>Jam<input type="time" name="scheduled_time" value="{{ old('scheduled_time') }}"></label>
-                <label>Petugas<select name="assigned_user_id"><option value="">Belum ditentukan</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected(old('assigned_user_id') == $officer->id)>{{ $officer->name }}</option>@endforeach</select></label>
-                <label class="schedules-filter__wide">Catatan<textarea name="notes" rows="3">{{ old('notes') }}</textarea></label>
+                <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id') == $machine->id)>{{ $machine->equipment_name }} — {{ $machine->serial_number }}</option>@endforeach</select>@error('machine_id')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id') == $category->id)>{{ $category->name }} ({{ $frequencyOptions[$category->frequency] ?? $category->frequency }})</option>@endforeach</select>@error('maintenance_category_id')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Tanggal Mulai<input type="date" name="start_date" value="{{ old('start_date') }}" required>@error('start_date')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Tanggal Akhir<input type="date" name="end_date" value="{{ old('end_date') }}" required>@error('end_date')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Jam<input type="time" name="scheduled_time" value="{{ old('scheduled_time') }}">@error('scheduled_time')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Petugas<select name="assigned_user_id"><option value="">Belum ditentukan</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected(old('assigned_user_id') == $officer->id)>{{ $officer->name }}</option>@endforeach</select>@error('assigned_user_id')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label class="schedules-filter__wide">Catatan<textarea name="notes" rows="3">{{ old('notes') }}</textarea>@error('notes')<span class="form-error">{{ $message }}</span>@enderror</label>
                 <div class="schedules-filter__actions"><button class="button button--primary" type="submit">Generate</button><a class="button button--secondary" href="{{ route('schedules.index') }}">Batal</a></div>
             </form>
         </section>
@@ -71,22 +71,30 @@
                     <label>Mesin<input type="text" value="{{ $editingSchedule->machine->equipment_name }}" disabled></label>
                     <label>Kategori<input type="text" value="{{ $editingSchedule->maintenanceCategory->name }}" disabled></label>
                 @else
-                    <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id') == $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select></label>
-                    <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id') == $category->id)>{{ $category->name }}</option>@endforeach</select></label>
+                    <label>Mesin<select name="machine_id" required><option value="">Pilih mesin</option>@foreach ($machines as $machine)<option value="{{ $machine->id }}" @selected(old('machine_id') == $machine->id)>{{ $machine->equipment_name }}</option>@endforeach</select>@error('machine_id')<span class="form-error">{{ $message }}</span>@enderror</label>
+                    <label>Kategori<select name="maintenance_category_id" required><option value="">Pilih kategori</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('maintenance_category_id') == $category->id)>{{ $category->name }}</option>@endforeach</select>@error('maintenance_category_id')<span class="form-error">{{ $message }}</span>@enderror</label>
                 @endif
-                <label>Tanggal<input type="date" name="scheduled_date" value="{{ old('scheduled_date', $editingSchedule?->scheduled_date?->toDateString()) }}" required></label>
-                <label>Jam<input type="time" name="scheduled_time" value="{{ old('scheduled_time', $editingSchedule?->scheduled_time ? substr($editingSchedule->scheduled_time, 0, 5) : null) }}"></label>
-                <label>Petugas<select name="assigned_user_id"><option value="">Belum ditentukan</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected(old('assigned_user_id', $editingSchedule?->assigned_user_id) == $officer->id)>{{ $officer->name }}</option>@endforeach</select></label>
-                <label>Status<select name="status" required>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected(old('status', $editingSchedule?->status ?? 'scheduled') === $value)>{{ $label }}</option>@endforeach</select></label>
-                <label class="schedules-filter__wide">Catatan<textarea name="notes" rows="3">{{ old('notes', $editingSchedule?->notes) }}</textarea></label>
+                <label>Tanggal<input type="date" name="scheduled_date" value="{{ old('scheduled_date', $editingSchedule?->scheduled_date?->toDateString()) }}" required>@error('scheduled_date')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Jam<input type="time" name="scheduled_time" value="{{ old('scheduled_time', $editingSchedule?->scheduled_time ? substr($editingSchedule->scheduled_time, 0, 5) : null) }}">@error('scheduled_time')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Petugas<select name="assigned_user_id"><option value="">Belum ditentukan</option>@foreach ($petugas as $officer)<option value="{{ $officer->id }}" @selected(old('assigned_user_id', $editingSchedule?->assigned_user_id) == $officer->id)>{{ $officer->name }}</option>@endforeach</select>@error('assigned_user_id')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label>Status<select name="status" required>@foreach ($statusOptions as $value => $label)<option value="{{ $value }}" @selected(old('status', $editingSchedule?->status ?? 'scheduled') === $value)>{{ $label }}</option>@endforeach</select>@error('status')<span class="form-error">{{ $message }}</span>@enderror</label>
+                <label class="schedules-filter__wide">Catatan<textarea name="notes" rows="3">{{ old('notes', $editingSchedule?->notes) }}</textarea>@error('notes')<span class="form-error">{{ $message }}</span>@enderror</label>
                 <div class="schedules-filter__actions"><button class="button button--primary" type="submit">Simpan</button><a class="button button--secondary" href="{{ route('schedules.index') }}">Batal</a></div>
             </form>
         </section>
     @endif
 
-    <section class="schedule-summary" aria-label="Ringkasan jadwal">
-        @foreach ([['Total Jadwal', $summary['total'], 'calendar-days'], ['Terjadwal', $summary['scheduled'], 'calendar-clock'], ['Selesai', $summary['completed'], 'circle-check'], ['Terlambat', $summary['overdue'], 'triangle-alert']] as [$label, $value, $icon])
-            <article class="schedule-summary-card"><span><i data-lucide="{{ $icon }}" aria-hidden="true"></i></span><div><p>{{ $label }}</p><strong>{{ $value }}</strong></div></article>
+    <section class="schedules-summary" aria-label="Ringkasan jadwal maintenance">
+        @foreach ([
+            ['total', 'Total Jadwal', $summary['total'], 'calendar-range', 'Sesuai filter yang dipilih'],
+            ['scheduled', 'Terjadwal', $summary['scheduled'], 'calendar-clock', 'Menunggu waktu pemeriksaan'],
+            ['completed', 'Selesai', $summary['completed'], 'circle-check-big', 'Pemeriksaan sudah dilakukan'],
+            ['overdue', 'Terlambat', $summary['overdue'], 'calendar-x-2', 'Perlu segera ditindaklanjuti'],
+        ] as [$modifier, $label, $value, $icon, $description])
+            <article class="schedules-summary-card schedules-summary-card--{{ $modifier }}">
+                <span class="schedules-summary-card__icon" aria-hidden="true"><i data-lucide="{{ $icon }}"></i></span>
+                <div><p>{{ $label }}</p><strong>{{ $value }}</strong><span>{{ $description }}</span></div>
+            </article>
         @endforeach
     </section>
 
@@ -128,8 +136,12 @@
                                     <a class="schedule-action schedule-action--edit" href="{{ route('schedules.edit', $schedule) }}"><i data-lucide="pencil" aria-hidden="true"></i> Edit</a>
                                     <form method="POST" action="{{ route('schedules.destroy', $schedule) }}" onsubmit="return confirm('Hapus jadwal ini?')">@csrf @method('DELETE')<button class="schedule-action" type="submit"><i data-lucide="trash-2" aria-hidden="true"></i> Hapus</button></form>
                                 @endif
-                                @if (auth()->user()->role === \App\UserRole::Petugas && in_array($schedule->status, ['scheduled', 'pending'], true))
-                                    <form method="POST" action="{{ route('schedules.update-status', $schedule) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="in_progress"><button class="schedule-action schedule-action--start" type="submit"><i data-lucide="play" aria-hidden="true"></i> Mulai</button></form>
+                                @if (auth()->user()->role === \App\UserRole::Petugas && $schedule->scheduled_date->isToday())
+                                    @if (! $schedule->check && in_array($schedule->status, ['scheduled', 'pending', 'in_progress', 'overdue'], true))
+                                        <form method="POST" action="{{ route('inspections.start', $schedule) }}">@csrf<button class="schedule-action schedule-action--start" type="submit"><i data-lucide="play" aria-hidden="true"></i> Mulai</button></form>
+                                    @elseif ($schedule->status === 'in_progress')
+                                        <a class="schedule-action schedule-action--start" href="{{ route('inspections.schedules.show', $schedule) }}"><i data-lucide="play" aria-hidden="true"></i> Lanjutkan</a>
+                                    @endif
                                 @endif
                             </div></td>
                         </tr>
@@ -139,7 +151,10 @@
                 </tbody>
             </table>
         </div>
-        <footer class="schedules-table-panel__footer">{{ $schedules->links() }}</footer>
+        <footer class="schedules-table-panel__footer">
+            <span>Menampilkan {{ $schedules->firstItem() ?? 0 }}&ndash;{{ $schedules->lastItem() ?? 0 }} dari {{ $schedules->total() }} jadwal</span>
+            @include('partials.pagination', ['paginator' => $schedules, 'class' => 'schedules-pagination', 'label' => 'Navigasi halaman jadwal'])
+        </footer>
     </section>
 
     @if ($selectedSchedule && request('form') !== 'edit')

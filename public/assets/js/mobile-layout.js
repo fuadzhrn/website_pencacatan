@@ -75,7 +75,6 @@ if (typeof document !== 'undefined') {
         const backgroundElements = [...mobileShell.children].filter((element) => element !== drawer && element !== overlay);
         const navigationLinks = [...mobileShell.querySelectorAll('[data-mobile-nav-link]')];
         const drawerLinks = [...drawer.querySelectorAll('[data-mobile-nav-link]')];
-        const notificationButton = mobileShell.querySelector('[data-mobile-notification]');
         const logoutButton = mobileShell.querySelector('[data-mobile-logout]');
         const navigationToast = mobileShell.querySelector('[data-mobile-navigation-toast]');
         const navigationToastMessage = navigationToast?.querySelector('[data-mobile-navigation-toast-message]');
@@ -154,13 +153,8 @@ if (typeof document !== 'undefined') {
             syncActiveNavigation(navigationLinks, window.location.href);
         }
 
-        notificationButton?.addEventListener('click', () => {
-            showNavigationToast('Anda memiliki 2 notifikasi dummy.');
-        });
-
         logoutButton?.addEventListener('click', () => {
             closeDrawer({ restoreFocus: false });
-            showNavigationToast('Logout masih berupa simulasi pada tahap ini.');
         });
 
         navigationToastClose?.addEventListener('click', hideNavigationToast);

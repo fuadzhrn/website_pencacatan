@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($email.'|'.$request->ip());
         });
 
-        View::composer('partials.sidebar', function (ViewInstance $view): void {
+        View::composer('layouts.app', function (ViewInstance $view): void {
             /** @var User|null $user */
             $user = request()->user();
 
@@ -45,6 +45,16 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $viewData = $view->getData();
+
+            foreach ([
+                'userName' => $user->name,
+                'userRole' => $user->role->label(),
+                'userInitials' => $user->initials(),
+            ] as $key => $value) {
+                if (! array_key_exists($key, $viewData)) {
+                    $view->with($key, $value);
+                }
+            }
 
             if (! array_key_exists('dailyProgress', $viewData)) {
                 $todaySchedules = MaintenanceSchedule::query()

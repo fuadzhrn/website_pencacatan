@@ -10,6 +10,7 @@ use App\Models\MaintenanceCheck;
 use App\Models\MaintenanceCheckDetail;
 use App\Models\MaintenanceFinding;
 use App\Models\User;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -34,10 +35,15 @@ class MaintenanceFindingController extends Controller
         ];
 
         $status = $request->string('status')->toString();
+        $frequency = $request->string('frequency')->toString();
         $findings = $visibleFindings
-            ->with(['machine', 'item', 'reportedBy', 'reviewedBy', 'checkDetail'])
+            ->with(['machine', 'item.category', 'reportedBy', 'reviewedBy', 'checkDetail'])
             ->when($request->filled('machine_id'), fn (Builder $query): Builder => $query->where('machine_id', $request->integer('machine_id')))
             ->when(in_array($status, ['open', 'review', 'resolved'], true), fn (Builder $query): Builder => $query->where('status', $status))
+            ->when(
+                array_key_exists($frequency, MaintenanceLabels::frequencies()),
+                fn (Builder $query): Builder => $query->whereHas('item.category', fn (Builder $categoryQuery): Builder => $categoryQuery->where('frequency', $frequency)),
+            )
             ->when($request->filled('date'), fn (Builder $query): Builder => $query->whereDate('finding_date', $request->date('date')))
             ->when($request->filled('search'), function (Builder $query) use ($request): void {
                 $search = '%'.str_replace(['%', '_'], ['\\%', '\\_'], $request->string('search')->trim()->toString()).'%';
@@ -50,7 +56,8 @@ class MaintenanceFindingController extends Controller
             })
             ->latest('finding_date')
             ->latest('id')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         $machines = Machine::query()
             ->whereIn('id', $this->visibleFindings($user)->select('machine_id'))
@@ -76,18 +83,20 @@ class MaintenanceFindingController extends Controller
             'findingActiveCount' => $summary['open'] + $summary['review'],
             'availableDetails' => $availableDetails,
             'statusLabels' => $this->statusLabels(),
+            'frequencyLabels' => MaintenanceLabels::frequencies(),
         ]);
     }
 
     public function show(Request $request, MaintenanceFinding $finding): View
     {
         $this->ensureVisible($request->user(), $finding);
-        $finding->load(['machine', 'item', 'reportedBy', 'reviewedBy', 'checkDetail']);
+        $finding->load(['machine', 'item.category', 'reportedBy', 'reviewedBy', 'checkDetail', 'check']);
 
         return view('findings.show', [
             ...$this->layoutData($request->user()),
             'finding' => $finding,
             'statusLabels' => $this->statusLabels(),
+            'frequencyLabels' => MaintenanceLabels::frequencies(),
         ]);
     }
 
@@ -248,7 +257,7 @@ class MaintenanceFindingController extends Controller
     /** @return array<string, string> */
     private function statusLabels(): array
     {
-        return ['open' => 'Open', 'review' => 'Review', 'resolved' => 'Resolved'];
+        return MaintenanceLabels::findingStatuses();
     }
 
     /** @return array<string, string> */

@@ -22,7 +22,7 @@ class FilterInspectionHistoryRequest extends FormRequest
             'officer_id' => ['nullable', 'integer', 'exists:users,id'],
             'category_id' => ['nullable', 'integer', 'exists:maintenance_categories,id'],
             'verification_status' => ['nullable', Rule::in(['waiting', 'verified', 'rejected'])],
-            'overall_status' => ['nullable', Rule::in(['normal', 'has_finding'])],
+            'overall_status' => ['nullable', Rule::in(['normal', 'has_finding', 'incomplete'])],
             'search' => ['nullable', 'string', 'max:100'],
         ];
     }

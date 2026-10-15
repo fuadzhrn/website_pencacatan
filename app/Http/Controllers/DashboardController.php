@@ -9,6 +9,7 @@ use App\Models\MaintenanceFinding;
 use App\Models\MaintenanceSchedule;
 use App\Models\User;
 use App\Services\MaintenanceScheduleService;
+use App\Support\MaintenanceLabels;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -173,42 +174,24 @@ class DashboardController extends Controller
     /** @return array<string, string> */
     private function scheduleStatusLabels(): array
     {
-        return [
-            'scheduled' => 'Terjadwal',
-            'pending' => 'Belum Dikerjakan',
-            'in_progress' => 'Sedang Dikerjakan',
-            'completed' => 'Selesai',
-            'overdue' => 'Terlambat',
-            'cancelled' => 'Dibatalkan',
-        ];
+        return MaintenanceLabels::scheduleStatuses();
     }
 
     /** @return array<string, string> */
     private function checkStatusLabels(): array
     {
-        return [
-            'normal' => 'Normal',
-            'has_finding' => 'Terdapat Temuan',
-            'incomplete' => 'Belum Selesai',
-        ];
+        return MaintenanceLabels::checkResults();
     }
 
     /** @return array<string, string> */
     private function findingStatusLabels(): array
     {
-        return ['open' => 'Open', 'review' => 'Review', 'resolved' => 'Resolved'];
+        return MaintenanceLabels::findingStatuses();
     }
 
     /** @return array<string, string> */
     private function frequencyLabels(): array
     {
-        return [
-            'daily' => 'Harian',
-            'weekly' => 'Mingguan',
-            'monthly' => 'Bulanan',
-            'quarterly' => 'Triwulan',
-            'semester' => 'Semesteran',
-            'yearly' => 'Tahunan',
-        ];
+        return MaintenanceLabels::frequencies();
     }
 }
